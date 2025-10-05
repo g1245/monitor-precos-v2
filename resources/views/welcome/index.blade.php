@@ -4,7 +4,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Welcome</div>
+                    <div class="card-header text-3xl font-bold underline">Welcome</div>
 
                     <div class="card-body">
                         Welcome to the Price Monitor Application!

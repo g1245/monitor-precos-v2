@@ -65,3 +65,18 @@ Sistema web com catálogo de produtos de lojas virtuais de todo o Brasil. Usuár
 - Usar migrations e seeders para gestão do banco de dados.
 - Configurar caching e otimizações do Laravel para performance.
 - Preservar logs essenciais para auditoria sem expor dados sensíveis.
+
+## Padrões de Commits
+- Utilizar o padrão Conventional Commits para mensagens de commit:
+  - `feat:` para novas funcionalidades
+  - `fix:` para correção de bugs
+  - `docs:` para mudanças em documentação
+  - `style:` para mudanças que não afetam o código (formatação, etc)
+  - `refactor:` para refatoração de código que não corrige bug nem adiciona feature
+  - `perf:` para melhorias de performance
+  - `test:` para adicionar ou corrigir testes
+  - `build:` para mudanças no sistema de build ou dependências
+  - `ci:` para mudanças nos arquivos de configuração de CI
+  - `chore:` para outras mudanças que não modificam código de produção
+- Para commits com breaking changes, adicionar `!` após o tipo ou incluir `BREAKING CHANGE:` no corpo da mensagem
+- Exemplo: `feat(products): add favorite button to product card`

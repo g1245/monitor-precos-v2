@@ -9,8 +9,6 @@
                     <div class="card-body">
                         Welcome to the Price Monitor Application!
                     </div>
-
-                    <livewire:counter />
                 </div>
             </div>
         </div>

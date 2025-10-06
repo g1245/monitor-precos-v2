@@ -155,12 +155,12 @@
                     <div>
                         <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200">eletrônicos</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">áudio e vídeo</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">celulares e smartphones</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">computadores e informática</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">consoles e games</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">tablets</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">telefonia fixa</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'audio-e-video'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">áudio e vídeo</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'celulares-e-smartphones'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">celulares e smartphones</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'computadores-e-informatica'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">computadores e informática</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'consoles-e-games'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">consoles e games</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'tablets'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">tablets</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'telefonia-fixa'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">telefonia fixa</a></li>
                         </ul>
                     </div>
 
@@ -168,15 +168,15 @@
                     <div>
                         <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200">casa</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">climatização</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">eletrodomésticos</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">cama, mesa e banho</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">construção e ferramentas</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">decoração</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">eletroportáteis</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">limpeza</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">móveis</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">utilidades domésticas</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'climatizacao'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">climatização</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'eletrodomesticos'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">eletrodomésticos</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'cama-mesa-e-banho'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">cama, mesa e banho</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'construcao-e-ferramentas'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">construção e ferramentas</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'decoracao'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">decoração</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'eletroportateis'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">eletroportáteis</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'limpeza'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">limpeza</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'moveis'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">móveis</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'utilidades-domesticas'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">utilidades domésticas</a></li>
                         </ul>
                     </div>
 
@@ -184,22 +184,22 @@
                     <div>
                         <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200">lazer e entretenimento</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">artes e artesanato</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">artigos de festas</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">instrumentos musicais</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">livros</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">música, filmes e séries</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'artes-e-artesanato'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">artes e artesanato</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'artigos-de-festas'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">artigos de festas</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'instrumentos-musicais'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">instrumentos musicais</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'livros'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">livros</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'musica-filmes-e-series'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">música, filmes e séries</a></li>
                         </ul>
 
                         <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200 mt-6">pra você e sua família</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">alimentos e bebidas</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">automotivo</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">bebês e higiene infantil</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">brinquedos</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">malas, mochilas e acessórios</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">papelaria</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">pet shop</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'alimentos-e-bebidas'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">alimentos e bebidas</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'automotivo'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">automotivo</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'bebes-e-higiene-infantil'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">bebês e higiene infantil</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'brinquedos'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">brinquedos</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'malas-mochilas-e-acessorios'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">malas, mochilas e acessórios</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'papelaria'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">papelaria</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'pet-shop'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">pet shop</a></li>
                         </ul>
                     </div>
 
@@ -207,18 +207,18 @@
                     <div>
                         <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200">esporte, saúde e bem-estar</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">esporte, fitness e lazer</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">saúde e bem-estar</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">suplementos e vitaminas</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'esporte-fitness-e-lazer'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">esporte, fitness e lazer</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'saude-e-bem-estar'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">saúde e bem-estar</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'suplementos-e-vitaminas'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">suplementos e vitaminas</a></li>
                         </ul>
 
                         <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200 mt-6">moda e beleza</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">beleza e perfumaria</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">cabelos</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">calçados</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">moda</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">relógios e joias</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'beleza-e-perfumaria'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">beleza e perfumaria</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'cabelos'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">cabelos</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'calcados'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">calçados</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'moda'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">moda</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'relogios-e-joias'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">relógios e joias</a></li>
                         </ul>
                     </div>
 
@@ -226,9 +226,9 @@
                     <div>
                         <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200">confira também</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">agro, indústria e comércio</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">vale presente</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">gift card</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'agro-industria-e-comercio'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">agro, indústria e comércio</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'vale-presente'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">vale presente</a></li>
+                            <li><a href="{{route('departament.index', ['permalink' => 'gift-card'])}}" class="text-gray-600 hover:text-blue-600 transition-colors">gift card</a></li>
                         </ul>
                     </div>
                 </div>
@@ -255,12 +255,12 @@
                 <div class="mb-6">
                     <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">eletrônicos</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-700 block py-1">áudio e vídeo</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">celulares e smartphones</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">computadores e informática</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">consoles e games</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">tablets</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">telefonia fixa</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'audio-e-video'])}}" class="text-gray-700 block py-1">áudio e vídeo</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'celulares-e-smartphones'])}}" class="text-gray-700 block py-1">celulares e smartphones</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'computadores-e-informatica'])}}" class="text-gray-700 block py-1">computadores e informática</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'consoles-e-games'])}}" class="text-gray-700 block py-1">consoles e games</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'tablets'])}}" class="text-gray-700 block py-1">tablets</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'telefonia-fixa'])}}" class="text-gray-700 block py-1">telefonia fixa</a></li>
                     </ul>
                 </div>
 
@@ -268,15 +268,15 @@
                 <div class="mb-6">
                     <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">casa</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-700 block py-1">climatização</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">eletrodomésticos</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">cama, mesa e banho</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">construção e ferramentas</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">decoração</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">eletroportáteis</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">limpeza</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">móveis</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">utilidades domésticas</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'climatizacao'])}}" class="text-gray-700 block py-1">climatização</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'eletrodomesticos'])}}" class="text-gray-700 block py-1">eletrodomésticos</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'cama-mesa-e-banho'])}}" class="text-gray-700 block py-1">cama, mesa e banho</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'construcao-e-ferramentas'])}}" class="text-gray-700 block py-1">construção e ferramentas</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'decoracao'])}}" class="text-gray-700 block py-1">decoração</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'eletroportateis'])}}" class="text-gray-700 block py-1">eletroportáteis</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'limpeza'])}}" class="text-gray-700 block py-1">limpeza</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'moveis'])}}" class="text-gray-700 block py-1">móveis</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'utilidades-domesticas'])}}" class="text-gray-700 block py-1">utilidades domésticas</a></li>
                     </ul>
                 </div>
 
@@ -284,11 +284,11 @@
                 <div class="mb-6">
                     <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">lazer e entretenimento</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-700 block py-1">artes e artesanato</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">artigos de festas</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">instrumentos musicais</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">livros</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">música, filmes e séries</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'artes-e-artesanato'])}}" class="text-gray-700 block py-1">artes e artesanato</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'artigos-de-festas'])}}" class="text-gray-700 block py-1">artigos de festas</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'instrumentos-musicais'])}}" class="text-gray-700 block py-1">instrumentos musicais</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'livros'])}}" class="text-gray-700 block py-1">livros</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'musica-filmes-e-series'])}}" class="text-gray-700 block py-1">música, filmes e séries</a></li>
                     </ul>
                 </div>
 
@@ -296,13 +296,13 @@
                 <div class="mb-6">
                     <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">pra você e sua família</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-700 block py-1">alimentos e bebidas</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">automotivo</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">bebês e higiene infantil</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">brinquedos</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">malas, mochilas e acessórios</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">papelaria</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">pet shop</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'alimentos-e-bebidas'])}}" class="text-gray-700 block py-1">alimentos e bebidas</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'automotivo'])}}" class="text-gray-700 block py-1">automotivo</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'bebes-e-higiene-infantil'])}}" class="text-gray-700 block py-1">bebês e higiene infantil</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'brinquedos'])}}" class="text-gray-700 block py-1">brinquedos</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'malas-mochilas-e-acessorios'])}}" class="text-gray-700 block py-1">malas, mochilas e acessórios</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'papelaria'])}}" class="text-gray-700 block py-1">papelaria</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'pet-shop'])}}" class="text-gray-700 block py-1">pet shop</a></li>
                     </ul>
                 </div>
 
@@ -310,9 +310,9 @@
                 <div class="mb-6">
                     <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">esporte, saúde e bem-estar</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-700 block py-1">esporte, fitness e lazer</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">saúde e bem-estar</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">suplementos e vitaminas</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'esporte-fitness-e-lazer'])}}" class="text-gray-700 block py-1">esporte, fitness e lazer</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'saude-e-bem-estar'])}}" class="text-gray-700 block py-1">saúde e bem-estar</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'suplementos-e-vitaminas'])}}" class="text-gray-700 block py-1">suplementos e vitaminas</a></li>
                     </ul>
                 </div>
 
@@ -320,11 +320,11 @@
                 <div class="mb-6">
                     <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">moda e beleza</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-700 block py-1">beleza e perfumaria</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">cabelos</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">calçados</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">moda</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">relógios e joias</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'beleza-e-perfumaria'])}}" class="text-gray-700 block py-1">beleza e perfumaria</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'cabelos'])}}" class="text-gray-700 block py-1">cabelos</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'calcados'])}}" class="text-gray-700 block py-1">calçados</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'moda'])}}" class="text-gray-700 block py-1">moda</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'relogios-e-joias'])}}" class="text-gray-700 block py-1">relógios e joias</a></li>
                     </ul>
                 </div>
 
@@ -332,9 +332,9 @@
                 <div class="mb-6">
                     <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">confira também</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-700 block py-1">agro, indústria e comércio</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">vale presente</a></li>
-                        <li><a href="#" class="text-gray-700 block py-1">gift card</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'agro-industria-e-comercio'])}}" class="text-gray-700 block py-1">agro, indústria e comércio</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'vale-presente'])}}" class="text-gray-700 block py-1">vale presente</a></li>
+                        <li><a href="{{route('departament.index', ['permalink' => 'gift-card'])}}" class="text-gray-700 block py-1">gift card</a></li>
                     </ul>
                 </div>
             </div>

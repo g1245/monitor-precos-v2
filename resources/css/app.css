@@ -50,6 +50,39 @@
     --tw-ring-color: var(--color-primary);
 }
 
+/* Department menu animations */
+.departments-menu {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.departments-menu.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile menu slide animation */
+.mobile-menu {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);
+}
+
+.mobile-menu.show {
+    transform: translateX(0);
+}
+
+/* Chevron rotation animation */
+.chevron-icon {
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Overlay for mobile menu */
+.menu-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease-in-out;
+}
+
 /* Carousel indicators */
 .carousel-indicators {
     display: flex;

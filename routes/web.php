@@ -9,6 +9,6 @@ use App\Http\Controllers\DepartamentController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
-Route::get('/{permalink}/dp', [DepartamentController::class, 'index'])->name('departament.index');
-Route::get('/{permalink}/p', [ProductController::class, 'index'])->name('product.index');
+Route::get('/{alias}/{permalink}/dp', [DepartamentController::class, 'index'])->name('departament.index');
+Route::get('/{alias}/{permalink}/p', [ProductController::class, 'index'])->name('product.index');
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');

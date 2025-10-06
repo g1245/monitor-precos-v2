@@ -68,7 +68,7 @@ class Department extends Model
      */
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'department_product');
+        return $this->belongsToMany(Product::class, 'departments_products');
     }
 
     /**

@@ -1,7 +1,6 @@
 <!-- Mobile Departments Menu - Full Screen -->
 <div id="mobileDepartmentsMenu" class="hidden fixed inset-0 bg-white z-50 md:hidden overflow-y-auto">
     <div class="flex flex-col h-full">
-        <!-- Header -->
         <div class="bg-blue-800 text-white p-4 flex items-center justify-between">
             <h2 class="text-lg font-bold">Departamentos</h2>
             <button id="closeMobileMenu" class="text-white hover:text-blue-400">
@@ -10,25 +9,23 @@
                 </svg>
             </button>
         </div>
-
-        <!-- Categories -->
         <div class="flex-1 p-4">
             @foreach($departmentMenu as $parentDepartment)
-            <div class="mb-6">
-                <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">
-                    {{ $parentDepartment->name }}
-                </h3>
-                <ul class="space-y-3">
-                    @foreach($parentDepartment->children as $childDepartment)
-                    <li>
-                        <a href="{{ route('departament.index', ['alias' => Str::of($childDepartment->name)->slug(), 'permalink' => $childDepartment->permalink]) }}" 
-                           class="text-gray-700 block py-1">
-                            {{ $childDepartment->name }}
-                        </a>
-                    </li>
-                    @endforeach
-                </ul>
-            </div>
+                <div class="mb-6">
+                    <h3 class="font-bold text-blue-800 mb-3 text-lg border-b border-gray-200 pb-2">
+                        {{ $parentDepartment->name }}
+                    </h3>
+                    <ul class="space-y-3">
+                        @foreach($parentDepartment->children as $childDepartment)
+                            <li>
+                                <a href="{{ route('departament.index', ['alias' => Str::of($childDepartment->name)->slug(), 'departamentId' => $childDepartment->id]) }}" 
+                                class="text-gray-700 block py-1">
+                                    {{ $childDepartment->name }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             @endforeach
         </div>
     </div>

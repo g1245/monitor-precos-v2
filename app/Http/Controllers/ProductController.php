@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(string $permalink, Request $request)
+    public function index(string $productId, Request $request)
     {
-        return view('product.index', ['permalink' => $permalink]);
+        return view('product.index', ['permalink' => $productId]);
     }
 }

@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 
 class DepartamentController extends Controller
 {
-    public function index(string $permalink, Request $request)
+    public function index(string $departmentId, Request $request)
     {
-        return view('departament.index', ['permalink' => $permalink]);
+        return view('departament.index', ['permalink' => $departmentId]);
     }
 }

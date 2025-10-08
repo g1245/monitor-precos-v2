@@ -15,7 +15,7 @@ class DepartmentProducts extends Component
     public Department $department;
     public string $sortField = 'name';
     public string $sortDirection = 'asc';
-    public int $perPage = 12;
+    public int $perPage = 4;
 
     protected $queryString = [
         'sortField' => ['except' => 'name'],
@@ -54,5 +54,13 @@ class DepartmentProducts extends Component
         return view('livewire.department-products', [
             'products' => $products,
         ]);
+    }
+    
+    /**
+     * Custom pagination view
+     */
+    public function paginationView()
+    {
+        return 'vendor.livewire.tailwind';
     }
 }

@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/var/www/html
+      - ./.docker/app/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - ${APP_PORT:-8080}:80
     networks:

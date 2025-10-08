@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
         
         // Registrar componentes Livewire manualmente
         Livewire::component('department-products', \App\Livewire\DepartmentProducts::class);
+        
+        // Use Tailwind para paginação
+        Paginator::defaultView('pagination::tailwind');
     }
 
     /**

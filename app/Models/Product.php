@@ -21,6 +21,7 @@ class Product extends Model
         'permalink',
         'description',
         'price',
+        'regular_price',
         'sku',
         'brand',
         'image_url',
@@ -34,6 +35,7 @@ class Product extends Model
      */
     protected $casts = [
         'price' => 'decimal:2',
+        'regular_price' => 'decimal:2',
         'is_active' => 'boolean',
     ];
 

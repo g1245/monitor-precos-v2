@@ -18,7 +18,7 @@
                     <ul class="space-y-3">
                         @foreach($parentDepartment->children as $childDepartment)
                             <li>
-                                <a href="{{ route('departament.index', ['alias' => Str::of($childDepartment->name)->slug(), 'departamentId' => $childDepartment->id]) }}" 
+                                <a href="{{ route('department.index', ['alias' => Str::of($childDepartment->name)->slug(), 'departmentId' => $childDepartment->id]) }}" 
                                 class="text-gray-700 block py-1">
                                     {{ $childDepartment->name }}
                                 </a>

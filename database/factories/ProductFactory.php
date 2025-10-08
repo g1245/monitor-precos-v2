@@ -31,7 +31,7 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomFloat(2, 10, 1000),
             'sku' => $this->faker->unique()->regexify('[A-Z]{3}[0-9]{6}'),
             'brand' => $this->faker->company(),
-            'image_url' => $this->faker->imageUrl(640, 480, 'products', true),
+            // 'image_url' => $this->faker->imageUrl(640, 480, 'products', true),
             'is_active' => $this->faker->boolean(90), // 90% chance of being active
         ];
     }

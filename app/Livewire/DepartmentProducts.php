@@ -3,24 +3,25 @@
 namespace App\Livewire;
 
 use App\Models\Department;
-use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\On;
 
 class DepartmentProducts extends Component
 {
     use WithPagination;
 
     public Department $department;
+
     public string $sortField = 'name';
+
     public string $sortDirection = 'asc';
+
     public int $perPage = 4;
 
     protected $queryString = [
         'sortField' => ['except' => 'name'],
         'sortDirection' => ['except' => 'asc'],
-        'perPage' => ['except' => 12]
+        'perPage' => ['except' => 12],
     ];
 
     public function mount(Department $department)
@@ -55,7 +56,7 @@ class DepartmentProducts extends Component
             'products' => $products,
         ]);
     }
-    
+
     /**
      * Custom pagination view
      */

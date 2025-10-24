@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\WelcomeController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 

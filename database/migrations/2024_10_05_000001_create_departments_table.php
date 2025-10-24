@@ -20,7 +20,7 @@ return new class extends Migration
 
             // Foreign key constraint for self-relation
             $table->foreign('parent_id')->references('id')->on('departments')->onDelete('cascade');
-            
+
             // Indexes
             $table->index('parent_id');
             $table->index('name');

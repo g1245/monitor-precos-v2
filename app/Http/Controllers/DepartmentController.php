@@ -17,7 +17,7 @@ class DepartmentController extends Controller
 
             return view('department.index', compact('department'));
         } catch (\Exception $e) {
-            Log::error('Department not found: ' . $e->getMessage());
+            Log::error('Department not found: '.$e->getMessage());
             abort(404, 'Departamento não encontrado');
         }
     }

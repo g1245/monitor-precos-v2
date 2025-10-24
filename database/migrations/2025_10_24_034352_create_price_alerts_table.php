@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->decimal('target_price', 10, 2)->nullable();
             $table->boolean('is_notified')->default(false);
+            $table->timestamp('notified_at')->nullable();
             $table->timestamps();
 
             $table->index('product_id');

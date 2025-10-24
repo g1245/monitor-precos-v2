@@ -22,6 +22,7 @@ class PriceAlert extends Model
         'phone',
         'target_price',
         'is_notified',
+        'notified_at',
     ];
 
     /**
@@ -33,6 +34,7 @@ class PriceAlert extends Model
         'product_id' => 'integer',
         'target_price' => 'decimal:2',
         'is_notified' => 'boolean',
+        'notified_at' => 'datetime',
     ];
 
     /**

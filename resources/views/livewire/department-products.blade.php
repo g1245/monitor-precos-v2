@@ -81,19 +81,7 @@
                             {{ floor($product->price / 10) }}x de R$ {{ number_format($product->price / floor($product->price / 10), 2, ',', '.') }} sem juros
                         </div>
                         
-                        <div class="text-xs flex items-center text-green-600 mt-2">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"></path>
-                            </svg>
-                            Até R$ {{ number_format($product->price * 0.1, 2, ',', '.') }} de cashback
-                        </div>
-                        
-                        <div class="mt-4 flex justify-between items-center">
-                            <div class="text-xs text-gray-700">
-                                Sai por:<br/>
-                                <span class="font-bold">R$ {{ number_format($product->price - ($product->price * 0.1), 2, ',', '.') }}</span>
-                            </div>
-                            
+                        <div class="mt-4 flex justify-end items-center">
                             <button class="bg-primary hover:bg-primary-dark text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>

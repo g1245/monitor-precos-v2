@@ -12,11 +12,11 @@ class ProductController extends Controller
         $product = Product::with([
             'images',
             'specifications',
-            'departments'
+            'departments',
         ])
-        ->where('id', $productId)
-        ->where('is_active', true)
-        ->firstOrFail();
+            ->where('id', $productId)
+            ->where('is_active', true)
+            ->firstOrFail();
 
         $departmentFromUrl = null;
         if ($request->has('from_department')) {
@@ -39,7 +39,7 @@ class ProductController extends Controller
         return view('product.show', [
             'product' => $product,
             'department' => $departmentFromUrl,
-            'similarProducts' => $similarProducts
+            'similarProducts' => $similarProducts,
         ]);
     }
 }

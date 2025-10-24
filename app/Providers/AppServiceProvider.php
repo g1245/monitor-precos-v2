@@ -3,12 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Department;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,10 +27,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share department menu data with all views
         View::share('departmentMenu', $this->getDepartmentMenuData());
-        
+
         // Registrar componentes Livewire manualmente
         Livewire::component('department-products', \App\Livewire\DepartmentProducts::class);
-        
+
         // Use Tailwind para paginação
         Paginator::defaultView('pagination::tailwind');
     }
@@ -47,14 +47,15 @@ class AppServiceProvider extends ServiceProvider
             return Cache::remember('department_menu', 300, function () {
                 // Get all parent departments with their children
                 return Department::whereNull('parent_id')
-                    ->with(['children' => function($query) {
+                    ->with(['children' => function ($query) {
                         $query->orderBy('name', 'asc');
                     }])
                     ->orderBy('name', 'asc')
                     ->get();
             });
         } catch (\Exception $e) {
-            Log::error('Error loading department menu: ' . $e->getMessage());
+            Log::error('Error loading department menu: '.$e->getMessage());
+
             return collect([]);
         }
     }

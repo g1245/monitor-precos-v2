@@ -9,11 +9,17 @@ use Livewire\Component;
 class PriceAlertModal extends Component
 {
     public $productId;
+
     public $showModal = false;
+
     public $name = '';
+
     public $email = '';
+
     public $phone = '';
+
     public $successMessage = '';
+
     public $errorMessage = '';
 
     protected $rules = [
@@ -68,7 +74,7 @@ class PriceAlertModal extends Component
 
             $this->successMessage = 'Alerta criado com sucesso! Você será notificado quando o preço baixar.';
             $this->reset(['name', 'email', 'phone', 'errorMessage']);
-            
+
             $this->dispatch('alert-created');
         } catch (\Exception $e) {
             $this->errorMessage = 'Erro ao criar alerta. Por favor, tente novamente.';

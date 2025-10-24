@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         // Seed departments and products
         $this->call([
             DepartmentProductSeeder::class,
+            ProductImagesSeeder::class,
+            ProductSpecificationsSeeder::class,
         ]);
     }
 }

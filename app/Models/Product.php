@@ -62,6 +62,30 @@ class Product extends Model
     }
 
     /**
+     * Get all images for the product.
+     */
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('order');
+    }
+
+    /**
+     * Get all specifications for the product.
+     */
+    public function specifications()
+    {
+        return $this->hasMany(ProductSpecification::class)->orderBy('order');
+    }
+
+    /**
+     * Get all price alerts for the product.
+     */
+    public function priceAlerts()
+    {
+        return $this->hasMany(PriceAlert::class);
+    }
+
+    /**
      * Scope to get only active products.
      */
     public function scopeActive($query)

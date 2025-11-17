@@ -21,6 +21,48 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Monitor de Preços v2
+
+Sistema web com catálogo de produtos de lojas virtuais de todo o Brasil. Usuários podem salvar produtos favoritos na página "Minha conta".
+
+### Funcionalidades
+
+#### Importação de Datafeed CSV
+
+O sistema permite importar produtos de arquivos CSV com separador pipe (|) para uma tabela temporária de processamento.
+
+**Comando:**
+```bash
+php artisan datafeed:import /caminho/para/arquivo.csv
+```
+
+**Características:**
+- Suporta 92 colunas de dados de produtos
+- Separador: pipe (|)
+- Processamento em lotes de 500 registros
+- Validação de arquivo e tratamento de erros
+- Índices otimizados para merchant_product_id, merchant_id e aw_product_id
+
+**Formato do CSV:**
+O arquivo deve conter um cabeçalho com os nomes das colunas seguido pelas linhas de dados. As colunas incluem:
+- Dados básicos: product_name, aw_product_id, merchant_product_id, merchant_id
+- Preços: search_price, store_price, rrp_price, display_price
+- Imagens: merchant_image_url, aw_image_url, large_image, alternate_image
+- Categorização: merchant_category, category_name, category_id
+- Atributos: brand_name, colour, dimensions, product_model
+- Moda: Fashion:suitable_for, Fashion:category, Fashion:size, Fashion:material
+- E mais 70+ campos adicionais
+
+**Exemplo de uso:**
+```bash
+# Importar datafeed
+php artisan datafeed:import /storage/datafeeds/produtos.csv
+
+# Verificar dados importados
+php artisan tinker
+>>> App\Models\DatafeedItem::count()
+```
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

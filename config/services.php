@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'qdrant' => [
+        'url' => env('QDRANT_URL'),
+        'api_key' => env('QDRANT_APIKEY'),
+    ],
+
+    'embedding' => [
+        'url' => env('EMBEDDING_URL'),
+    ],
+    
 ];

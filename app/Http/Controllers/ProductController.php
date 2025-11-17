@@ -20,8 +20,8 @@ class ProductController extends Controller
         // Mock data for stores comparison - in real implementation, this would come from external APIs or database
         $storeOffers = $this->getMockStoreOffers($product);
         
-        // Mock price history data
-        $priceHistory = $this->getMockPriceHistory($product);
+        // Get real price history data
+        $priceHistory = $this->getPriceHistory($product);
 
         return view('product.index', [
             'product' => $product,
@@ -77,6 +77,42 @@ class ProductController extends Controller
                 'store_rating' => 4.9,
                 'link' => 'https://amazon.com.br'
             ],
+        ];
+    }
+
+    /**
+     * Get price history for the product.
+     */
+    private function getPriceHistory(Product $product): array
+    {
+        $histories = $product->priceHistories()
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        if ($histories->isEmpty()) {
+            return [
+                'data' => [],
+                'lowest_price' => null,
+                'highest_price' => null,
+                'current_price' => $product->price,
+                'has_history' => false,
+            ];
+        }
+
+        $data = $histories->map(function ($history) {
+            return [
+                'date' => $history->created_at->format('Y-m-d'),
+                'price' => $history->price,
+                'formatted_date' => $history->created_at->format('d/m')
+            ];
+        })->toArray();
+
+        return [
+            'data' => $data,
+            'lowest_price' => $histories->min('price'),
+            'highest_price' => $histories->max('price'),
+            'current_price' => $product->price,
+            'has_history' => true,
         ];
     }
 

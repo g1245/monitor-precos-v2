@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Department;
+use App\Models\Product;
+use App\Observers\ProductObserver;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -25,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register model observers
+        Product::observe(ProductObserver::class);
+        
         // Share department menu data with all views
         View::share('departmentMenu', $this->getDepartmentMenuData());
         

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -64,9 +65,17 @@ class Product extends Model
     /**
      * Get all attributes for this product.
      */
-    public function attributes()
+    public function attributes(): HasMany
     {
         return $this->hasMany(ProductAttribute::class);
+    }
+
+    /**
+     * Get price history for this product.
+     */
+    public function priceHistories(): HasMany
+    {
+        return $this->hasMany(ProductPriceHistory::class);
     }
 
     /**
@@ -111,5 +120,36 @@ class Product extends Model
     public function isActive(): bool
     {
         return $this->is_active;
+    }
+
+    /**
+     * Add price to history.
+     */
+    public function addPriceHistory(float $price): ProductPriceHistory
+    {
+        return $this->priceHistories()->create([
+            'price' => $price,
+        ]);
+    }
+
+    /**
+     * Get latest price from history.
+     */
+    public function getLatestHistoricalPrice(): ?float
+    {
+        $latestHistory = $this->priceHistories()->latest('created_at')->first();
+        
+        return $latestHistory?->price;
+    }
+
+    /**
+     * Check if current price should be recorded in history.
+     * Only record if price has changed from last recorded price.
+     */
+    public function shouldRecordPriceHistory(): bool
+    {
+        $latestPrice = $this->getLatestHistoricalPrice();
+        
+        return $latestPrice === null || $latestPrice !== $this->price;
     }
 }

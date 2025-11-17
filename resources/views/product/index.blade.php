@@ -244,43 +244,56 @@
     </div>
 
     <!-- Histórico de Preços Section -->
-    <div class="space-y-6 mb-12">
-        <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
-        
-        <!-- Chart Container -->
-        <div class="relative bg-white border border-gray-200 rounded-lg p-6">
-            <div class="h-80">
-                <canvas id="priceChart"></canvas>
-            </div>
+    @if($priceHistory['has_history'])
+        <div class="space-y-6 mb-12">
+            <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
             
-            <!-- Info Card Overlay -->
-            <div class="absolute top-4 right-4 bg-white border border-gray-200 rounded-lg p-4 shadow-lg max-w-xs">
-                <div class="space-y-2">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
-                        <span class="text-sm font-medium text-gray-900">Menor preço histórico</span>
-                    </div>
-                    <div class="text-sm text-gray-600">
-                        O produto está no menor preço dos últimos 6 meses
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                        </svg>
-                        <div class="text-xs text-gray-500">6 meses</div>
+            <!-- Chart Container -->
+            <div class="relative bg-white border border-gray-200 rounded-lg p-6">
+                <div class="h-80">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                
+                <!-- Info Card Overlay -->
+                <div class="absolute top-4 right-4 bg-white border border-gray-200 rounded-lg p-4 shadow-lg max-w-xs">
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
+                            <span class="text-sm font-medium text-gray-900">Menor preço histórico</span>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            @if($priceHistory['lowest_price'] && $product->price <= $priceHistory['lowest_price'])
+                                O produto está no menor preço histórico
+                            @else
+                                Menor preço: R$ {{ number_format($priceHistory['lowest_price'], 2, ',', '.') }}
+                            @endif
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="text-xs text-gray-500">{{ count($priceHistory['data']) }} registros</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Time Period Filter -->
-        <div class="flex items-center justify-center space-x-2 flex-wrap gap-2">
-            <button class="period-filter-btn px-4 py-2 text-sm border border-gray-300 rounded-lg hover:border-primary transition-colors">40 dias</button>
-            <button class="period-filter-btn px-4 py-2 text-sm border border-gray-300 rounded-lg hover:border-primary transition-colors">3 meses</button>
-            <button class="period-filter-btn px-4 py-2 text-sm bg-primary text-white rounded-lg">6 meses</button>
-            <button class="period-filter-btn px-4 py-2 text-sm border border-gray-300 rounded-lg hover:border-primary transition-colors">1 ano</button>
+    @else
+        <!-- Mensagem quando não há histórico -->
+        <div class="space-y-6 mb-12">
+            <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
+            
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+                <div class="max-w-sm mx-auto">
+                    <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Ainda não há histórico de preços</h3>
+                    <p class="text-gray-600">O gráfico com o histórico de preços aparecerá quando tivermos dados suficientes para este produto.</p>
+                </div>
+            </div>
         </div>
-    </div>
+    @endif
 
     <!-- Ficha Técnica Section -->
     <div class="space-y-6 mb-12">
@@ -325,7 +338,7 @@
             <div class="bg-gray-50 rounded-lg p-8 text-center">
                 <div class="text-gray-400 mb-2">
                     <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                     </svg>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Ficha técnica em breve</h3>
@@ -339,6 +352,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Global chart instance variable
+            let priceChartInstance = null;
+
             // Global function for sidebar link - now just scrolls to history section
             window.showHistoryTab = function() {
                 document.querySelector('h2:contains("Histórico de Preços")') || 
@@ -349,94 +365,105 @@
 
             // Price history chart
             const ctx = document.getElementById('priceChart');
+
             if (ctx) {
                 const priceHistory = @json($priceHistory['data']);
+                const hasHistory = @json($priceHistory['has_history']);
                 
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: priceHistory.map(item => item.formatted_date),
-                        datasets: [{
-                            label: 'Preço',
-                            data: priceHistory.map(item => item.price),
-                            borderColor: '#06b6d4',
-                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.3,
-                            pointBackgroundColor: '#06b6d4',
-                            pointBorderColor: '#ffffff',
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
+                if (hasHistory && priceHistory.length > 0) {
+                    // Destroy existing chart instance if it exists
+                    if (priceChartInstance) {
+                        priceChartInstance.destroy();
+                    }
+
+                    priceChartInstance = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: priceHistory.map(item => item.formatted_date),
+                            datasets: [{
+                                label: 'Preço',
+                                data: priceHistory.map(item => item.price),
+                                borderColor: '#06b6d4',
+                                backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.3,
+                                pointBackgroundColor: '#06b6d4',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }]
                         },
-                        elements: {
-                            point: {
-                                hoverBackgroundColor: '#0891b2'
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                grid: {
-                                    color: '#f3f4f6'
-                                },
-                                ticks: {
-                                    callback: function(value) {
-                                        return 'R$ ' + value.toLocaleString('pt-BR', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        });
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            interaction: {
+                                intersect: false,
+                                mode: 'index'
+                            },
+                            elements: {
+                                point: {
+                                    hoverBackgroundColor: '#0891b2'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    grid: {
+                                        color: '#f3f4f6'
                                     },
-                                    font: {
-                                        size: 11
+                                    ticks: {
+                                        callback: function(value) {
+                                            return 'R$ ' + value.toLocaleString('pt-BR', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            });
+                                        },
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: 11
+                                        }
                                     }
                                 }
                             },
-                            x: {
-                                grid: {
+                            plugins: {
+                                legend: {
                                     display: false
                                 },
-                                ticks: {
-                                    font: {
-                                        size: 11
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                titleColor: '#ffffff',
-                                bodyColor: '#ffffff',
-                                borderColor: '#06b6d4',
-                                borderWidth: 1,
-                                callbacks: {
-                                    label: function(context) {
-                                        return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        });
+                                tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                    titleColor: '#ffffff',
+                                    bodyColor: '#ffffff',
+                                    borderColor: '#06b6d4',
+                                    borderWidth: 1,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            });
+                                        }
                                     }
                                 }
                             }
                         }
                     });
+                }
             }
 
             // Copy link functionality
             const copyLinkBtn = document.querySelector('[data-action="copy-link"]');
+            
             if (copyLinkBtn) {
                 copyLinkBtn.addEventListener('click', function() {
                     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -480,6 +507,7 @@
 
             // Store offer cards hover effects
             const storeCards = document.querySelectorAll('.store-offer-card');
+            
             storeCards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-2px)';
@@ -494,6 +522,7 @@
 
             // Price alert toggle functionality
             const priceAlertToggle = document.getElementById('price-alert-toggle');
+            
             if (priceAlertToggle) {
                 priceAlertToggle.addEventListener('change', function() {
                     if (this.checked) {
@@ -522,6 +551,14 @@
                     // In a real app, you would update the chart data here
                     console.log('Período selecionado:', this.textContent);
                 });
+            });
+
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', function() {
+                if (priceChartInstance) {
+                    priceChartInstance.destroy();
+                    priceChartInstance = null;
+                }
             });
         });
     </script>

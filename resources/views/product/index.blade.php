@@ -50,11 +50,9 @@
                 <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{{ ucwords($product->name) }}</h1>
                 <div class="flex items-center space-x-2 mb-4">
                     <div class="flex">
-                        @for ($i = 1; $i <= 5; $i++)
-                            <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                            </svg>
-                        @endfor
+                        <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
                     </div>
                     <span class="text-sm text-gray-500">sem avaliações</span>
                 </div>
@@ -131,22 +129,16 @@
         <!-- Sidebar (1 column) -->
         <div class="lg:col-span-1 space-y-6 order-first lg:order-last">
             <!-- Historical Low Price Card -->
-            <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+            <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3 cursor-pointer hover:border-primary hover:shadow-md transition-all" id="price-history-card">
                 <div class="flex items-center space-x-2">
                     <div class="w-3 h-3 bg-teal-500 rounded-full shrink-0"></div>
-                    <span class="text-sm font-medium text-gray-900">Menor preço histórico</span>
+                    <span class="text-sm font-medium text-gray-900">Veja o histórico de preço</span>
                 </div>
                 <p class="text-sm text-gray-600">
-                    O produto está no menor preço dos últimos 6 meses
+                    Acesso ao gráfico com alterações de preço
                 </p>
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-1">
-                        <svg class="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M2 12l10-10v6h10v8h-10v6z"/>
-                        </svg>
-                        <div class="text-xs text-gray-500">6 meses</div>
-                    </div>
-                    <button class="text-primary hover:text-primary-dark text-sm font-medium" onclick="showHistoryTab()">
+                    <button class="text-primary hover:text-primary-dark text-sm font-medium">
                         Ver Histórico
                     </button>
                 </div>
@@ -245,7 +237,7 @@
 
     <!-- Histórico de Preços Section -->
     @if($priceHistory['has_history'])
-        <div class="space-y-6 mb-12">
+        <div id="price-history" class="space-y-6 mb-12">
             <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
             
             <!-- Chart Container -->
@@ -262,11 +254,7 @@
                             <span class="text-sm font-medium text-gray-900">Menor preço histórico</span>
                         </div>
                         <div class="text-sm text-gray-600">
-                            @if($priceHistory['lowest_price'] && $product->price <= $priceHistory['lowest_price'])
-                                O produto está no menor preço histórico
-                            @else
-                                Menor preço: R$ {{ number_format($priceHistory['lowest_price'], 2, ',', '.') }}
-                            @endif
+                            Veja o preço histórico
                         </div>
                         <div class="flex items-center space-x-2">
                             <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
@@ -286,7 +274,7 @@
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
                 <div class="max-w-sm mx-auto">
                     <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2h2a2 2 0 002-2z"></path>
                     </svg>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">Ainda não há histórico de preços</h3>
                     <p class="text-gray-600">O gráfico com o histórico de preços aparecerá quando tivermos dados suficientes para este produto.</p>
@@ -354,14 +342,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Global chart instance variable
             let priceChartInstance = null;
-
-            // Global function for sidebar link - now just scrolls to history section
-            window.showHistoryTab = function() {
-                document.querySelector('h2:contains("Histórico de Preços")') || 
-                document.querySelector('.space-y-6.mb-12:nth-child(2)').scrollIntoView({
-                    behavior: 'smooth'
-                });
-            };
 
             // Price history chart
             const ctx = document.getElementById('priceChart');
@@ -530,6 +510,22 @@
                         console.log('Alert de preço ativado');
                     } else {
                         console.log('Alert de preço desativado');
+                    }
+                });
+            }
+
+            // Price history card click functionality
+            const priceHistoryCard = document.getElementById('price-history-card');
+            
+            if (priceHistoryCard) {
+                priceHistoryCard.addEventListener('click', function() {
+                    const priceHistorySection = document.getElementById('price-history');
+                    
+                    if (priceHistorySection) {
+                        priceHistorySection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                 });
             }

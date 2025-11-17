@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -44,5 +45,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the saved products for the user.
+     */
+    public function savedProducts(): HasMany
+    {
+        return $this->hasMany(SavedProduct::class);
+    }
+
+    /**
+     * Get the price alerts for the user.
+     */
+    public function priceAlerts(): HasMany
+    {
+        return $this->hasMany(PriceAlert::class);
+    }
+
+    /**
+     * Get the visits for the user.
+     */
+    public function visits(): HasMany
+    {
+        return $this->hasMany(UserVisit::class);
     }
 }

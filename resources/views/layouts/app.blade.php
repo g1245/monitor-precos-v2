@@ -25,11 +25,19 @@
 
                     <!-- Account Icon -->
                     <div class="text-white">
-                        <div class="cursor-pointer hover:text-yellow-300 transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
+                        @auth
+                            <a href="{{ route('account.index') }}" class="cursor-pointer hover:text-yellow-300 transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </a>
+                        @else
+                            <a href="{{ route('auth.login') }}" class="cursor-pointer hover:text-yellow-300 transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </a>
+                        @endauth
                     </div>
                 </div>
 
@@ -75,15 +83,42 @@
                 <div class="flex items-center space-x-4">
                     <!-- Login/Account -->
                     <div class="text-white text-sm">
-                        <div class="flex items-center space-x-1 cursor-pointer hover:text-blue-200 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            <div>
-                                <div class="font-medium">Olá, faça seu login</div>
-                                <div class="text-xs">ou cadastre-se</div>
+                        @auth
+                            <div class="relative group">
+                                <div class="flex items-center space-x-1 cursor-pointer hover:text-blue-200 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="font-medium">Olá, {{ Auth::user()->name }}</div>
+                                        <div class="text-xs">Minha conta</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Dropdown Menu -->
+                                <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                                    <a href="{{ route('account.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Minha Conta
+                                    </a>
+                                    <form action="{{ route('auth.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            Sair
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <a href="{{ route('auth.login') }}" class="flex items-center space-x-1 cursor-pointer hover:text-blue-200 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                <div>
+                                    <div class="font-medium">Olá, faça seu login</div>
+                                    <div class="text-xs">ou cadastre-se</div>
+                                </div>
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>

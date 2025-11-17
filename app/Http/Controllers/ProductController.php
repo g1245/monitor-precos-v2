@@ -12,7 +12,7 @@ class ProductController extends Controller
      */
     public function index(string $permalink, Request $request)
     {
-        $product = Product::with('departments')
+        $product = Product::with(['departments', 'attributes'])
             ->byPermalink($permalink)
             ->active()
             ->firstOrFail();
@@ -22,15 +22,11 @@ class ProductController extends Controller
         
         // Mock price history data
         $priceHistory = $this->getMockPriceHistory($product);
-        
-        // Mock technical specifications
-        $technicalSpecs = $this->getMockTechnicalSpecs($product);
 
         return view('product.index', [
             'product' => $product,
             'storeOffers' => $storeOffers,
             'priceHistory' => $priceHistory,
-            'technicalSpecs' => $technicalSpecs,
         ]);
     }
 
@@ -110,33 +106,6 @@ class ProductController extends Controller
             'lowest_price' => min(array_column($historicalPrices, 'price')),
             'highest_price' => max(array_column($historicalPrices, 'price')),
             'current_price' => $currentPrice,
-        ];
-    }
-
-    /**
-     * Generate mock technical specifications.
-     */
-    private function getMockTechnicalSpecs(Product $product): array
-    {
-        return [
-            'console_specs' => [
-                'Marca' => 'Sony',
-                'Modelo do Console' => 'PlayStation 5',
-                'Versão do Console' => 'Slim',
-                'SSD Integrado' => '1TB',
-                'Recursos e Entretenimentos' => [
-                    '4K',
-                    'Ray Tracing',
-                    'HDR',
-                    'Dolby Atmos',
-                    'Jogos ex-line',
-                    'Microfone embutido',
-                    'Netflix',
-                    'YouTube'
-                ],
-                'Edição' => 'Bundle'
-            ],
-            'description' => 'O menor preço encontrado no Brasil para Playstation 5 Slim 1TB Bundle ASTRO BOT + Gran Turismo 7 atualmente é R$ 3.440,07.'
         ];
     }
 }

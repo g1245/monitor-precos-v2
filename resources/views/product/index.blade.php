@@ -197,19 +197,7 @@
         <div class="space-y-4">
             <!-- Section Header -->
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold text-gray-900">Compare preços em 9 lojas</h2>
-                <div class="flex items-center space-x-3">
-                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                        <option>Ordenar por: Padrão</option>
-                        <option>Menor preço</option>
-                        <option>Maior preço</option>
-                    </select>
-                    <button class="p-2 border border-gray-300 rounded-lg hover:border-primary transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
-                        </svg>
-                    </button>
-                </div>
+                <div class="text-xl font-semibold text-gray-900">Compare preços em 9 lojas</div>
             </div>
 
             <!-- Store Cards -->
@@ -217,16 +205,9 @@
                 @foreach($storeOffers as $offer)
                     <div class="store-offer-card border border-gray-200 rounded-lg p-4 hover:border-primary transition-colors">
                         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                            <!-- Left Section -->
                             <div class="flex items-start lg:items-center space-x-4">
-                                @if($offer['is_best_price'])
-                                    <div class="badge-best-price text-white text-xs font-medium px-2 py-1 rounded shrink-0">
-                                        Menor preço
-                                    </div>
-                                @endif
-                                
                                 <div class="w-12 h-12 shrink-0">
-                                    <img src="{{ $offer['store_logo'] }}" alt="{{ $offer['store_name'] }}" class="w-full h-full object-contain rounded">
+                                    <img src="https://s.zst.com.br/prod/cupons/23254-Logo-80x80.png" alt="{{ $offer['store_name'] }}" class="w-full h-full object-contain rounded">
                                 </div>
                                 
                                 <div class="space-y-1 min-w-0 flex-1">
@@ -236,45 +217,19 @@
                                     <div class="text-sm text-gray-600">
                                         {{ $offer['installment_price'] }}
                                     </div>
-                                    
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        @if($offer['discount_percentage'])
-                                            <span class="badge-discount text-purple-800 text-xs font-medium px-2 py-1 rounded">
-                                                <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                                </svg>
-                                                {{ $offer['discount_percentage'] }}% na loja toda • R$ {{ $offer['cashback'] ?? '0,00' }}
-                                            </span>
-                                        @endif
-                                        
-                                        @if($offer['coupon'])
-                                            <span class="badge-coupon text-blue-800 text-xs font-medium px-2 py-1 rounded">
-                                                <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a.997.997 0 01-1.414 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                                </svg>
-                                                Cupom: {{ $offer['coupon'] }}
-                                            </span>
-                                        @endif
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- Right Section -->
                             <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:min-w-max">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden shrink-0">
-                                        <img src="{{ $offer['store_logo'] }}" alt="{{ $offer['store_name'] }}" class="w-full h-full object-cover">
-                                    </div>
-                                    <span class="font-medium text-gray-900 text-sm">{{ $offer['store_name'] }}</span>
-                                    <div class="flex items-center">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <svg class="w-3 h-3 {{ $i <= floor($offer['store_rating']) ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                            </svg>
-                                        @endfor
-                                    </div>
-                                </div>
-                                
+                                @if($offer['coupon'])
+                                    <span class="badge-coupon bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded flex items-center">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a.997.997 0 01-1.414 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                        </svg>
+                                        Cupom: {{ $offer['coupon'] }}
+                                    </span>
+                                @endif
                                 <a href="{{ $offer['link'] }}" 
                                     target="_blank"
                                     class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-colors text-center w-full sm:w-auto">
@@ -284,13 +239,6 @@
                         </div>
                     </div>
                 @endforeach
-            </div>
-
-            <!-- Load More Button -->
-            <div class="text-center pt-4">
-                <button class="text-primary hover:text-primary-dark font-medium">
-                    Ver mais ofertas
-                </button>
             </div>
         </div>
     </div>
@@ -338,66 +286,52 @@
     <div class="space-y-6 mb-12">
         <h2 class="text-xl font-semibold text-gray-900">Ficha técnica</h2>
         
-        <div class="grid lg:grid-cols-2 gap-8">
-            <!-- Console Specifications -->
-            <div class="space-y-4">
-                <h3 class="text-lg font-medium text-gray-900">Características do Console</h3>
-                
-                <div class="space-y-3">
-                    @foreach($technicalSpecs['console_specs'] as $key => $value)
-                        @if($key !== 'Recursos e Entretenimentos')
+        @if($product->attributes->count() > 0)
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Product Specifications -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-900">Características do Produto</h3>
+                    
+                    <div class="space-y-3">
+                        @foreach($product->attributes as $attribute)
                             <div class="flex flex-col sm:flex-row py-3 border-b border-gray-100">
-                                <div class="sm:w-1/2 text-sm text-gray-600 font-medium mb-1 sm:mb-0">{{ $key }}</div>
-                                <div class="sm:w-1/2 text-sm text-gray-900">{{ $value }}</div>
+                                <div class="sm:w-1/2 text-sm text-gray-600 font-medium mb-1 sm:mb-0">{{ $attribute->key }}</div>
+                                <div class="sm:w-1/2 text-sm text-gray-900">{{ $attribute->description }}</div>
                             </div>
-                        @else
-                            <div class="flex flex-col py-3 border-b border-gray-100">
-                                <div class="text-sm text-gray-600 font-medium mb-2">{{ $key }}</div>
-                                <div class="text-sm space-y-1">
-                                    <div class="flex flex-wrap gap-2">
-                                        @foreach($value as $feature)
-                                            <span class="inline-block text-primary hover:text-primary-dark cursor-pointer bg-blue-50 px-2 py-1 rounded text-xs">
-                                                {{ $feature }}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            
-            <!-- Description -->
-            <div class="space-y-4">
-                <h3 class="text-lg font-medium text-gray-900">Descrição</h3>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <p class="text-sm text-gray-700 leading-relaxed">
-                        {{ $technicalSpecs['description'] }}
-                    </p>
-                </div>
-                
-                <!-- Additional Info -->
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div class="flex items-start space-x-3">
-                        <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <div class="text-sm">
-                            <div class="font-medium text-blue-900 mb-1">Informação importante</div>
-                            <div class="text-blue-800">Este é um produto bundle que inclui jogos adicionales. Verifique a disponibilidade dos títulos na sua região.</div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
+                
+                <!-- Description -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-900">Descrição</h3>
+                    @if($product->description)
+                        <div class="bg-gray-50 rounded-lg">
+                            <p class="text-sm text-gray-700 leading-relaxed">
+                                {{ $product->description }}
+                            </p>
+                        </div>
+                    @else
+                        <div class="bg-gray-50 rounded-lg">
+                            <p class="text-sm text-gray-500 leading-relaxed italic">
+                                Descrição não disponível para este produto.
+                            </p>
+                        </div>
+                    @endif
+                </div>
             </div>
-        </div>
-        
-        <!-- View Complete Specs Button -->
-        <div class="text-center pt-4">
-            <button class="text-primary hover:text-primary-dark font-medium underline underline-offset-2 hover:no-underline transition-all">
-                Ver ficha técnica completa
-            </button>
-        </div>
+        @else
+            <!-- No attributes available -->
+            <div class="bg-gray-50 rounded-lg p-8 text-center">
+                <div class="text-gray-400 mb-2">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Ficha técnica em breve</h3>
+                <p class="text-gray-600">As especificações técnicas deste produto serão disponibilizadas em breve.</p>
+            </div>
+        @endif
     </div>
 </div>
 @endsection
@@ -498,8 +432,7 @@
                                 }
                             }
                         }
-                    }
-                });
+                    });
             }
 
             // Copy link functionality

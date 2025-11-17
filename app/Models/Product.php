@@ -62,6 +62,14 @@ class Product extends Model
     }
 
     /**
+     * Get all attributes for this product.
+     */
+    public function attributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    /**
      * Scope to get only active products.
      */
     public function scopeActive($query)

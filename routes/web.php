@@ -31,6 +31,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/auth/reset-password', [PasswordResetController::class, 'reset'])->name('auth.reset.password');
 });
 
+// Alias for default Laravel auth redirect
+Route::redirect('/login', '/auth/login')->name('login');
+
 Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth');
 
 // Account routes (requires authentication)

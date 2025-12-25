@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $store_id
  * @property string|null $source
  * @property string $download_url
+ * @property bool $has_pending_update
  * @property \Illuminate\Support\Carbon|null $last_updated_at
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
@@ -32,6 +33,7 @@ class StoreFeed extends Model
         'store_id',
         'source',
         'download_url',
+        'has_pending_update',
         'last_updated_at',
     ];
 
@@ -42,6 +44,7 @@ class StoreFeed extends Model
      */
     protected $casts = [
         'last_updated_at' => 'datetime',
+        'has_pending_update' => 'boolean',
     ];
 
     /**
@@ -52,5 +55,25 @@ class StoreFeed extends Model
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
+    }
+
+    /**
+     * Get the local file path for this feed.
+     *
+     * @return string
+     */
+    public function getLocalFilePath(): string
+    {
+        return "store_feeds/feed_{$this->id}.csv";
+    }
+
+    /**
+     * Get the full local file path for this feed.
+     *
+     * @return string
+     */
+    public function getFullLocalFilePath(): string
+    {
+        return storage_path("app/{$this->getLocalFilePath()}");
     }
 }

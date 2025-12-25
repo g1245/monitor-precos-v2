@@ -13,12 +13,15 @@ class ProductPriceHistorySeeder extends Seeder
      */
     public function run(): void
     {
-        // Get some existing products
-        $products = Product::take(5)->get();
+        // Clear existing price history
+        ProductPriceHistory::truncate();
+
+        // Get all existing products
+        $products = Product::all();
 
         foreach ($products as $product) {
-            // Create 30-90 days of price history for each product
-            $historyCount = rand(30, 90);
+            // Create 3-5 price history records for each product
+            $historyCount = rand(3, 5);
             
             ProductPriceHistory::factory()
                 ->count($historyCount)

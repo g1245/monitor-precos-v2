@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('brand')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->vector('vetor_search', 1536); // Se usar tipo VECTOR nativo
             $table->timestamps();
 
             // Indexes

@@ -79,6 +79,16 @@ class Product extends Model
     }
 
     /**
+     * Get all stores that sell this product.
+     */
+    public function stores(): BelongsToMany
+    {
+        return $this->belongsToMany(Store::class)
+            ->withPivot('price', 'product_url')
+            ->withTimestamps();
+    }
+
+    /**
      * Scope to get only active products.
      */
     public function scopeActive($query)

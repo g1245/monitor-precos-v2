@@ -41,7 +41,10 @@ return [
     ],
 
     'embedding' => [
-        'url' => env('EMBEDDING_URL'),
+        'url' => env('EMBEDDING_URL', 'http://localhost:8989'),
+        'dimensions' => env('EMBEDDING_DIMENSIONS', 384),
+        'timeout' => env('EMBEDDING_TIMEOUT', 30),
+        'batch_size' => env('EMBEDDING_BATCH_SIZE', 100),
     ],
     
 ];

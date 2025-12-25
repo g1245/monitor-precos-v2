@@ -27,6 +27,7 @@ class Product extends Model
         'brand',
         'image_url',
         'is_active',
+        'vector_search',
     ];
 
     /**
@@ -38,6 +39,7 @@ class Product extends Model
         'price' => 'decimal:2',
         'regular_price' => 'decimal:2',
         'is_active' => 'boolean',
+        'vector_search' => 'array',
     ];
 
     /**

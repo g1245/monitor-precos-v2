@@ -39,6 +39,7 @@ RUN curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec08
     php8.3-xmlrpc \
     php8.3-xsl \
     php8.3-xmlrpc \
+    php8.3-mongodb \
     && curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
 # Configurando NVM

@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Feed;
 
+use App\Jobs\Feed\ProcessFeedImportJob;
 use App\Models\StoreFeed;
 use App\Services\Feed\FeedManagerService;
 use App\Services\Feed\FeedStorageService;
@@ -104,6 +105,24 @@ class DownloadAwinFeedJob implements ShouldQueue
 
             // Delete .gz file
             Storage::disk(self::STORAGE_DISK)->delete($gzPath);
+
+            // Dispatch jobs to import products to MongoDB in batches
+            try {
+                ProcessFeedImportJob::dispatch($this->feed);
+                
+                $feedManager->logFeedAction('mongodb_import_dispatched', [
+                    'feed_id' => $this->feed->id,
+                    'store_name' => $this->feed->store->name,
+                    'message' => 'Batch import jobs dispatched',
+                ]);
+            } catch (\Exception $e) {
+                $feedManager->logFeedError('mongodb_import_dispatch', [
+                    'feed_id' => $this->feed->id,
+                    'store_name' => $this->feed->store->name,
+                    'error' => $e->getMessage(),
+                ]);
+                // Don't fail the job if dispatch fails, just log it
+            }
 
             // Mark feed as having pending update
             $feedManager->markFeedAsPending($this->feed);

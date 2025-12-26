@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands\Awin;
 
-use App\Services\Awin\AwinFeedDownloadService;
+use App\Jobs\Feed\DownloadAwinFeedJob;
+use App\Services\Feed\FeedManagerService;
 use Illuminate\Console\Command;
 
 /**
  * DownloadAwinFeedsCommand
  *
- * Console command to download Awin feeds that were updated in the last 24 hours.
- * Creates local CSV files and marks feeds with pending updates.
+ * Console command to dispatch jobs for downloading Awin feeds 
+ * that were updated in the last X hours.
  */
 class DownloadAwinFeedsCommand extends Command
 {
@@ -26,40 +27,46 @@ class DownloadAwinFeedsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Download Awin feeds updated in the last X hours and save them locally';
+    protected $description = 'Dispatch jobs to download Awin feeds updated in the last X hours';
 
     /**
      * Execute the console command.
      *
-     * @param AwinFeedDownloadService $awinFeedDownloadService
+     * @param FeedManagerService $feedManager
      * @return int
      */
-    public function handle(AwinFeedDownloadService $awinFeedDownloadService): int
+    public function handle(FeedManagerService $feedManager): int
     {
         $hours = (int) $this->option('hours');
         
-        $this->info("Starting Awin feed downloads (last {$hours} hours)...");
+        $this->info("Finding Awin feeds to download (last {$hours} hours)...");
         $this->newLine();
         
-        $result = $awinFeedDownloadService->processRecentFeeds($hours);
+        $feeds = $feedManager->getRecentlyUpdatedFeeds($hours, 'awin');
         
-        if ($result['downloaded'] === 0) {
+        if ($feeds->isEmpty()) {
             $this->info('No Awin feeds to download (no updates in the specified period)');
             return Command::SUCCESS;
         }
         
-        if ($result['success']) {
-            $this->info("✓ Successfully downloaded {$result['downloaded']} Awin feeds");
-            return Command::SUCCESS;
-        }
-        
-        $this->warn("⚠ Downloaded {$result['downloaded']} feeds with errors:");
+        $this->info("Found {$feeds->count()} feed(s). Dispatching download jobs...");
         $this->newLine();
         
-        foreach ($result['errors'] as $error) {
-            $this->error("  • {$error}");
+        $dispatched = 0;
+        foreach ($feeds as $feed) {
+            DownloadAwinFeedJob::dispatch($feed);
+            $this->line("  ✓ Dispatched job for: {$feed->store->name} (Feed ID: {$feed->id})");
+            $dispatched++;
         }
         
-        return Command::FAILURE;
+        $this->newLine();
+        $this->info("Successfully dispatched {$dispatched} download job(s)");
+        
+        $feedManager->logFeedAction('awin_download_jobs_dispatched', [
+            'hours' => $hours,
+            'dispatched' => $dispatched,
+        ]);
+        
+        return Command::SUCCESS;
     }
 }

@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $name
  * @property string|null $logo
+ * @property string|null $region
+ * @property bool $has_public_catalog
  * @property string $full_url
  * @property array|null $metadata
  * @property \Illuminate\Support\Carbon $created_at
@@ -32,6 +34,8 @@ class Store extends Model
     protected $fillable = [
         'name',
         'logo',
+        'region',
+        'has_public_catalog',
         'full_url',
         'metadata',
     ];
@@ -42,6 +46,7 @@ class Store extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'has_public_catalog' => 'boolean',
         'metadata' => 'array',
     ];
 

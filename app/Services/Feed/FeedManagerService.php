@@ -25,7 +25,7 @@ class FeedManagerService
         $uniqueFields = ['name' => $data['name']];
         
         $fillableFields = array_filter($data, function ($key) {
-            return in_array($key, ['name', 'logo', 'full_url', 'metadata']);
+            return in_array($key, ['name', 'logo', 'region', 'full_url', 'metadata']);
         }, ARRAY_FILTER_USE_KEY);
         
         return Store::updateOrCreate($uniqueFields, $fillableFields);

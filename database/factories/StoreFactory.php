@@ -29,6 +29,7 @@ class StoreFactory extends Factory
         return [
             'name' => $storeName,
             'logo' => fake()->imageUrl(200, 200, 'business', true, $storeName),
+            'has_public_catalog' => fake()->boolean(70), // 70% chance of being true
             'full_url' => fake()->url(),
             'metadata' => [
                 'category' => fake()->randomElement(['Electronics', 'Fashion', 'Home', 'Sports', 'Books']),

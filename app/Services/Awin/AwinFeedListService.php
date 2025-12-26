@@ -140,6 +140,7 @@ class AwinFeedListService
      * Process a single CSV record.
      *
      * Creates or updates Store and StoreFeed based on the record data.
+     * Only processes records with Primary Region = BR.
      *
      * @param array $record The CSV record
      * @return void
@@ -148,6 +149,11 @@ class AwinFeedListService
     private function processRecord(array $record): void
     {
         $this->validateRecord($record);
+        
+        // Only process Brazilian stores
+        if (($record['Primary Region'] ?? '') !== 'BR') {
+            throw new \Exception('Record primary region is not BR');
+        }
         
         // Parse last updated timestamp
         $lastUpdatedAt = null;
@@ -163,10 +169,10 @@ class AwinFeedListService
         $store = $this->feedManager->createOrUpdateStore([
             'name' => trim($record['Advertiser Name']),
             'full_url' => '',
+            'region' => $record['Primary Region'] ?? null,
             'metadata' => [
                 'external_id' => $record['Advertiser ID'],
                 'feed_id' => $record['Feed ID'],
-                'region' => $record['Primary Region'],
                 'membership_status' => $record['Membership Status'],
                 'language' => $record['Language'] ?? null,
                 'product_count' => (int) ($record['No of products'] ?? 0),

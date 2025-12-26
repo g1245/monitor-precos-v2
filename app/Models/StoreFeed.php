@@ -64,7 +64,7 @@ class StoreFeed extends Model
      */
     public function getLocalFilePath(): string
     {
-        return "store_feeds/feed_{$this->id}.csv";
+        return "private/store_feeds/feed_{$this->id}.csv";
     }
 
     /**

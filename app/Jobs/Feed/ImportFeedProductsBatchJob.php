@@ -81,6 +81,8 @@ class ImportFeedProductsBatchJob implements ShouldQueue
         $this->limit = $limit;
         $this->batchNumber = $batchNumber;
         $this->totalBatches = $totalBatches;
+
+        $this->onQueue('imports');
     }
 
     /**

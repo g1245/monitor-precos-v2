@@ -62,6 +62,8 @@ class DownloadAwinFeedJob implements ShouldQueue
     public function __construct(StoreFeed $feed)
     {
         $this->feed = $feed;
+        
+        $this->onQueue('feeds');
     }
 
     /**

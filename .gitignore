@@ -22,3 +22,11 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+## Filament
+/public/build
+/public/hot
+/public/storage
+/public/css
+/public/js
+/public/fonts

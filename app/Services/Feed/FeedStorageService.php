@@ -22,7 +22,7 @@ class FeedStorageService
     /**
      * The directory path for storing feeds.
      */
-    private const FEEDS_DIRECTORY = 'private/store_feeds';
+    private const FEEDS_DIRECTORY = 'store_feeds';
 
     /**
      * Save feed content to disk.

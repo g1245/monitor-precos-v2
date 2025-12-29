@@ -281,9 +281,6 @@ class MongoProductImportService
         // Build price information
         $priceInfo = [
             'timestamp' => new \MongoDB\BSON\UTCDateTime(),
-            'aw_product_id' => $record['aw_product_id'] ?? null,
-            'feed_id' => $feed->id,
-            'store_id' => $feed->store_id,
         ];
 
         // Add price fields if they exist and are not empty

@@ -23,10 +23,27 @@ class ProductController extends Controller
         // Get real price history data
         $priceHistory = $this->getPriceHistory($product);
 
+        // Check if user has saved this product or has price alert
+        $isSaved = false;
+        $hasAlert = false;
+        
+        if (auth()->check()) {
+            $isSaved = auth()->user()->savedProducts()
+                ->where('product_id', $product->id)
+                ->exists();
+            
+            $hasAlert = auth()->user()->priceAlerts()
+                ->where('product_id', $product->id)
+                ->where('is_active', true)
+                ->exists();
+        }
+
         return view('product.index', [
             'product' => $product,
             'storeOffers' => $storeOffers,
             'priceHistory' => $priceHistory,
+            'isSaved' => $isSaved,
+            'hasAlert' => $hasAlert,
         ]);
     }
 

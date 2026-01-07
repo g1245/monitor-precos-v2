@@ -27,12 +27,22 @@
 
     <!-- Header Actions -->
     <div class="flex justify-end mb-4 space-x-3">
-        <button class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-primary transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-            </svg>
-            <span>Salvar</span>
-        </button>
+        @auth
+            <button onclick="toggleSaveProduct()" id="save-product-btn" 
+                    class="flex items-center space-x-2 px-4 py-2 {{ $isSaved ? 'text-red-600' : 'text-gray-700' }} hover:text-primary transition-colors">
+                <svg class="w-5 h-5" fill="{{ $isSaved ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                <span id="save-product-text">{{ $isSaved ? 'Salvo' : 'Salvar' }}</span>
+            </button>
+        @else
+            <a href="{{ route('auth.login') }}" class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-primary transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                <span>Salvar</span>
+            </a>
+        @endauth
         <button class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-primary transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
@@ -157,10 +167,16 @@
                 </p>
                 <div class="flex items-center justify-between">
                     <span class="text-sm text-gray-700">Ativar alertas</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" value="" class="sr-only peer" id="price-alert-toggle">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                    </label>
+                    @auth
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" {{ $hasAlert ? 'checked' : '' }} class="sr-only peer" id="price-alert-toggle" onchange="togglePriceAlert()">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                        </label>
+                    @else
+                        <a href="{{ route('auth.login') }}" class="text-sm text-primary hover:text-primary-dark font-medium">
+                            Fazer login
+                        </a>
+                    @endauth
                 </div>
             </div>
 
@@ -339,6 +355,54 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Toggle save product
+        function toggleSaveProduct() {
+            fetch('{{ route("account.toggle-save") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ product_id: {{ $product->id }} })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const btn = document.getElementById('save-product-btn');
+                const text = document.getElementById('save-product-text');
+                const svg = btn.querySelector('svg');
+                
+                if (data.saved) {
+                    btn.classList.remove('text-gray-700');
+                    btn.classList.add('text-red-600');
+                    svg.setAttribute('fill', 'currentColor');
+                    text.textContent = 'Salvo';
+                } else {
+                    btn.classList.remove('text-red-600');
+                    btn.classList.add('text-gray-700');
+                    svg.setAttribute('fill', 'none');
+                    text.textContent = 'Salvar';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Toggle price alert
+        function togglePriceAlert() {
+            fetch('{{ route("account.toggle-alert") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ product_id: {{ $product->id }} })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Global chart instance variable
             let priceChartInstance = null;
@@ -499,20 +563,6 @@
                     this.style.boxShadow = '';
                 });
             });
-
-            // Price alert toggle functionality
-            const priceAlertToggle = document.getElementById('price-alert-toggle');
-            
-            if (priceAlertToggle) {
-                priceAlertToggle.addEventListener('change', function() {
-                    if (this.checked) {
-                        // Here you would implement the actual alert subscription
-                        console.log('Alert de preço ativado');
-                    } else {
-                        console.log('Alert de preço desativado');
-                    }
-                });
-            }
 
             // Price history card click functionality
             const priceHistoryCard = document.getElementById('price-history-card');

@@ -71,4 +71,24 @@ class Store extends Model
     {
         return $this->hasMany(StoreFeed::class);
     }
+
+    /**
+     * Get the slug version of the store name.
+     *
+     * @return string
+     */
+    public function getSlugAttribute(): string
+    {
+        return \Illuminate\Support\Str::slug($this->name);
+    }
+
+    /**
+     * Get the public URL for the store page.
+     *
+     * @return string
+     */
+    public function getPublicUrlAttribute(): string
+    {
+        return route('store.show', ['id' => $this->id, 'slug' => $this->slug]);
+    }
 }

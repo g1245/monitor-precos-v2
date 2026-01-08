@@ -49,50 +49,8 @@ services:
     networks:
       - monitor-precos-network
   
-  mongodb:
-    image: mongo:latest
-    ports:
-      - ${MONGO_DB_PORT:-27017}:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DB_DATABASE}
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - monitor-precos-network
-    healthcheck: 
-      test: echo 'db. runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
-
-  mongo-express:
-    image:  mongo-express:latest
-    ports: 
-      - ${MONGO_EXPRESS_PORT:-8081}:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_DB_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_DB_PASSWORD}
-      ME_CONFIG_MONGODB_SERVER: mongodb
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
-      ME_CONFIG_BASICAUTH_USERNAME:  ${MONGO_EXPRESS_USER:-admin}
-      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASS:-admin}
-    depends_on: 
-      mongodb:
-        condition: service_healthy
-    networks:
-      - monitor-precos-network
-
 volumes:
   mariadb_data:
-    driver: local
-  qdrant_data:
-    driver: local
-  mongodb_data:
     driver: local
 
 networks:

@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Department;
+use App\Models\Store;
 use App\Models\Product;
+use App\Models\Department;
+use Illuminate\Database\Seeder;
 use App\Models\ProductAttribute;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 
 class DepartmentProductSeeder extends Seeder
 {
@@ -113,8 +114,12 @@ class DepartmentProductSeeder extends Seeder
             }
         }
 
+        $store = Store::factory()->create();
+
         // Create 200 products
-        $products = Product::factory(200)->create();
+        $products = Product::factory(200)->create([
+            'store_id' => $store->id,
+        ]);
 
         // Attach products to departments randomly
         foreach ($products as $product) {

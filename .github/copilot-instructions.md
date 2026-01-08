@@ -41,6 +41,7 @@ Sistema web com catálogo de produtos de lojas virtuais de todo o Brasil. Usuár
 ## Contexto do Projeto
 - Ambiente em nuvem para garantir escalabilidade e alta disponibilidade.
 - Utilizar PHP 8.3+ com Laravel framework.
+- Painel administrativo com Filament 4.
 - APIs RESTful para integrações com bancos e provedores de pagamento.
 - Priorizar performance, escalabilidade e segurança em todas as soluções.
 

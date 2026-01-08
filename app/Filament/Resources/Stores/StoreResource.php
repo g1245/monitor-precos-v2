@@ -18,15 +18,14 @@ class StoreResource extends Resource
 {
     protected static ?string $model = Store::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $navigationLabel = 'Lojas';
 
-    protected static ?string $modelLabel = 'Loja';
-
-    protected static ?string $pluralModelLabel = 'Lojas';
-
-    protected static ?int $navigationSort = 2;
+    protected static ?string $label = 'Loja';
+    protected static ?string $pluralLabel = 'Lojas';
+    
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {

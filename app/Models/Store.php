@@ -33,10 +33,9 @@ class Store extends Model
      */
     protected $fillable = [
         'name',
+        'name_external',
         'logo',
         'region',
-        'has_public_catalog',
-        'full_url',
         'metadata',
     ];
 
@@ -46,7 +45,6 @@ class Store extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'has_public_catalog' => 'boolean',
         'metadata' => 'array',
     ];
 
@@ -60,16 +58,6 @@ class Store extends Model
         return $this->belongsToMany(Product::class, 'product_store')
             ->withPivot('price', 'product_url')
             ->withTimestamps();
-    }
-
-    /**
-     * Get the store feeds for this store.
-     *
-     * @return HasMany
-     */
-    public function storeFeeds(): HasMany
-    {
-        return $this->hasMany(StoreFeed::class);
     }
 
     /**

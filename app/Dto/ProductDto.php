@@ -4,16 +4,17 @@ namespace App\Dto;
 
 class ProductDto
 {
-    public string $name;
-    public ?string $permalink;
-    public ?string $description;
-    public ?float $price;
-    public ?float $regular_price;
-    public ?string $sku;
-    public ?string $brand;
-    public ?string $image_url;
-    public bool $is_active;
-    public ?array $vector_search;
+    public function __construct(
+        public int $storeId,
+        public string $name,
+        public ?string $description = null,
+        public ?float $price = null,
+        public ?float $regularPrice = null,
+        public ?string $sku = null,
+        public ?string $brand = null,
+        public ?string $imageUrl = null,
+        public ?string $deepLink = null,
+    ) { }
 
     /**
      * Convert DTO to array for mass assignment.
@@ -21,16 +22,15 @@ class ProductDto
     public function toArray(): array
     {
         return [
+            'store_id' => $this->storeId,
             'name' => $this->name,
-            'permalink' => $this->permalink,
             'description' => $this->description,
             'price' => $this->price,
-            'regular_price' => $this->regular_price,
+            'regular_price' => $this->regularPrice,
             'sku' => $this->sku,
             'brand' => $this->brand,
-            'image_url' => $this->image_url,
-            'is_active' => $this->is_active,
-            'vector_search' => $this->vector_search,
+            'image_url' => $this->imageUrl,
+            'deep_link' => $this->deepLink,
         ];
     }
 }

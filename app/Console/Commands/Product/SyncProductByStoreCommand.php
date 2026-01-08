@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands\Product;
 
+use App\Models\Store;
+use App\Dto\ProductDto;
 use Illuminate\Console\Command;
+use App\Services\ProductService;
 use Illuminate\Support\Facades\Http;
 
 class SyncProductByStoreCommand extends Command
@@ -12,7 +15,7 @@ class SyncProductByStoreCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:sync-product-by-store {store}';
+    protected $signature = 'app:sync-product-by-store {storeName}';
 
     /**
      * The console command description.
@@ -26,14 +29,22 @@ class SyncProductByStoreCommand extends Command
      */
     public function handle()
     {
-        $store = $this->argument('store');
+        $storeName = $this->argument('storeName');
+
+        $store = Store::where('name_external', $storeName)->first();
+
+        if (!$store) {
+            $this->error("Store not found: {$storeName}");
+
+            return Command::FAILURE;
+        }
 
         // Logic to sync products by store goes here
         $page = 1;
         $totalPages = 0;
 
         do {
-            $products = $this->fetchProducts($store, $page++);
+            $products = $this->fetchProducts($storeName, $page++);
 
             if (empty($products)) {
                 $this->error("Failed to fetch products for store: {$store} on page: {$page}");
@@ -49,6 +60,20 @@ class SyncProductByStoreCommand extends Command
             foreach ($products['data'] as $product) {
                 // Here you would typically save or update the product in your database
                 $this->info("Processing product ID: {$product['product_name']} for store: {$store}");
+
+                $product = ProductService::createOrUpdate(
+                    new ProductDto(
+                        storeId: $store->id,
+                        name: $product['product_name'],
+                        description: $product['description'] ?? null,
+                        price: isset($product['search_price']) ? (float) $product['search_price'] : null,
+                        regularPrice: isset($product['product_price_old']) ? (float) $product['product_price_old'] : (isset($product['base_price']) ? (float) str_replace('R$ ', '', $product['base_price']) : null),
+                        sku: $product['sku'] ?? $product['merchant_product_id'] ?? null,
+                        brand: $product['brand_name'] ?? null,
+                        imageUrl: $product['merchant_image_url'] ?? $product['alternate_image'] ?? null,
+                        deepLink: $product['merchant_deep_link'] ?? null,
+                    )
+                );
             }
         } while ($page < $totalPages);
 

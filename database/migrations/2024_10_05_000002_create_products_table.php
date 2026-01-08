@@ -18,11 +18,12 @@ return new class extends Migration
             $table->string('permalink', 36)->unique();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->default(0);
-            $table->string('sku')->nullable();
+            $table->string('sku')->unique()->nullable();
             $table->string('brand')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->vector('vector_search', 1536)->nullable();
+            $table->text('deep_link')->nullable();
             $table->timestamps();
 
             // Indexes

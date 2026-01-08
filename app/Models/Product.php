@@ -29,6 +29,7 @@ class Product extends Model
         'image_url',
         'is_active',
         'vector_search',
+        'deep_link',
     ];
 
     /**
@@ -42,6 +43,7 @@ class Product extends Model
         'regular_price' => 'decimal:2',
         'is_active' => 'boolean',
         'vector_search' => 'array',
+        'deep_link' => 'string',
     ];
 
     /**

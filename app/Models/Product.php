@@ -18,6 +18,7 @@ class Product extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'store_id',
         'name',
         'permalink',
         'description',
@@ -36,6 +37,7 @@ class Product extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'store_id' => 'integer',
         'price' => 'decimal:2',
         'regular_price' => 'decimal:2',
         'is_active' => 'boolean',

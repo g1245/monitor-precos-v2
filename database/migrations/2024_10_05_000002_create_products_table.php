@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('store_id')->unsigned();
             $table->string('name');
             $table->string('permalink', 36)->unique();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->default(0);
-            $table->string('sku')->unique()->nullable();
+            $table->string('sku')->nullable();
             $table->string('brand')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->index('brand');
             $table->index('price');
             $table->index('is_active');
+            $table->index('store_id');
         });
     }
 

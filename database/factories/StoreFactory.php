@@ -30,30 +30,9 @@ class StoreFactory extends Factory
             'name' => $storeName,
             'logo' => fake()->imageUrl(200, 200, 'business', true, $storeName),
             'metadata' => [
-                'category' => fake()->randomElement(['Electronics', 'Fashion', 'Home', 'Sports', 'Books']),
-                'founded' => fake()->year(),
-                'rating' => fake()->randomFloat(1, 3.0, 5.0),
+                'external_name' => $storeName . ' BR',
+                'region' => 'BR',
             ],
         ];
-    }
-
-    /**
-     * Indicate that the store has no logo.
-     */
-    public function withoutLogo(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'logo' => null,
-        ]);
-    }
-
-    /**
-     * Indicate that the store has no metadata.
-     */
-    public function withoutMetadata(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'metadata' => null,
-        ]);
     }
 }

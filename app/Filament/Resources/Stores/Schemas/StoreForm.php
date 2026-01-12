@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Stores\Schemas;
 
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 
 class StoreForm
 {
@@ -16,22 +15,15 @@ class StoreForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('name_external')
-                    ->required(),
-                TextInput::make('region')
-                    ->default('BR')
-                    ->required()
-                    ->maxLength(2),
                 FileUpload::make('logo')
                     ->label('Logo')
                     ->image()
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'])
                     ->maxSize(2048)
                     ->directory('stores/logos')
                     ->disk('public')
                     ->columnSpanFull(),
-                Textarea::make('metadata')
-                    ->default(null)
+                KeyValue::make('metadata')
                     ->columnSpanFull(),
             ]);
     }

@@ -15,23 +15,11 @@ class StoreController extends Controller
      * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function show(int $id, string $slug, Request $request)
+    public function show(string $slug, Request $request)
     {
-        $store = Store::with(['products' => function ($query) {
-            $query->active()
-                ->orderBy('name')
-                ->limit(50);
-        }])
-            ->withCount('products')
-            ->findOrFail($id);
-
-        // Verificar se o slug está correto, redirecionar se necessário
-        if ($store->slug !== $slug) {
-            return redirect()->route('store.show', [
-                'id' => $store->id,
-                'slug' => $store->slug
-            ], 301);
-        }
+        $store = Store::query()
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         return view('store.show', [
             'store' => $store,

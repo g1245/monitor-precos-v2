@@ -15,13 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('logo')->nullable();
-            $table->string('region')->nullable();
-            $table->string('name_external', 50)->nullable();
+            $table->string('slug', 36)
+                ->nullable()
+                ->unique();
             $table->json('metadata')->nullable();
             $table->timestamps();
-
-            $table->index('name');
-            $table->index('name_external');
         });
     }
 

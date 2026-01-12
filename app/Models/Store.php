@@ -33,9 +33,8 @@ class Store extends Model
      */
     protected $fillable = [
         'name',
-        'name_external',
+        'slug',
         'logo',
-        'region',
         'metadata',
     ];
 
@@ -49,34 +48,12 @@ class Store extends Model
     ];
 
     /**
-     * Get the products available in this store.
-     *
-     * @return BelongsToMany
-     */
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class, 'product_store')
-            ->withPivot('price', 'product_url')
-            ->withTimestamps();
-    }
-
-    /**
-     * Get the slug version of the store name.
-     *
-     * @return string
-     */
-    public function getSlugAttribute(): string
-    {
-        return \Illuminate\Support\Str::slug($this->name);
-    }
-
-    /**
      * Get the public URL for the store page.
      *
      * @return string
      */
     public function getPublicUrlAttribute(): string
     {
-        return route('store.show', ['id' => $this->id, 'slug' => $this->slug]);
+        return route('store.show', ['slug' => $this->slug]);
     }
 }

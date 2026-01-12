@@ -20,16 +20,15 @@ class Product extends Model
     protected $fillable = [
         'store_id',
         'name',
-        'permalink',
         'description',
         'price',
-        'regular_price',
+        'price_regular',
         'sku',
         'brand',
         'image_url',
         'is_active',
-        'vector_search',
         'deep_link',
+        'external_link',
     ];
 
     /**
@@ -40,25 +39,11 @@ class Product extends Model
     protected $casts = [
         'store_id' => 'integer',
         'price' => 'decimal:2',
-        'regular_price' => 'decimal:2',
+        'price_regular' => 'decimal:2',
         'is_active' => 'boolean',
-        'vector_search' => 'array',
         'deep_link' => 'string',
+        'external_link' => 'string',
     ];
-
-    /**
-     * The model's boot method.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->permalink)) {
-                $model->permalink = uniqid();
-            }
-        });
-    }
 
     /**
      * Get all departments that this product belongs to.
@@ -109,17 +94,9 @@ class Product extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'LIKE', "%{$search}%")
-              ->orWhere('description', 'LIKE', "%{$search}%")
-              ->orWhere('sku', 'LIKE', "%{$search}%");
+                ->orWhere('description', 'LIKE', "%{$search}%")
+                ->orWhere('sku', 'LIKE', "%{$search}%");
         });
-    }
-
-    /**
-     * Scope to find by permalink.
-     */
-    public function scopeByPermalink($query, string $permalink)
-    {
-        return $query->where('permalink', $permalink);
     }
 
     /**
@@ -154,7 +131,7 @@ class Product extends Model
     public function getLatestHistoricalPrice(): ?float
     {
         $latestHistory = $this->priceHistories()->latest('created_at')->first();
-        
+
         return $latestHistory?->price;
     }
 
@@ -165,7 +142,7 @@ class Product extends Model
     public function shouldRecordPriceHistory(): bool
     {
         $latestPrice = $this->getLatestHistoricalPrice();
-        
+
         return $latestPrice === null || $latestPrice !== $this->price;
     }
 }

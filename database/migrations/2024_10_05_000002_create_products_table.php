@@ -15,15 +15,16 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('store_id')->unsigned();
             $table->string('name');
-            $table->string('permalink', 36)->unique();
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2)->default(0);
-            $table->string('sku')->unique()->nullable();
+            $table->decimal('price', 16, 4)->default(0);
+            $table->decimal('price_regular', 16, 4)->default(0);
+            $table->string('sku')->nullable();
             $table->string('brand')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->vector('vector_search', 1536)->nullable();
             $table->text('deep_link')->nullable();
+            $table->text('external_link')->nullable();
             $table->timestamps();
 
             // Indexes
@@ -32,6 +33,7 @@ return new class extends Migration
             $table->index('price');
             $table->index('is_active');
             $table->index('store_id');
+            $table->unique('sku');
         });
     }
 

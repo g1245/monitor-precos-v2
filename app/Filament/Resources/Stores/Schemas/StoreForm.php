@@ -6,6 +6,8 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Components\Utilities\Set;
+use Illuminate\Support\Str;
 
 class StoreForm
 {
@@ -14,7 +16,12 @@ class StoreForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+
+                TextInput::make('slug')
+                    ->readOnly(),
                 FileUpload::make('logo')
                     ->label('Logo')
                     ->image()

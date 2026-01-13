@@ -8,6 +8,23 @@ use Illuminate\Http\Request;
 class StoreController extends Controller
 {
     /**
+     * Display a listing of all stores.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
+    {
+        $stores = Store::query()
+            ->orderBy('name')
+            ->get();
+
+        return view('store.index', [
+            'stores' => $stores,
+        ]);
+    }
+
+    /**
      * Display the store page with its products.
      *
      * @param int $id
@@ -15,11 +32,13 @@ class StoreController extends Controller
      * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function show(string $slug, Request $request)
+    public function show(int $id, string $slug, Request $request)
     {
-        $store = Store::query()
-            ->where('slug', $slug)
-            ->firstOrFail();
+        $store = Store::findOrFail($id);
+
+        if ($store->getSlug() !== $slug) {
+            abort(404);
+        }
 
         return view('store.show', [
             'store' => $store,

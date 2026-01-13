@@ -13,7 +13,8 @@ Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/{alias}/{departmentId}/dp', [DepartmentController::class, 'index'])->name('department.index');
 Route::get('/{id}/{slug}/p', [ProductController::class, 'index'])->name('product.show');
 Route::get('/share/whatsapp/{id}', [ProductController::class, 'shareWhatsapp'])->name('product.share.whatsapp');
-Route::get('/loja/{slug}', [StoreController::class, 'show'])->name('store.show');
+Route::get('/lojas', [StoreController::class, 'index'])->name('stores.index');
+Route::get('/loja/{id}/{slug}', [StoreController::class, 'show'])->name('store.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 

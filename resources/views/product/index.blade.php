@@ -3,338 +3,304 @@
 @section('description', 'Compare preços do ' . $product->name . ' em diversas lojas. Encontre a melhor oferta e economize!')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <!-- Breadcrumb -->
-    <nav class="mb-6 overflow-x-auto">
-        <ol class="flex items-center space-x-2 text-sm text-gray-600 whitespace-nowrap">
-            <li>
-                <a href="/" class="hover:text-primary transition-colors">Home</a>
-            </li>
-            <li class="flex items-center">
-                <svg class="w-4 h-4 mx-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                <a href="#" class="hover:text-primary transition-colors">Games</a>
-            </li>
-            <li class="flex items-center">
-                <svg class="w-4 h-4 mx-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                <span class="text-gray-900">Console de Vídeo Game</span>
-            </li>
-        </ol>
-    </nav>
-
-    <!-- Header Actions -->
-    <div class="flex justify-end mb-4 space-x-3">
-        <button class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-primary transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-            </svg>
-            <span>Salvar</span>
-        </button>
-        <button class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-primary transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-            </svg>
-            <span>Compartilhar</span>
-        </button>
-    </div>
-
-    <!-- Main Content Grid -->
-    <div class="grid lg:grid-cols-4 gap-8">
-        <!-- Left Content (3 columns) -->
-        <div class="lg:col-span-3">
-            <!-- Product Header -->
-            <div class="mb-8">
-                <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{{ ucwords($product->name) }}</h1>
-                <div class="flex items-center space-x-2 mb-4">
-                    <div class="flex">
-                        <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-sm text-gray-500">sem avaliações</span>
-                </div>
-            </div>
-
-            <!-- Product Details Grid -->
-            <div class="grid lg:grid-cols-2 gap-8 mb-8">
-                <!-- Image Gallery -->
-                <div class="space-y-4">
-                    <!-- Main Image -->
-                    <div class="aspect-square bg-white rounded-lg border border-gray-200 p-6">
-                        <img src="https://i.zst.com.br/thumbs/12/30/17/-1202498267.jpg" alt="{{ $product->name }}" class="w-full h-full object-contain product-image-main">
-                    </div>
-                    
-                    <!-- Thumbnail Gallery -->
-                    <div class="flex justify-center space-x-2">
-                        @for ($i = 0; $i < 4; $i++)
-                            <div class="w-16 h-16 bg-gray-100 rounded border border-gray-200 p-2 cursor-pointer hover:border-primary transition-colors product-thumbnail {{ $i === 0 ? 'active' : '' }}">
-                                <img src="https://i.zst.com.br/thumbs/12/30/17/-1202498267.jpg" 
-                                     alt="Thumbnail {{ $i + 1 }}"
-                                     class="w-full h-full object-contain">
-                            </div>
-                        @endfor
-                    </div>
-                </div>
-
-                <!-- Price and Actions -->
-                <div class="space-y-6">
-                    <!-- Price Section -->
-                    <div class="space-y-2">
-                        <div class="text-3xl lg:text-4xl font-bold price-current">
-                            R$ {{ number_format($product->price, 2, ',', '.') }}
-                        </div>
-                        @if($product->regular_price && $product->regular_price > $product->price)
-                            <div class="text-lg price-original">
-                                De R$ {{ number_format($product->regular_price, 2, ',', '.') }}
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="space-y-3">
-                        <button class="w-full action-button-primary text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-                            Comparar em {{ count($storeOffers) }} lojas
-                        </button>
-                        
-                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                            <button class="action-button-secondary flex items-center justify-center space-x-2 text-gray-700 py-2 px-4 rounded-lg transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                                </svg>
-                                <span class="hidden sm:inline">Compartilhar</span>
-                            </button>
-                            
-                            <button class="action-button-secondary flex items-center justify-center space-x-2 text-gray-700 py-2 px-4 rounded-lg transition-colors" data-action="copy-link">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                </svg>
-                                <span class="hidden sm:inline">Copiar link</span>
-                            </button>
-                            
-                            <button class="action-button-secondary flex items-center justify-center p-2 text-gray-700 rounded-lg hover:border-red-500 hover:text-red-500 transition-colors lg:col-span-1 col-span-2">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                </svg>
-                                <span class="ml-2 lg:hidden">Adicionar aos favoritos</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sidebar (1 column) -->
-        <div class="lg:col-span-1 space-y-6 order-first lg:order-last">
-            <!-- Historical Low Price Card -->
-            <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3 cursor-pointer hover:border-primary hover:shadow-md transition-all" id="price-history-card">
-                <div class="flex items-center space-x-2">
-                    <div class="w-3 h-3 bg-teal-500 rounded-full shrink-0"></div>
-                    <span class="text-sm font-medium text-gray-900">Veja o histórico de preço</span>
-                </div>
-                <p class="text-sm text-gray-600">
-                    Acesso ao gráfico com alterações de preço
-                </p>
-                <div class="flex items-center justify-between">
-                    <button class="text-primary hover:text-primary-dark text-sm font-medium">
-                        Ver Histórico
-                    </button>
-                </div>
-            </div>
-
-            <!-- Want to Pay Less Card -->
-            <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3">
-                <div class="flex items-center space-x-2">
-                    <svg class="w-5 h-5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+    <div class="container mx-auto px-4 py-6">
+        <nav class="mb-6 overflow-x-auto">
+            <ol class="flex items-center space-x-2 text-sm text-gray-600 whitespace-nowrap">
+                <li>
+                    <a href="/" class="hover:text-primary transition-colors">Home</a>
+                </li>
+                <li class="flex items-center">
+                    <svg class="w-4 h-4 mx-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
-                    <span class="text-sm font-medium text-gray-900">Quer pagar mais barato?</span>
-                </div>
-                <p class="text-sm text-gray-600">
-                    Avisamos quando o preço baixar
-                </p>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-700">Ativar alertas</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" value="" class="sr-only peer" id="price-alert-toggle">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                    </label>
-                </div>
-            </div>
+                    <span class="text-gray-900">{{ ucwords($product->name) }}</span>
+                </li>
+            </ol>
+        </nav>
 
-            <!-- Quick Actions (Mobile Only) -->
-            <div class="lg:hidden bg-white border border-gray-200 rounded-lg p-4">
-                <h3 class="text-sm font-medium text-gray-900 mb-3">Ações rápidas</h3>
-                <div class="flex space-x-2">
-                    <button class="flex-1 action-button-secondary flex items-center justify-center space-x-2 text-gray-700 py-2 px-4 rounded-lg transition-colors text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                        </svg>
-                        <span>Compartilhar</span>
-                    </button>
-                    <button class="action-button-secondary p-2 text-gray-700 rounded-lg hover:border-red-500 hover:text-red-500 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+        <div class="flex justify-end mb-4 space-x-3">
+            <button class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-primary transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                <span>Salvar</span>
+            </button>
+            <button class="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-primary transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                </svg>
+                <span>Compartilhar</span>
+            </button>
         </div>
-    </div>
 
-    <!-- Preços Section -->
-    <div class="space-y-6 mb-12">
-        <div class="space-y-4">
-            <!-- Section Header -->
-            <div class="flex items-center justify-between">
-                <div class="text-xl font-semibold text-gray-900">Compare preços em 9 lojas</div>
-            </div>
-
-            <!-- Store Cards -->
-            <div class="space-y-3">
-                @foreach($storeOffers as $offer)
-                    <div class="store-offer-card border border-gray-200 rounded-lg p-4 hover:border-primary transition-colors">
-                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                            <div class="flex items-start lg:items-center space-x-4">
-                                <div class="w-12 h-12 shrink-0">
-                                    <img src="https://s.zst.com.br/prod/cupons/23254-Logo-80x80.png" alt="{{ $offer['store_name'] }}" class="w-full h-full object-contain rounded">
-                                </div>
-                                
-                                <div class="space-y-1 min-w-0 flex-1">
-                                    <div class="text-xl lg:text-2xl font-bold text-gray-900">
-                                        R$ {{ number_format($offer['price'], 2, ',', '.') }}
-                                    </div>
-                                    <div class="text-sm text-gray-600">
-                                        {{ $offer['installment_price'] }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right Section -->
-                            <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:min-w-max">
-                                @if($offer['coupon'])
-                                    <span class="badge-coupon bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded flex items-center">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a.997.997 0 01-1.414 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                        </svg>
-                                        Cupom: {{ $offer['coupon'] }}
-                                    </span>
-                                @endif
-                                <a href="{{ $offer['link'] }}" 
-                                    target="_blank"
-                                    class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-colors text-center w-full sm:w-auto">
-                                    Ir à loja
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- Histórico de Preços Section -->
-    @if($priceHistory['has_history'])
-        <div id="price-history" class="space-y-6 mb-12">
-            <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
-            
-            <!-- Chart Container -->
-            <div class="relative bg-white border border-gray-200 rounded-lg p-6">
-                <div class="h-80">
-                    <canvas id="priceChart"></canvas>
-                </div>
-                
-                <!-- Info Card Overlay -->
-                <div class="absolute top-4 right-4 bg-white border border-gray-200 rounded-lg p-4 shadow-lg max-w-xs">
-                    <div class="space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
-                            <span class="text-sm font-medium text-gray-900">Menor preço histórico</span>
-                        </div>
-                        <div class="text-sm text-gray-600">
-                            Veja o preço histórico
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        <div class="grid lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-3">
+                <div class="mb-8">
+                    <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{{ ucwords($product->name) }}</h1>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                             </svg>
-                            <div class="text-xs text-gray-500">{{ count($priceHistory['data']) }} registros</div>
                         </div>
+                        <span class="text-sm text-gray-500">sem avaliações</span>
                     </div>
                 </div>
-            </div>
-        </div>
-    @else
-        <!-- Mensagem quando não há histórico -->
-        <div class="space-y-6 mb-12">
-            <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
-            
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-                <div class="max-w-sm mx-auto">
-                    <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2h2a2 2 0 002-2z"></path>
-                    </svg>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Ainda não há histórico de preços</h3>
-                    <p class="text-gray-600">O gráfico com o histórico de preços aparecerá quando tivermos dados suficientes para este produto.</p>
-                </div>
-            </div>
-        </div>
-    @endif
 
-    <!-- Ficha Técnica Section -->
-    <div class="space-y-6 mb-12">
-        <h2 class="text-xl font-semibold text-gray-900">Ficha técnica</h2>
-        
-        @if($product->attributes->count() > 0)
-            <div class="grid lg:grid-cols-2 gap-8">
-                <!-- Product Specifications -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-medium text-gray-900">Características do Produto</h3>
-                    
-                    <div class="space-y-3">
-                        @foreach($product->attributes as $attribute)
-                            <div class="flex flex-col sm:flex-row py-3 border-b border-gray-100">
-                                <div class="sm:w-1/2 text-sm text-gray-600 font-medium mb-1 sm:mb-0">{{ $attribute->key }}</div>
-                                <div class="sm:w-1/2 text-sm text-gray-900">{{ $attribute->description }}</div>
+                <!-- Product Details Grid -->
+                <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Image Gallery -->
+                    <div class="space-y-4">
+                        <!-- Main Image -->
+                        <div class="aspect-square bg-white rounded-lg border border-gray-200 p-6">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-contain product-image-main">
+                        </div>
+                    </div>
+
+                    <!-- Price and Actions -->
+                    <div class="space-y-6">
+                        <!-- Price Section -->
+                        <div class="space-y-2">
+                            <div class="text-3xl lg:text-4xl font-bold price-current">
+                                R$ {{ number_format($product->price, 2, ',', '.') }}
                             </div>
-                        @endforeach
+                            @if($product->regular_price && $product->regular_price > $product->price)
+                                <div class="text-lg price-original">
+                                    De R$ {{ number_format($product->regular_price, 2, ',', '.') }}
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3">
+                            <button class="w-full action-button-primary text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                                Comparar em {{ count($storeOffers) }} lojas
+                            </button>
+                            
+                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                                <button class="action-button-secondary flex items-center justify-center space-x-2 text-gray-700 py-2 px-4 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                    <span class="hidden sm:inline">Compartilhar</span>
+                                </button>
+                                
+                                <button class="action-button-secondary flex items-center justify-center space-x-2 text-gray-700 py-2 px-4 rounded-lg transition-colors" data-action="copy-link">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="hidden sm:inline">Copiar link</span>
+                                </button>
+                                
+                                <button class="action-button-secondary flex items-center justify-center p-2 text-gray-700 rounded-lg hover:border-red-500 hover:text-red-500 transition-colors lg:col-span-1 col-span-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                    <span class="ml-2 lg:hidden">Adicionar aos favoritos</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6 order-first lg:order-last">
+                <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3 cursor-pointer hover:border-primary hover:shadow-md transition-all" id="price-history-card">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-teal-500 rounded-full shrink-0"></div>
+                        <span class="text-sm font-medium text-gray-900">Veja o histórico de preço</span>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                        Acesso ao gráfico com alterações de preço
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <button class="text-primary hover:text-primary-dark text-sm font-medium">
+                            Ver Histórico
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Want to Pay Less Card -->
+                <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-900">Quer pagar mais barato?</span>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                        Avisamos quando o preço baixar
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Ativar alertas</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" id="price-alert-toggle">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Quick Actions (Mobile Only) -->
+                <div class="lg:hidden bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">Ações rápidas</h3>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 action-button-secondary flex items-center justify-center space-x-2 text-gray-700 py-2 px-4 rounded-lg transition-colors text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                            </svg>
+                            <span>Compartilhar</span>
+                        </button>
+                        <button class="action-button-secondary p-2 text-gray-700 rounded-lg hover:border-red-500 hover:text-red-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6 mb-12">
+            <div class="space-y-4">
+                <!-- Section Header -->
+                <div class="flex items-center justify-between">
+                    <div class="text-xl font-semibold text-gray-900">Compare preços em 9 lojas</div>
+                </div>
+
+                <!-- Store Cards -->
+                <div class="space-y-3">
+                    @foreach($storeOffers as $offer)
+                        <div class="store-offer-card border border-gray-200 rounded-lg p-4 hover:border-primary transition-colors">
+                            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                                <div class="flex items-start lg:items-center space-x-4">
+                                    <div class="w-12 h-12 shrink-0">
+                                        <img src="https://s.zst.com.br/prod/cupons/23254-Logo-80x80.png" alt="{{ $offer['store_name'] }}" class="w-full h-full object-contain rounded">
+                                    </div>
+                                    
+                                    <div class="space-y-1 min-w-0 flex-1">
+                                        <div class="text-xl lg:text-2xl font-bold text-gray-900">
+                                            R$ {{ number_format($offer['price'], 2, ',', '.') }}
+                                        </div>
+                                        <div class="text-sm text-gray-600">
+                                            {{ $offer['installment_price'] }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right Section -->
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:min-w-max">
+                                    <a href="{{ $offer['link'] }}" 
+                                        target="_blank"
+                                        class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-colors text-center w-full sm:w-auto">
+                                        Ir à loja
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        @if($priceHistory['has_history'])
+            <div id="price-history" class="space-y-6 mb-12">
+                <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
                 
-                <!-- Description -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-medium text-gray-900">Descrição</h3>
-                    @if($product->description)
-                        <div class="bg-gray-50 rounded-lg">
-                            <p class="text-sm text-gray-700 leading-relaxed">
-                                {{ $product->description }}
-                            </p>
+                <!-- Chart Container -->
+                <div class="relative bg-white border border-gray-200 rounded-lg p-6">
+                    <div class="h-80">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                    
+                    <!-- Info Card Overlay -->
+                    <div class="absolute top-4 right-4 bg-white border border-gray-200 rounded-lg p-4 shadow-lg max-w-xs">
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
+                                <span class="text-sm font-medium text-gray-900">Menor preço histórico</span>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                Veja o preço histórico
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <div class="text-xs text-gray-500">{{ count($priceHistory['data']) }} registros</div>
+                            </div>
                         </div>
-                    @else
-                        <div class="bg-gray-50 rounded-lg">
-                            <p class="text-sm text-gray-500 leading-relaxed italic">
-                                Descrição não disponível para este produto.
-                            </p>
-                        </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         @else
-            <!-- No attributes available -->
-            <div class="bg-gray-50 rounded-lg p-8 text-center">
-                <div class="text-gray-400 mb-2">
-                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
+            <!-- Mensagem quando não há histórico -->
+            <div class="space-y-6 mb-12">
+                <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+                    <div class="max-w-sm mx-auto">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2h2a2 2 0 002-2z"></path>
+                        </svg>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Ainda não há histórico de preços</h3>
+                        <p class="text-gray-600">O gráfico com o histórico de preços aparecerá quando tivermos dados suficientes para este produto.</p>
+                    </div>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Ficha técnica em breve</h3>
-                <p class="text-gray-600">As especificações técnicas deste produto serão disponibilizadas em breve.</p>
             </div>
         @endif
+
+        <!-- Ficha Técnica Section -->
+        <div class="space-y-6 mb-12">
+            <h2 class="text-xl font-semibold text-gray-900">Ficha técnica</h2>
+            
+            @if($product->attributes->count() > 0)
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Product Specifications -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-gray-900">Características do Produto</h3>
+                        
+                        <div class="space-y-3">
+                            @foreach($product->attributes as $attribute)
+                                <div class="flex flex-col sm:flex-row py-3 border-b border-gray-100">
+                                    <div class="sm:w-1/2 text-sm text-gray-600 font-medium mb-1 sm:mb-0">{{ $attribute->key }}</div>
+                                    <div class="sm:w-1/2 text-sm text-gray-900">{{ $attribute->description }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-gray-900">Descrição</h3>
+                        @if($product->description)
+                            <div class="bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    {{ $product->description }}
+                                </p>
+                            </div>
+                        @else
+                            <div class="bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-500 leading-relaxed italic">
+                                    Descrição não disponível para este produto.
+                                </p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @else
+                <!-- No attributes available -->
+                <div class="bg-gray-50 rounded-lg p-8 text-center">
+                    <div class="text-gray-400 mb-2">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Ficha técnica em breve</h3>
+                    <p class="text-gray-600">As especificações técnicas deste produto serão disponibilizadas em breve.</p>
+                </div>
+            @endif
+        </div>
     </div>
-</div>
 @endsection
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

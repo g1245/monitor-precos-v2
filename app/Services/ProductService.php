@@ -21,6 +21,13 @@ class ProductService
      */
     public static function createOrUpdate(ProductDto $dto): Product
     {
+        if ($dto->priceRegular < $dto->price) {
+            $smallPrice = $dto->priceRegular;
+            
+            $dto->priceRegular = $dto->price;
+            $dto->price = $smallPrice;
+        } 
+        
         return Product::updateOrCreate(
             ['sku' => $dto->sku],
             $dto->toArray()

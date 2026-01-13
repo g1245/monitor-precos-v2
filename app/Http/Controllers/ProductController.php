@@ -10,10 +10,11 @@ class ProductController extends Controller
     /**
      * Display the specified product with price comparison.
      */
-    public function index(string $permalink, Request $request)
+    public function index(int $id, string $slug, Request $request)
     {
-        $product = Product::with(['departments', 'attributes'])
-            ->byPermalink($permalink)
+        $product = Product::query()
+            ->with(['departments', 'attributes'])
+            ->where('id', $id)
             ->active()
             ->firstOrFail();
 
@@ -27,6 +28,7 @@ class ProductController extends Controller
             'product' => $product,
             'storeOffers' => $storeOffers,
             'priceHistory' => $priceHistory,
+            'slug' => $slug,
         ]);
     }
 

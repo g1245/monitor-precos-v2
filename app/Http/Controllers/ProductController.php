@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -30,6 +31,19 @@ class ProductController extends Controller
             'priceHistory' => $priceHistory,
             'slug' => $slug,
         ]);
+    }
+
+    /**
+     * Share product on WhatsApp.
+     */
+    public function shareWhatsapp(int $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $productUrl = route('product.show', ['id' => $product->id, 'slug' => Str::of($product->name)->slug()]);
+        $text = urlencode($product->name . ' ' . $productUrl);
+
+        return redirect("https://wa.me/?text=$text");
     }
 
     /**

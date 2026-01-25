@@ -17,15 +17,32 @@ class StoresTable
             ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
-                ImageColumn::make('logo')
-                    ->disk('public')
-                    ->label('Logo'),
-                TextColumn::make('region')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Nome')
+                    ->searchable()
                     ->sortable(),
+
+                TextColumn::make('internal_name')
+                    ->label('Nome Interno')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('has_public')
+                    ->label('Página Pública')
+                    ->badge()
+                    ->formatStateUsing(fn(bool $state): string => $state ? 'Sim' : 'Não')
+                    ->color(fn(bool $state): string => $state ? 'success' : 'gray'),
+
+                TextColumn::make('created_at')
+                    ->label('Criado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('updated_at')
+                    ->label('Atualizado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

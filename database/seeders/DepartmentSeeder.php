@@ -1,0 +1,120 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Department;
+use Illuminate\Database\Seeder;
+
+class DepartmentSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Define department structure
+        $departmentStructure = [
+            'Eletrônicos' => [
+                'Smartphones', 'Laptops', 'Tablets', 'Smart TVs', 'Câmeras', 
+                'Fones de Ouvido', 'Dispositivos Inteligentes', 'Acessórios'
+            ],
+            'Roupas' => [
+                'Masculino', 'Feminino', 'Infantil', 'Esportiva', 'Calçados', 
+                'Acessórios de Moda', 'Roupas Íntimas', 'Moda Praia'
+            ],
+            'Casa e Jardim' => [
+                'Móveis', 'Decoração', 'Jardinagem', 'Iluminação', 'Utensílios Domésticos', 
+                'Eletrodomésticos', 'Ferramentas', 'Organização'
+            ],
+            'Beleza e Saúde' => [
+                'Maquiagem', 'Cuidados com a Pele', 'Perfumes', 'Cabelos', 'Higiene Pessoal', 
+                'Suplementos Alimentares', 'Medicamentos', 'Equipamentos de Saúde'
+            ],
+            'Alimentos e Bebidas' => [
+                'Mercearia', 'Bebidas Alcoólicas', 'Bebidas Não Alcoólicas', 'Alimentos Orgânicos', 'Doces e Chocolates', 
+                'Padaria', 'Congelados', 'Importados'
+            ],
+            'Automotivo' => [
+                'Acessórios para Carros', 'Peças Automotivas', 'Som Automotivo', 'Pneus', 'Óleos e Fluidos', 
+                'Ferramentas Automotivas', 'Motos', 'Carros'
+            ],
+            'Brinquedos e Jogos' => [
+                'Brinquedos Infantis', 'Jogos de Tabuleiro', 'Jogos Eletrônicos', 'Brinquedos Educativos', 'Pelúcias', 
+                'Brinquedos para Exterior', 'Quebra-Cabeças', 'Bonecos e Figuras de Ação'
+            ],
+            'Livros' => [
+                'Literatura', 'Livros Técnicos', 'Infantil', 'Autoajuda', 'Biografias', 
+                'Livros Digitais', 'Histórias em Quadrinhos', 'Importados'
+            ],
+            'Informática' => [
+                'Hardware', 'Software', 'Periféricos', 'Redes', 'Armazenamento', 
+                'Componentes', 'Cabos e Adaptadores', 'Suprimentos'
+            ],
+            'Pets' => [
+                'Alimentos para Cães', 'Alimentos para Gatos', 'Acessórios para Pets', 'Saúde Animal', 'Brinquedos para Pets', 
+                'Camas e Casinhas', 'Higiene Pet', 'Aquarismo'
+            ],
+            'Moda Infantil' => [
+                'Bebês', 'Crianças', 'Adolescentes', 'Calçados Infantis', 'Acessórios Infantis', 
+                'Fantasias', 'Roupas de Inverno', 'Roupas de Verão'
+            ],
+            'Áudio e Vídeo' => [
+                'Home Theater', 'Caixas de Som', 'Amplificadores', 'Projetores', 'Players', 
+                'Acessórios de Áudio', 'Gravadores', 'Microfones'
+            ],
+            'Escritório' => [
+                'Móveis para Escritório', 'Materiais de Escritório', 'Papelaria', 'Organização', 'Impressoras', 
+                'Calculadoras', 'Cadeiras de Escritório', 'Suprimentos'
+            ],
+            'Instrumentos Musicais' => [
+                'Guitarras e Baixos', 'Teclados', 'Percussão', 'Sopro', 'Cordas', 
+                'Amplificadores', 'Acessórios Musicais', 'Equipamentos de DJ'
+            ],
+            'Viagem' => [
+                'Malas', 'Mochilas', 'Acessórios de Viagem', 'Equipamentos de Camping', 'Mapas e Guias', 
+                'Câmeras de Viagem', 'Adaptadores', 'Necessaires'
+            ],
+            'Joias e Relógios' => [
+                'Anéis', 'Colares', 'Brincos', 'Pulseiras', 'Relógios Masculinos', 
+                'Relógios Femininos', 'Relógios Esportivos', 'Acessórios'
+            ],
+            'Games' => [
+                'Consoles', 'Jogos', 'Acessórios para Consoles', 'Games para PC', 'Periféricos Gamer', 
+                'Cadeiras Gamer', 'Realidade Virtual', 'Notebooks Gamer'
+            ]
+        ];
+
+        // Create departments with idempotency
+        foreach ($departmentStructure as $rootName => $children) {
+            // Create or retrieve root department
+            $rootDepartment = Department::firstOrCreate(
+                ['name' => $rootName, 'parent_id' => null],
+                [
+                    'slug' => \Illuminate\Support\Str::slug($rootName),
+                    'description' => "Categoria principal de {$rootName}",
+                ]
+            );
+
+            if ($rootDepartment->wasRecentlyCreated) {
+                $this->command->info("Root department created: {$rootName}");
+            }
+            
+            // Create or retrieve child departments
+            foreach ($children as $childName) {
+                $childDepartment = Department::firstOrCreate(
+                    ['name' => $childName, 'parent_id' => $rootDepartment->id],
+                    [
+                        'slug' => \Illuminate\Support\Str::slug($childName),
+                        'description' => "Subcategoria de {$rootName} - {$childName}",
+                    ]
+                );
+
+                if ($childDepartment->wasRecentlyCreated) {
+                    $this->command->info("Child department created: {$childName}");
+                }
+            }
+        }
+
+        $this->command->info('Departments seeding completed!');
+    }
+}

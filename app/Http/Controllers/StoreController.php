@@ -27,18 +27,14 @@ class StoreController extends Controller
     /**
      * Display the store page with its products.
      *
-     * @param int $id
      * @param string $slug
+     * @param int $id
      * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function show(int $id, string $slug, Request $request)
+    public function show(string $slug, int $id, Request $request)
     {
         $store = Store::findOrFail($id);
-
-        if ($store->getSlug() !== $slug) {
-            abort(404);
-        }
 
         return view('store.show', [
             'store' => $store,

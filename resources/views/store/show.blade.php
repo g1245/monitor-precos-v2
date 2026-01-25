@@ -8,12 +8,20 @@
     <nav class="mb-6 overflow-x-auto">
         <ol class="flex items-center space-x-2 text-sm text-gray-600 whitespace-nowrap">
             <li>
-                <a href="/" class="hover:text-primary transition-colors">Home</a>
+                <a href="/" class="hover:text-primary transition-colors">Inicial</a>
             </li>
             <li class="flex items-center">
                 <svg class="w-4 h-4 mx-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
+
+                <a href="{{ route('stores.index') }}" class="hover:text-primary transition-colors">Lojas</a>
+            </li>
+            <li class="flex items-center">
+                <svg class="w-4 h-4 mx-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                
                 <span class="text-gray-900">{{ $store->name }}</span>
             </li>
         </ol>
@@ -36,47 +44,32 @@
             
             <div class="flex-1">
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $store->name }}</h1>
+
+                @if($store->metadata && isset($store->metadata['description']))
+                    <div class="text-gray-700 mb-2">{{ $store->metadata['description'] }}</div>
+                @endif
                 
-                <div class="flex items-center space-x-4 text-sm text-gray-600">
-                    @if($store->region)
-                        <span class="flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            {{ $store->region }}
-                        </span>
-                    @endif
-                    
-                    <span class="flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                        {{ $store->products_count }} {{ Str::plural('produto', $store->products_count) }}
-                    </span>
-                </div>
-                
-                <div class="mt-4">
-                    <a href="{{ $store->full_url }}" 
-                       target="_blank" 
-                       rel="nofollow noopener"
-                       class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                        </svg>
-                        Visitar Loja
-                    </a>
-                </div>
+                @if($store->metadata && isset($store->metadata['website']))
+                    <div class="text-sm text-gray-500">
+                        <a href="{{ $store->metadata['website'] }}" 
+                           target="_blank" 
+                           rel="nofollow noopener"
+                           class="text-primary hover:underline">
+                            <span class="flex items-center">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                                {{ parse_url($store->metadata['website'], PHP_URL_HOST) }}
+                            </span>
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
     <!-- Products Grid -->
-    <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">
-            Produtos Disponíveis
-        </h2>
-        
+    <div class="mb-6">        
         @if($store->products->count() > 0)
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach($store->products as $product)

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Store Model
@@ -61,5 +62,16 @@ class Store extends Model
     public function getSlug(): string
     {
         return Str::slug($this->name);
+    }
+
+
+    /**
+     * Get the products associated with the store.
+     *
+     * @return HasMany
+     */ 
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
     }
 }

@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
+            $table->string('internal_name', 100)->unique();
             $table->string('logo')->nullable();
-            $table->string('slug', 36)
-                ->nullable()
-                ->unique();
+            $table->boolean('has_public')->default(true);
             $table->json('metadata')->nullable();
             $table->timestamps();
         });

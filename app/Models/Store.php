@@ -13,9 +13,7 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property string $name
  * @property string|null $logo
- * @property string|null $region
- * @property bool $has_public_catalog
- * @property string $full_url
+ * @property bool $has_public
  * @property array|null $metadata
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
@@ -29,9 +27,10 @@ class Store extends Model
      */
     protected $fillable = [
         'name',
-        'slug',
+        'internal_name',
         'logo',
         'metadata',
+        'has_public',
     ];
 
     /**
@@ -41,6 +40,7 @@ class Store extends Model
      */
     protected $casts = [
         'metadata' => 'array',
+        'has_public' => 'boolean',
     ];
 
     /**

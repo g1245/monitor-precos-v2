@@ -12,33 +12,31 @@ class StoreSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 5 sample stores
         $stores = [
             [
                 'name' => 'Magazine Luiza',
-                'slug' => 'magazine-luiza',
+                'internal_name' => 'Magazine Luiza BR'
             ],
             [
                 'name' => 'Americanas',
-                'slug' => 'americanas',
+                'internal_name' => 'Americanas BR'
             ],
             [
                 'name' => 'Mercado Livre',
-                'slug' => 'mercado-livre',
+                'internal_name' => 'Mercado Livre BR'
             ],
             [
                 'name' => 'Amazon',
-                'slug' => 'amazon',
+                'internal_name' => 'Amazon BR'
             ],
             [
                 'name' => 'Casas Bahia',
-                'slug' => 'casas-bahia',
+                'internal_name' => 'Casas Bahia BR'
             ],
         ];
 
         foreach ($stores as $storeData) {
-            Store::firstOrCreate(
-                ['slug' => $storeData['slug']],
+            Store::create(
                 $storeData
             );
         }

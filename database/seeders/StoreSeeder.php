@@ -17,27 +17,22 @@ class StoreSeeder extends Seeder
             [
                 'name' => 'Magazine Luiza',
                 'slug' => 'magazine-luiza',
-                'url' => 'https://www.magazineluiza.com.br',
             ],
             [
                 'name' => 'Americanas',
                 'slug' => 'americanas',
-                'url' => 'https://www.americanas.com.br',
             ],
             [
                 'name' => 'Mercado Livre',
                 'slug' => 'mercado-livre',
-                'url' => 'https://www.mercadolivre.com.br',
             ],
             [
                 'name' => 'Amazon',
                 'slug' => 'amazon',
-                'url' => 'https://www.amazon.com.br',
             ],
             [
                 'name' => 'Casas Bahia',
                 'slug' => 'casas-bahia',
-                'url' => 'https://www.casasbahia.com.br',
             ],
         ];
 

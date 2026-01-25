@@ -44,4 +44,21 @@ class StoreController extends Controller
             'store' => $store,
         ]);
     }
+
+    /**
+     * Serve the store logo image.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function logo(int $id)
+    {
+        $store = Store::findOrFail($id);
+
+        if (!$store->logo) {
+            abort(404);
+        }
+
+        return response()->file(storage_path('app/public/' . $store->logo));
+    }
 }

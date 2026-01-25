@@ -18,3 +18,4 @@ Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 Route::get('/lojas', [StoreController::class, 'index'])->name('stores.index');
 Route::get('/{slug}/{id}/loja', [StoreController::class, 'show'])->name('store.show');
+Route::get('/loja/{id}/logo', [StoreController::class, 'logo'])->name('store.logo');

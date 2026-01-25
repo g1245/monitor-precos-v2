@@ -13,7 +13,7 @@
             <div class="p-6">
                 <div class="flex items-center mb-4">
                     @if($store->logo)
-                        <img src="{{ $store->logo }}" alt="{{ $store->name }}" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <img src="{{ route('store.logo', ['id' => $store->id]) }}" alt="{{ $store->name }}" class="w-12 h-12 rounded-full mr-4 object-cover">
                     @else
                         <div class="w-12 h-12 bg-gray-200 rounded-full mr-4 flex items-center justify-center">
                             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

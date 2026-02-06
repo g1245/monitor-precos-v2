@@ -48,9 +48,7 @@ class StoreProducts extends Component
     {
         $products = $this->store->products()
             ->where('is_active', true)
-            ->when($this->sortField, function ($query) {
-                return $query->orderBy($this->sortField, $this->sortDirection);
-            })
+            ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
         return view('livewire.store-products', [

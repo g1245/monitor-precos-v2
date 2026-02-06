@@ -91,7 +91,7 @@
                             </h2>
                         </a>
                         
-                        @if($product->price_regular && $product->price_regular > $product->price)
+                        @if($product->price_regular && $product->price_regular > $product->price && $product->price_regular > 0)
                             <div class="line-through text-sm text-gray-500">
                                 R$ {{ number_format($product->price_regular, 2, ',', '.') }}
                             </div>
@@ -106,9 +106,12 @@
                             R$ {{ number_format($product->price, 2, ',', '.') }}
                         </div>
                         
-                        @if($product->price > 10)
+                        @php
+                            $maxInstallments = min(floor($product->price / 10), 10);
+                        @endphp
+                        @if($maxInstallments > 1)
                         <div class="text-xs text-gray-500 mt-1">
-                            {{ floor($product->price / 10) }}x de R$ {{ number_format($product->price / floor($product->price / 10), 2, ',', '.') }} sem juros
+                            {{ $maxInstallments }}x de R$ {{ number_format($product->price / $maxInstallments, 2, ',', '.') }} sem juros
                         </div>
                         @endif
                         

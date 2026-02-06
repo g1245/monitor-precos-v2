@@ -64,9 +64,9 @@
                             <div class="text-3xl lg:text-4xl font-bold price-current">
                                 R$ {{ number_format($product->price, 2, ',', '.') }}
                             </div>
-                            @if($product->regular_price && $product->regular_price > $product->price)
+                            @if($product->price_regular && $product->price_regular > $product->price)
                                 <div class="text-lg price-original">
-                                    De R$ {{ number_format($product->regular_price, 2, ',', '.') }}
+                                    De R$ {{ number_format($product->price_regular, 2, ',', '.') }}
                                 </div>
                             @endif
                         </div>

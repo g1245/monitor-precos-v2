@@ -46,5 +46,10 @@ return [
         'timeout' => env('EMBEDDING_TIMEOUT', 30),
         'batch_size' => env('EMBEDDING_BATCH_SIZE', 100),
     ],
+
+    'awin' => [
+        'url' => env('AWIN_API_URL', 'https://aw-data.monitordeprecos.com.br'),
+        'token' => env('AWIN_API_TOKEN', ''),
+    ],
     
 ];

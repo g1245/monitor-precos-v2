@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
@@ -45,6 +46,16 @@ class Product extends Model
         'deep_link' => 'string',
         'external_link' => 'string',
     ];
+
+    /**
+     * Get the public URL for the store page.
+     *
+     * @return string
+     */
+    public function getPermalinkAttribute(): string
+    {
+        return Str::slug($this->name);
+    }
 
     /**
      * Get all departments that this product belongs to.

@@ -73,7 +73,7 @@
         @if($store->products->count() > 0)
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach($store->products as $product)
-                    <a href="{{ route('product.show', ['alias' => $product->permalink, 'productId' => $product->id]) }}" 
+                    <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" 
                        class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group">
                         @if($product->image)
                             <div class="aspect-square mb-3 relative overflow-hidden rounded-lg bg-gray-50">
@@ -94,9 +94,9 @@
                             {{ $product->name }}
                         </h3>
                         
-                        @if($product->pivot->price)
+                        @if($product->price)
                             <div class="text-lg font-bold text-primary">
-                                R$ {{ number_format($product->pivot->price, 2, ',', '.') }}
+                                R$ {{ number_format($product->price, 2, ',', '.') }}
                             </div>
                         @endif
                     </a>

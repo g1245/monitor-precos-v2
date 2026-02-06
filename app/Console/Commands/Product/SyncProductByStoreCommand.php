@@ -89,8 +89,8 @@ class SyncProductByStoreCommand extends Command
     private function fetchProducts(string $storeName, int $page = 1, int $limit = 100): array
     {
         $request = Http::withHeaders([
-            'x-api-key' => 'your-secure-api-key-here'
-        ])->get('http://host.docker.internal:3000/products', [
+            'x-api-key' => config('services.awin.token')
+        ])->get( config('services.awin.url') . '/products', [
             'store' => $storeName,
             'page' => $page,
             'limit' => $limit,

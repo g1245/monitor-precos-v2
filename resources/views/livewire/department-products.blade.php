@@ -62,13 +62,13 @@
                             </h2>
                         </a>
                         
-                        @if($product->regular_price && $product->regular_price > $product->price)
+                        @if($product->price_regular && $product->price_regular > $product->price)
                             <div class="line-through text-sm text-gray-500">
-                                R$ {{ number_format($product->regular_price, 2, ',', '.') }}
+                                R$ {{ number_format($product->price_regular, 2, ',', '.') }}
                             </div>
                             <div class="flex items-center">
                                 <div class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded mr-2">
-                                    {{ round((($product->regular_price - $product->price) / $product->regular_price) * 100) }}% OFF
+                                    {{ round((($product->price_regular - $product->price) / $product->price_regular) * 100) }}% OFF
                                 </div>
                             </div>
                         @endif

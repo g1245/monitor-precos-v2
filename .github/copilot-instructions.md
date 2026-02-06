@@ -24,10 +24,11 @@ Sistema web com catálogo de produtos de lojas virtuais de todo o Brasil. Usuár
 
 ## Práticas de Projeto
 - Utilizar design modular e arquitetura limpa (separação clara entre camadas).
-- Usar injeção de dependências para facilitar teste e manutenção.
+- Usar injeção de dependências para facilitar manutenção.
 - Documentar funções públicas com PHPDoc detalhado.
 - Seguir e aplicar princípios SOLID rigorosamente.
-- Escrever testes automatizados (unitários e de integração) sempre que possível.
+- **Não criar, executar ou sugerir testes automatizados.** Focar apenas na implementação do código funcional.
+- **Não criar arquivos de documentação** (como README.md, CHANGELOG.md ou documentos explicativos). Apenas implementar o código solicitado e versionar.
 
 ## Princípios de Desenvolvimento
 - Seguir os conceitos do The Twelve-Factor App para desenvolvimento de aplicações modernas e escaláveis, garantindo:

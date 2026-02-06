@@ -29,7 +29,7 @@ class UserWishProductTest extends TestCase
         $response->assertStatus(201);
         $response->assertJson(['wished' => true, 'has_alert' => false]);
         
-        $this->assertDatabaseHas('user_wish_products', [
+        $this->assertDatabaseHas('users_wish_products', [
             'user_id' => $user->id,
             'product_id' => $product->id,
             'target_price' => null,
@@ -53,7 +53,7 @@ class UserWishProductTest extends TestCase
         $response->assertStatus(201);
         $response->assertJson(['wished' => true, 'has_alert' => true]);
         
-        $this->assertDatabaseHas('user_wish_products', [
+        $this->assertDatabaseHas('users_wish_products', [
             'user_id' => $user->id,
             'product_id' => $product->id,
             'target_price' => 80.00,
@@ -85,7 +85,7 @@ class UserWishProductTest extends TestCase
 
         $response->assertStatus(200);
         
-        $this->assertDatabaseHas('user_wish_products', [
+        $this->assertDatabaseHas('users_wish_products', [
             'user_id' => $user->id,
             'product_id' => $product->id,
             'target_price' => 70.00,
@@ -116,7 +116,7 @@ class UserWishProductTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson(['wished' => false]);
         
-        $this->assertDatabaseMissing('user_wish_products', [
+        $this->assertDatabaseMissing('users_wish_products', [
             'user_id' => $user->id,
             'product_id' => $product->id,
         ]);
@@ -246,44 +246,5 @@ class UserWishProductTest extends TestCase
         $wish->refresh();
         $this->assertEquals(75.00, $wish->target_price);
         $this->assertTrue($wish->is_active);
-    }
-
-    /**
-     * Test backward compatibility with saved-products endpoint.
-     */
-    public function test_backward_compatibility_saved_products_endpoint(): void
-    {
-        $user = User::factory()->create();
-        $store = Store::factory()->create();
-        $product = Product::factory()->create(['store_id' => $store->id]);
-
-        $response = $this->actingAs($user)->postJson('/api/saved-products', [
-            'product_id' => $product->id,
-        ]);
-
-        $response->assertStatus(201);
-        
-        $this->assertDatabaseHas('user_wish_products', [
-            'user_id' => $user->id,
-            'product_id' => $product->id,
-        ]);
-    }
-
-    /**
-     * Test backward compatibility with User model methods.
-     */
-    public function test_backward_compatibility_user_methods(): void
-    {
-        $user = User::factory()->create();
-        $store = Store::factory()->create();
-        $product = Product::factory()->create(['store_id' => $store->id]);
-
-        UserWishProduct::create([
-            'user_id' => $user->id,
-            'product_id' => $product->id,
-        ]);
-
-        // Old method should still work
-        $this->assertTrue($user->hasSavedProduct($product->id));
     }
 }

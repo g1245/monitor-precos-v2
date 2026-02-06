@@ -45,15 +45,6 @@ class AccountController extends Controller
     }
 
     /**
-     * Show saved products.
-     * @deprecated Use wishlist() instead
-     */
-    public function savedProducts()
-    {
-        return $this->wishlist();
-    }
-
-    /**
      * Show price alerts (wishes with target price).
      */
     public function priceAlerts()

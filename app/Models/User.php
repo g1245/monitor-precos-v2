@@ -57,30 +57,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Get saved products for this user.
-     * @deprecated Use userWishProducts() instead
-     */
-    public function savedProducts(): HasMany
-    {
-        return $this->hasMany(SavedProduct::class);
-    }
-
-    /**
      * Get products wished by this user through the pivot table.
      */
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'user_wish_products')
+        return $this->belongsToMany(Product::class, 'users_wish_products')
             ->withTimestamps();
-    }
-
-    /**
-     * Get price alerts for this user.
-     * @deprecated Use userWishProducts() with hasPriceAlert() method instead
-     */
-    public function priceAlerts(): HasMany
-    {
-        return $this->hasMany(PriceAlert::class);
     }
 
     /**
@@ -97,15 +79,6 @@ class User extends Authenticatable
     public function hasWishProduct(int $productId): bool
     {
         return $this->userWishProducts()->where('product_id', $productId)->exists();
-    }
-
-    /**
-     * Check if user has saved a specific product.
-     * @deprecated Use hasWishProduct() instead
-     */
-    public function hasSavedProduct(int $productId): bool
-    {
-        return $this->hasWishProduct($productId);
     }
 
     /**

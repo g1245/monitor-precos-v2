@@ -12,7 +12,7 @@ class UserWishProduct extends Model
      *
      * @var string
      */
-    protected $table = 'user_wish_products';
+    protected $table = 'users_wish_products';
 
     /**
      * The attributes that are mass assignable.

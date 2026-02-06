@@ -11,8 +11,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordRecoveryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserWishProductController;
-use App\Http\Controllers\SavedProductController;
-use App\Http\Controllers\PriceAlertController;
 
 // Public routes with browsing history tracking
 Route::middleware(['web', 'track.browsing'])->group(function () {
@@ -53,26 +51,15 @@ Route::prefix('auth')->name('auth.')->group(function () {
 Route::prefix('account')->name('account.')->middleware('auth')->group(function () {
     Route::get('/dashboard', [AccountController::class, 'dashboard'])->name('dashboard');
     Route::get('/wishlist', [AccountController::class, 'wishlist'])->name('wishlist');
-    Route::get('/saved-products', [AccountController::class, 'savedProducts'])->name('saved-products'); // Backward compatibility
     Route::get('/price-alerts', [AccountController::class, 'priceAlerts'])->name('price-alerts');
     Route::get('/history', [AccountController::class, 'browsingHistory'])->name('history');
 });
 
 // API routes for user wish products (wishlist + price alerts)
 Route::prefix('api')->name('api.')->middleware('auth')->group(function () {
-    // New unified endpoints
     Route::post('/wish-products', [UserWishProductController::class, 'store'])->name('wish-products.store');
     Route::delete('/wish-products/{productId}', [UserWishProductController::class, 'destroy'])->name('wish-products.destroy');
     Route::get('/wish-products/{productId}/check', [UserWishProductController::class, 'check'])->name('wish-products.check');
     Route::patch('/wish-products/{productId}/price-alert', [UserWishProductController::class, 'updatePriceAlert'])->name('wish-products.update-alert');
     Route::post('/wish-products/{productId}/toggle-alert', [UserWishProductController::class, 'toggleAlert'])->name('wish-products.toggle-alert');
-    
-    // Backward compatibility endpoints
-    Route::post('/saved-products', [UserWishProductController::class, 'store'])->name('saved-products.store');
-    Route::delete('/saved-products/{productId}', [UserWishProductController::class, 'destroy'])->name('saved-products.destroy');
-    Route::get('/saved-products/{productId}/check', [UserWishProductController::class, 'check'])->name('saved-products.check');
-    
-    Route::post('/price-alerts', [UserWishProductController::class, 'store'])->name('price-alerts.store');
-    Route::delete('/price-alerts/{productId}', [UserWishProductController::class, 'destroy'])->name('price-alerts.destroy');
-    Route::get('/price-alerts/{productId}/check', [UserWishProductController::class, 'check'])->name('price-alerts.check');
 });

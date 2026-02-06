@@ -171,17 +171,7 @@ class Product extends Model
      */
     public function wishedByUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_wish_products')
-            ->withTimestamps();
-    }
-
-    /**
-     * Get users who saved this product.
-     * @deprecated Use wishedByUsers() instead
-     */
-    public function savedByUsers(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'saved_products')
+        return $this->belongsToMany(User::class, 'users_wish_products')
             ->withTimestamps();
     }
 
@@ -191,15 +181,6 @@ class Product extends Model
     public function userWishProducts(): HasMany
     {
         return $this->hasMany(UserWishProduct::class);
-    }
-
-    /**
-     * Get price alerts for this product.
-     * @deprecated Use userWishProducts() with hasPriceAlert() method instead
-     */
-    public function priceAlerts(): HasMany
-    {
-        return $this->hasMany(PriceAlert::class);
     }
 
     /**

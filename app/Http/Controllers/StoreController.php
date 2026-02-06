@@ -10,7 +10,6 @@ class StoreController extends Controller
     /**
      * Display a listing of all stores.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -28,9 +27,6 @@ class StoreController extends Controller
     /**
      * Display the store page with its products.
      *
-     * @param string $slug
-     * @param int $id
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function show(string $slug, int $id, Request $request)
@@ -50,9 +46,6 @@ class StoreController extends Controller
     /**
      * Display all products from a store with pagination.
      *
-     * @param string $slug
-     * @param int $id
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function products(string $slug, int $id, Request $request)
@@ -69,17 +62,16 @@ class StoreController extends Controller
     /**
      * Serve the store logo image.
      *
-     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function logo(int $id)
     {
         $store = Store::findOrFail($id);
 
-        if (!$store->logo) {
+        if (! $store->logo) {
             abort(404);
         }
 
-        return response()->file(storage_path('app/public/' . $store->logo));
+        return response()->file(storage_path('app/public/'.$store->logo));
     }
 }

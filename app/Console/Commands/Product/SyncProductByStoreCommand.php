@@ -4,8 +4,10 @@ namespace App\Console\Commands\Product;
 
 use App\Models\Store;
 use App\Dto\ProductDto;
+use App\Dto\ProductAttributeDto;
 use Illuminate\Console\Command;
 use App\Services\ProductService;
+use App\Services\ProductAttributeService;
 use Illuminate\Support\Facades\Http;
 
 class SyncProductByStoreCommand extends Command
@@ -63,7 +65,7 @@ class SyncProductByStoreCommand extends Command
                 // Here you would typically save or update the product in your database
                 $this->info("Processing product ID: {$product['product_name']} for store: {$store}");
 
-                $product = ProductService::createOrUpdate(
+                $savedProduct = ProductService::createOrUpdate(
                     new ProductDto(
                         storeId: $store->id,
                         name: $product['product_name'],
@@ -77,6 +79,10 @@ class SyncProductByStoreCommand extends Command
                         externalLink: $product['merchant_deep_link'] ?? null,
                     )
                 );
+
+                // Sync product attributes after saving the product
+                $attributeDto = ProductAttributeDto::fromApiData($savedProduct->id, $product);
+                ProductAttributeService::sync($attributeDto);
             }
         } while ($page < $totalPages);
 

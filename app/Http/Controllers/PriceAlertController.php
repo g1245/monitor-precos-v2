@@ -10,14 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class PriceAlertController extends Controller
 {
     /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Create a price alert.
      */
     public function store(Request $request)

@@ -10,14 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class SavedProductController extends Controller
 {
     /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Save a product for the authenticated user.
      */
     public function store(Request $request)

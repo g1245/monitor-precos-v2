@@ -69,15 +69,18 @@
     </div>
 
     <!-- Products Grid -->
-    <div class="mb-6">        
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Top 20 maiores descontos</h2>
+        <h3 class="mb-4">Os maiores descontos disponíveis na loja {{ $store->name }} nesse momento.</h3>
+        
         @if($store->products->count() > 0)
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach($store->products as $product)
                     <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" 
                        class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group">
-                        @if($product->image)
+                        @if($product->image_url !== null)
                             <div class="aspect-square mb-3 relative overflow-hidden rounded-lg bg-gray-50">
-                                <img src="{{ $product->image }}" 
+                                <img src="{{ $product->image_url }}" 
                                      alt="{{ $product->name }}"
                                      class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
                                      loading="lazy">

@@ -159,49 +159,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="space-y-6 mb-12">
-            <div class="space-y-4">
-                <!-- Section Header -->
-                <div class="flex items-center justify-between">
-                    <div class="text-xl font-semibold text-gray-900">Compare preços em 9 lojas</div>
-                </div>
-
-                <!-- Store Cards -->
-                <div class="space-y-3">
-                    @foreach($storeOffers as $offer)
-                        <div class="store-offer-card border border-gray-200 rounded-lg p-4 hover:border-primary transition-colors">
-                            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                                <div class="flex items-start lg:items-center space-x-4">
-                                    <div class="w-12 h-12 shrink-0">
-                                        <img src="https://s.zst.com.br/prod/cupons/23254-Logo-80x80.png" alt="{{ $offer['store_name'] }}" class="w-full h-full object-contain rounded">
-                                    </div>
-                                    
-                                    <div class="space-y-1 min-w-0 flex-1">
-                                        <div class="text-xl lg:text-2xl font-bold text-gray-900">
-                                            R$ {{ number_format($offer['price'], 2, ',', '.') }}
-                                        </div>
-                                        <div class="text-sm text-gray-600">
-                                            {{ $offer['installment_price'] }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Right Section -->
-                                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:min-w-max">
-                                    <a href="{{ $offer['link'] }}" 
-                                        target="_blank"
-                                        class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-colors text-center w-full sm:w-auto">
-                                        Ir à loja
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
+        
         @if($priceHistory['has_history'])
             <div id="price-history" class="space-y-6 mb-12">
                 <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>

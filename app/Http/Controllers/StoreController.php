@@ -48,6 +48,25 @@ class StoreController extends Controller
     }
 
     /**
+     * Display all products from a store with pagination.
+     *
+     * @param string $slug
+     * @param int $id
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function products(string $slug, int $id, Request $request)
+    {
+        $store = Store::query()
+            ->where('has_public', true)
+            ->findOrFail($id);
+
+        return view('store.products', [
+            'store' => $store,
+        ]);
+    }
+
+    /**
      * Serve the store logo image.
      *
      * @param int $id

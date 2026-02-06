@@ -133,7 +133,7 @@
 
                 <!-- Want to Pay Less Card -->
                 @auth
-                    <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3 cursor-pointer hover:border-purple-300 hover:shadow-md transition-all" id="price-alert-card">
+                    <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3">
                         <div class="flex items-center space-x-2">
                             <svg class="w-5 h-5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
@@ -143,9 +143,20 @@
                         <p class="text-sm text-gray-600">
                             Avisamos quando o preço baixar
                         </p>
-                        <button class="w-full text-center bg-purple-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors price-alert-trigger">
-                            Configurar alerta de preço
-                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="saveProductBtnCard" data-product-id="{{ $product->id }}" class="flex items-center justify-center space-x-1 border border-gray-300 text-gray-700 text-sm font-medium py-2 px-3 rounded-lg hover:border-primary hover:text-primary transition-colors save-btn-card">
+                                <svg class="w-4 h-4 save-icon-card" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                </svg>
+                                <span class="save-text-card">Salvar</span>
+                            </button>
+                            <button class="flex items-center justify-center space-x-1 bg-purple-600 text-white text-sm font-medium py-2 px-3 rounded-lg hover:bg-purple-700 transition-colors price-alert-trigger">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                                <span>Alerta</span>
+                            </button>
+                        </div>
                     </div>
                 @else
                     <div class="sidebar-card bg-white border border-gray-200 rounded-lg p-4 space-y-3">
@@ -599,18 +610,28 @@
             const existingAlertActions = document.getElementById('existingAlertActions');
             const currentTargetPriceSpan = document.getElementById('currentTargetPrice');
             
-            // Get all price alert triggers
-            const priceAlertTriggers = document.querySelectorAll('.price-alert-trigger, #price-alert-card');
+            // Get save button in the card
+            const saveProductBtnCard = document.getElementById('saveProductBtnCard');
+            
+            // Get all price alert triggers (only the button, not the card)
+            const priceAlertTriggers = document.querySelectorAll('.price-alert-trigger');
             
             let currentAlertData = null;
 
             // Check initial state
             checkWishStatus();
 
-            // Save button handler
+            // Save button handler (sidebar)
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
                     toggleSaveProduct();
+                });
+            }
+
+            // Save button handler (card)
+            if (saveProductBtnCard) {
+                saveProductBtnCard.addEventListener('click', function() {
+                    toggleSaveProductCard();
                 });
             }
 
@@ -759,6 +780,7 @@
                 .then(response => response.json())
                 .then(data => {
                     updateSaveButton(data.wished);
+                    updateSaveButtonCard(data.wished);
                     updatePriceAlertCard(data.has_alert);
                 })
                 .catch(error => console.error('Error:', error));
@@ -786,6 +808,38 @@
                     .then(response => response.json())
                     .then(data => {
                         updateSaveButton(data.wished);
+                        updateSaveButtonCard(data.wished);
+                        showNotification(data.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Erro ao processar solicitação', 'error');
+                    });
+            }
+
+            function toggleSaveProductCard() {
+                const isSaved = saveProductBtnCard.classList.contains('saved');
+                const url = isSaved ? `/wish-products/${productId}` : '/wish-products';
+                const method = isSaved ? 'DELETE' : 'POST';
+
+                const options = {
+                    method: method,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                };
+
+                if (!isSaved) {
+                    options.body = JSON.stringify({ product_id: productId });
+                }
+
+                fetch(url, options)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateSaveButton(data.wished);
+                        updateSaveButtonCard(data.wished);
                         showNotification(data.message);
                     })
                     .catch(error => {
@@ -811,21 +865,42 @@
                 }
             }
 
-            function updatePriceAlertCard(hasAlert) {
-                const priceAlertCard = document.getElementById('price-alert-card');
-                const button = priceAlertCard?.querySelector('.price-alert-trigger');
+            function updateSaveButtonCard(isSaved) {
+                if (!saveProductBtnCard) return;
                 
-                if (button) {
-                    if (hasAlert) {
-                        button.textContent = 'Editar alerta de preço';
-                        button.classList.remove('bg-purple-600', 'hover:bg-purple-700');
-                        button.classList.add('bg-green-600', 'hover:bg-green-700');
-                    } else {
-                        button.textContent = 'Configurar alerta de preço';
-                        button.classList.remove('bg-green-600', 'hover:bg-green-700');
-                        button.classList.add('bg-purple-600', 'hover:bg-purple-700');
-                    }
+                const icon = saveProductBtnCard.querySelector('.save-icon-card');
+                const text = saveProductBtnCard.querySelector('.save-text-card');
+                
+                if (isSaved) {
+                    saveProductBtnCard.classList.add('saved', 'bg-blue-100', 'text-blue-600', 'border-blue-300');
+                    saveProductBtnCard.classList.remove('text-gray-700', 'hover:text-primary', 'border-gray-300');
+                    icon.setAttribute('fill', 'currentColor');
+                    text.textContent = 'Salvo';
+                } else {
+                    saveProductBtnCard.classList.remove('saved', 'bg-blue-100', 'text-blue-600', 'border-blue-300');
+                    saveProductBtnCard.classList.add('text-gray-700', 'hover:text-primary', 'border-gray-300');
+                    icon.setAttribute('fill', 'none');
+                    text.textContent = 'Salvar';
                 }
+            }
+
+            function updatePriceAlertCard(hasAlert) {
+                // Update alert button text and color based on alert status
+                const alertButtons = document.querySelectorAll('.price-alert-trigger');
+                
+                alertButtons.forEach(button => {
+                    const span = button.querySelector('span');
+                    if (span && span.textContent === 'Alerta') {
+                        // This is the card button with just "Alerta" text
+                        if (hasAlert) {
+                            button.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+                            button.classList.add('bg-green-600', 'hover:bg-green-700');
+                        } else {
+                            button.classList.remove('bg-green-600', 'hover:bg-green-700');
+                            button.classList.add('bg-purple-600', 'hover:bg-purple-700');
+                        }
+                    }
+                });
             }
 
             function showNotification(message, type = 'success') {

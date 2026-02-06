@@ -14,35 +14,54 @@ class AccountController extends Controller
     {
         $user = Auth::user();
 
+        // Get counts for dashboard statistics
+        $totalWishes = $user->userWishProducts()->count();
+        $wishesWithAlerts = $user->userWishProducts()
+            ->whereNotNull('target_price')
+            ->where('is_active', true)
+            ->count();
+
         return view('account.dashboard', [
             'user' => $user,
+            'totalWishes' => $totalWishes,
+            'wishesWithAlerts' => $wishesWithAlerts,
+        ]);
+    }
+
+    /**
+     * Show user's wishlist (saved products).
+     */
+    public function wishlist()
+    {
+        $user = Auth::user();
+        $userWishes = $user->userWishProducts()
+            ->with('product.store')
+            ->latest()
+            ->paginate(20);
+
+        return view('account.wishlist', [
+            'userWishes' => $userWishes,
         ]);
     }
 
     /**
      * Show saved products.
+     * @deprecated Use wishlist() instead
      */
     public function savedProducts()
     {
-        $user = Auth::user();
-        $savedProducts = $user->savedProducts()
-            ->with('product.store')
-            ->latest()
-            ->paginate(20);
-
-        return view('account.saved-products', [
-            'savedProducts' => $savedProducts,
-        ]);
+        return $this->wishlist();
     }
 
     /**
-     * Show price alerts.
+     * Show price alerts (wishes with target price).
      */
     public function priceAlerts()
     {
         $user = Auth::user();
-        $priceAlerts = $user->priceAlerts()
+        $priceAlerts = $user->userWishProducts()
             ->with('product.store')
+            ->whereNotNull('target_price')
             ->where('is_active', true)
             ->latest()
             ->paginate(20);

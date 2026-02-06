@@ -49,7 +49,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get user wish products (wishlist with optional price alerts).
+     */
+    public function userWishProducts(): HasMany
+    {
+        return $this->hasMany(UserWishProduct::class);
+    }
+
+    /**
      * Get saved products for this user.
+     * @deprecated Use userWishProducts() instead
      */
     public function savedProducts(): HasMany
     {
@@ -57,16 +66,17 @@ class User extends Authenticatable
     }
 
     /**
-     * Get products saved by this user through the pivot table.
+     * Get products wished by this user through the pivot table.
      */
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'saved_products')
+        return $this->belongsToMany(Product::class, 'user_wish_products')
             ->withTimestamps();
     }
 
     /**
      * Get price alerts for this user.
+     * @deprecated Use userWishProducts() with hasPriceAlert() method instead
      */
     public function priceAlerts(): HasMany
     {
@@ -82,11 +92,20 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user has wished for a specific product.
+     */
+    public function hasWishProduct(int $productId): bool
+    {
+        return $this->userWishProducts()->where('product_id', $productId)->exists();
+    }
+
+    /**
      * Check if user has saved a specific product.
+     * @deprecated Use hasWishProduct() instead
      */
     public function hasSavedProduct(int $productId): bool
     {
-        return $this->savedProducts()->where('product_id', $productId)->exists();
+        return $this->hasWishProduct($productId);
     }
 
     /**
@@ -94,6 +113,18 @@ class User extends Authenticatable
      */
     public function hasPriceAlert(int $productId): bool
     {
-        return $this->priceAlerts()->where('product_id', $productId)->where('is_active', true)->exists();
+        return $this->userWishProducts()
+            ->where('product_id', $productId)
+            ->whereNotNull('target_price')
+            ->where('is_active', true)
+            ->exists();
+    }
+
+    /**
+     * Get the wish product for a specific product.
+     */
+    public function getWishProduct(int $productId): ?UserWishProduct
+    {
+        return $this->userWishProducts()->where('product_id', $productId)->first();
     }
 }

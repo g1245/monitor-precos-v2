@@ -167,7 +167,17 @@ class Product extends Model
     }
 
     /**
+     * Get users who wished for this product.
+     */
+    public function wishedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_wish_products')
+            ->withTimestamps();
+    }
+
+    /**
      * Get users who saved this product.
+     * @deprecated Use wishedByUsers() instead
      */
     public function savedByUsers(): BelongsToMany
     {
@@ -176,7 +186,16 @@ class Product extends Model
     }
 
     /**
+     * Get user wish products for this product.
+     */
+    public function userWishProducts(): HasMany
+    {
+        return $this->hasMany(UserWishProduct::class);
+    }
+
+    /**
      * Get price alerts for this product.
+     * @deprecated Use userWishProducts() with hasPriceAlert() method instead
      */
     public function priceAlerts(): HasMany
     {
@@ -184,10 +203,12 @@ class Product extends Model
     }
 
     /**
-     * Get active price alerts for this product.
+     * Get active price alerts for this product (wishes with target price).
      */
     public function activePriceAlerts(): HasMany
     {
-        return $this->hasMany(PriceAlert::class)->where('is_active', true);
+        return $this->hasMany(UserWishProduct::class)
+            ->whereNotNull('target_price')
+            ->where('is_active', true);
     }
 }

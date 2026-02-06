@@ -22,7 +22,7 @@ class UserWishProductTest extends TestCase
         $store = Store::factory()->create();
         $product = Product::factory()->create(['store_id' => $store->id, 'price' => 100.00]);
 
-        $response = $this->actingAs($user)->postJson('/api/wish-products', [
+        $response = $this->actingAs($user)->postJson('/wish-products', [
             'product_id' => $product->id,
         ]);
 
@@ -45,7 +45,7 @@ class UserWishProductTest extends TestCase
         $store = Store::factory()->create();
         $product = Product::factory()->create(['store_id' => $store->id, 'price' => 100.00]);
 
-        $response = $this->actingAs($user)->postJson('/api/wish-products', [
+        $response = $this->actingAs($user)->postJson('/wish-products', [
             'product_id' => $product->id,
             'target_price' => 80.00,
         ]);
@@ -78,7 +78,7 @@ class UserWishProductTest extends TestCase
         ]);
 
         // Then update with price alert
-        $response = $this->actingAs($user)->postJson('/api/wish-products', [
+        $response = $this->actingAs($user)->postJson('/wish-products', [
             'product_id' => $product->id,
             'target_price' => 70.00,
         ]);
@@ -111,7 +111,7 @@ class UserWishProductTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->actingAs($user)->deleteJson("/api/wish-products/{$product->id}");
+        $response = $this->actingAs($user)->deleteJson("/wish-products/{$product->id}");
 
         $response->assertStatus(200);
         $response->assertJson(['wished' => false]);
@@ -137,7 +137,7 @@ class UserWishProductTest extends TestCase
             'target_price' => 50.00,
         ]);
 
-        $response = $this->actingAs($user)->getJson("/api/wish-products/{$product->id}/check");
+        $response = $this->actingAs($user)->getJson("/wish-products/{$product->id}/check");
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -154,7 +154,7 @@ class UserWishProductTest extends TestCase
         $store = Store::factory()->create();
         $product = Product::factory()->create(['store_id' => $store->id]);
 
-        $response = $this->postJson('/api/wish-products', [
+        $response = $this->postJson('/wish-products', [
             'product_id' => $product->id,
         ]);
 
@@ -237,7 +237,7 @@ class UserWishProductTest extends TestCase
             'target_price' => null,
         ]);
 
-        $response = $this->actingAs($user)->patchJson("/api/wish-products/{$product->id}/price-alert", [
+        $response = $this->actingAs($user)->patchJson("/wish-products/{$product->id}/price-alert", [
             'target_price' => 75.00,
         ]);
 

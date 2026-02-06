@@ -524,34 +524,27 @@
             }
 
             function checkSavedStatus() {
-                fetch(`/api/saved-products/${productId}/check`, {
+                fetch(`/wish-products/${productId}/check`, {
                     headers: {
                         'Accept': 'application/json',
                     }
                 })
                 .then(response => response.json())
                 .then(data => {
-                    updateSaveButton(data.saved);
-                })
-                .catch(error => console.error('Error:', error));
-            }
-
-            function checkAlertStatus() {
-                fetch(`/api/price-alerts/${productId}/check`, {
-                    headers: {
-                        'Accept': 'application/json',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
+                    updateSaveButton(data.wished);
                     updateAlertButton(data.has_alert);
                 })
                 .catch(error => console.error('Error:', error));
             }
 
+            function checkAlertStatus() {
+                // Now combined with checkSavedStatus - this is kept for backwards compatibility
+                checkSavedStatus();
+            }
+
             function toggleSaveProduct() {
                 const isSaved = saveBtn.classList.contains('saved');
-                const url = isSaved ? `/api/saved-products/${productId}` : '/api/saved-products';
+                const url = isSaved ? `/wish-products/${productId}` : '/wish-products';
                 const method = isSaved ? 'DELETE' : 'POST';
 
                 const options = {
@@ -583,13 +576,15 @@
                 const hasAlert = alertBtn.classList.contains('has-alert');
                 
                 if (hasAlert) {
-                    // Remove alert
-                    fetch(`/api/price-alerts/${productId}`, {
-                        method: 'DELETE',
+                    // Remove alert by updating with null target_price
+                    fetch(`/wish-products/${productId}/price-alert`, {
+                        method: 'PATCH',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                             'Accept': 'application/json',
-                        }
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ target_price: null })
                     })
                     .then(response => response.json())
                     .then(data => {
@@ -612,7 +607,7 @@
                         body.target_price = parseFloat(targetPrice);
                     }
 
-                    fetch('/api/price-alerts', {
+                    fetch('/wish-products', {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,

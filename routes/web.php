@@ -55,11 +55,11 @@ Route::prefix('account')->name('account.')->middleware('auth')->group(function (
     Route::get('/history', [AccountController::class, 'browsingHistory'])->name('history');
 });
 
-// API routes for user wish products (wishlist + price alerts)
-Route::prefix('api')->name('api.')->middleware('auth')->group(function () {
-    Route::post('/wish-products', [UserWishProductController::class, 'store'])->name('wish-products.store');
-    Route::delete('/wish-products/{productId}', [UserWishProductController::class, 'destroy'])->name('wish-products.destroy');
-    Route::get('/wish-products/{productId}/check', [UserWishProductController::class, 'check'])->name('wish-products.check');
-    Route::patch('/wish-products/{productId}/price-alert', [UserWishProductController::class, 'updatePriceAlert'])->name('wish-products.update-alert');
-    Route::post('/wish-products/{productId}/toggle-alert', [UserWishProductController::class, 'toggleAlert'])->name('wish-products.toggle-alert');
+// User wish products routes (wishlist + price alerts)
+Route::prefix('wish-products')->middleware('auth')->group(function () {
+    Route::post('/', [UserWishProductController::class, 'store'])->name('wish-products.store');
+    Route::delete('/{productId}', [UserWishProductController::class, 'destroy'])->name('wish-products.destroy');
+    Route::get('/{productId}/check', [UserWishProductController::class, 'check'])->name('wish-products.check');
+    Route::patch('/{productId}/price-alert', [UserWishProductController::class, 'updatePriceAlert'])->name('wish-products.update-alert');
+    Route::post('/{productId}/toggle-alert', [UserWishProductController::class, 'toggleAlert'])->name('wish-products.toggle-alert');
 });

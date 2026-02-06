@@ -117,7 +117,7 @@ function removeFromWishlist(productId) {
         return;
     }
 
-    fetch(`/api/wish-products/${productId}`, {
+    fetch(`/wish-products/${productId}`, {
         method: 'DELETE',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

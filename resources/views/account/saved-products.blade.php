@@ -101,7 +101,7 @@ function removeSavedProduct(productId) {
         return;
     }
 
-    fetch(`/api/saved-products/${productId}`, {
+    fetch(`/wish-products/${productId}`, {
         method: 'DELETE',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -110,7 +110,7 @@ function removeSavedProduct(productId) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.saved === false) {
+        if (data.wished === false) {
             location.reload();
         }
     })

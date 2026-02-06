@@ -122,12 +122,14 @@ function removeAlert(productId) {
         return;
     }
 
-    fetch(`/api/price-alerts/${productId}`, {
-        method: 'DELETE',
+    fetch(`/wish-products/${productId}/price-alert`, {
+        method: 'PATCH',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json',
-        }
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ target_price: null })
     })
     .then(response => response.json())
     .then(data => {

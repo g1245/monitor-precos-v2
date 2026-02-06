@@ -22,7 +22,12 @@ return new class extends Migration
             $table->string('brand')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->vector('vector_search', 1536)->nullable();
+            // Use text for SQLite compatibility, vector for other databases
+            if (config('database.default') === 'sqlite') {
+                $table->text('vector_search')->nullable();
+            } else {
+                $table->vector('vector_search', 1536)->nullable();
+            }
             $table->text('deep_link')->nullable();
             $table->text('external_link')->nullable();
             $table->timestamps();

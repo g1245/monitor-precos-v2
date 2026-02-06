@@ -297,7 +297,7 @@
 
         <!-- Price Alert Modal -->
         @auth
-        <div id="priceAlertModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div id="priceAlertModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 overflow-y-auto h-full w-full z-50">
             <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                 <div class="mt-3">
                     <div class="flex items-center justify-between mb-4">
@@ -322,16 +322,17 @@
                         
                         <div class="mb-4">
                             <label for="targetPrice" class="block text-sm font-medium text-gray-700 mb-2">
-                                Preço Desejado (R$)
+                                Preço Desejado
                             </label>
-                            <input 
-                                type="number" 
-                                id="targetPrice" 
-                                step="0.01" 
-                                min="0"
-                                placeholder="Ex: {{ number_format($product->price * 0.9, 2, ',', '.') }}"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            >
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">R$</span>
+                                <input 
+                                    type="text" 
+                                    id="targetPrice"
+                                    placeholder="Ex: {{ number_format($product->price * 0.9, 2, ',', '.') }}"
+                                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                >
+                            </div>
                             <p class="mt-1 text-xs text-gray-500">Deixe em branco para ser notificado sobre qualquer mudança de preço</p>
                         </div>
                         
@@ -618,6 +619,61 @@
             
             let currentAlertData = null;
 
+            // Currency mask functions
+            function formatCurrency(value) {
+                // Remove non-numeric characters except comma and dot
+                let numericValue = value.replace(/[^\d,\.]/g, '');
+                
+                // Replace comma with dot for parsing
+                numericValue = numericValue.replace(',', '.');
+                
+                // Parse as float
+                const floatValue = parseFloat(numericValue);
+                
+                if (isNaN(floatValue)) {
+                    return '';
+                }
+                
+                // Format as Brazilian currency
+                return floatValue.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function parseCurrencyToFloat(value) {
+                if (!value) return null;
+                
+                // Remove dots (thousand separators) and replace comma with dot
+                const numericValue = value.replace(/\./g, '').replace(',', '.');
+                const floatValue = parseFloat(numericValue);
+                
+                return isNaN(floatValue) ? null : floatValue;
+            }
+
+            // Apply currency mask to input
+            targetPriceInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+                
+                // Allow only numbers, comma, and dot
+                value = value.replace(/[^\d,\.]/g, '');
+                
+                // Format on blur or when user stops typing
+                if (value) {
+                    const formatted = formatCurrency(value);
+                    if (formatted) {
+                        e.target.value = formatted;
+                    }
+                }
+            });
+
+            targetPriceInput.addEventListener('blur', function(e) {
+                if (e.target.value) {
+                    const formatted = formatCurrency(e.target.value);
+                    e.target.value = formatted || '';
+                }
+            });
+
             // Check initial state
             checkWishStatus();
 
@@ -678,12 +734,20 @@
                 .then(data => {
                     currentAlertData = data;
                     
-                    if (data.has_alert && data.target_price) {
+                    if (data.has_alert && data.wish && data.wish.target_price) {
                         // Show existing alert info
                         existingAlertActions.classList.remove('hidden');
                         removeAlertBtn.classList.remove('hidden');
-                        currentTargetPriceSpan.textContent = `R$ ${parseFloat(data.target_price).toFixed(2).replace('.', ',')}`;
-                        targetPriceInput.value = data.target_price;
+                        
+                        // Format the price display
+                        const priceValue = parseFloat(data.wish.target_price);
+                        currentTargetPriceSpan.textContent = `R$ ${priceValue.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}`;
+                        
+                        // Format the input value
+                        targetPriceInput.value = formatCurrency(priceValue.toString());
                     } else {
                         // New alert
                         existingAlertActions.classList.add('hidden');
@@ -705,27 +769,23 @@
             }
 
             function saveOrUpdateAlert() {
-                const targetPrice = targetPriceInput.value.trim();
+                const targetPriceValue = targetPriceInput.value.trim();
                 
                 const body = {
                     product_id: productId,
                 };
                 
-                if (targetPrice && !isNaN(parseFloat(targetPrice))) {
-                    body.target_price = parseFloat(targetPrice);
+                // Parse currency formatted value
+                if (targetPriceValue) {
+                    const parsedPrice = parseCurrencyToFloat(targetPriceValue);
+                    if (parsedPrice !== null) {
+                        body.target_price = parsedPrice;
+                    }
                 }
 
-                // If wish doesn't exist yet, create it with alert
-                const url = currentAlertData && currentAlertData.wished 
-                    ? `/wish-products/${productId}/price-alert`
-                    : '/wish-products';
-                    
-                const method = currentAlertData && currentAlertData.wished 
-                    ? 'PATCH'
-                    : 'POST';
-
-                fetch(url, {
-                    method: method,
+                // Always POST to /wish-products - controller handles both create and update
+                fetch('/wish-products', {
+                    method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
                         'Accept': 'application/json',

@@ -7,15 +7,62 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PasswordRecoveryController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\SavedProductController;
+use App\Http\Controllers\PriceAlertController;
 
-Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+// Public routes with browsing history tracking
+Route::middleware(['web', 'track.browsing'])->group(function () {
+    Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+    
+    Route::get('/{alias}/{departmentId}/dp', [DepartmentController::class, 'index'])->name('department.index');
+    Route::get('/{id}/{slug}/p', [ProductController::class, 'index'])->name('product.show');
+    Route::get('/share/whatsapp/{id}', [ProductController::class, 'shareWhatsapp'])->name('product.share.whatsapp');
+    
+    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+    
+    Route::get('/lojas', [StoreController::class, 'index'])->name('stores.index');
+    Route::get('/{slug}/{id}/loja', [StoreController::class, 'show'])->name('store.show');
+});
 
-Route::get('/{alias}/{departmentId}/dp', [DepartmentController::class, 'index'])->name('department.index');
-Route::get('/{id}/{slug}/p', [ProductController::class, 'index'])->name('product.show');
-Route::get('/share/whatsapp/{id}', [ProductController::class, 'shareWhatsapp'])->name('product.share.whatsapp');
-
-Route::get('/search', [SearchController::class, 'index'])->name('search.index');
-
-Route::get('/lojas', [StoreController::class, 'index'])->name('stores.index');
-Route::get('/{slug}/{id}/loja', [StoreController::class, 'show'])->name('store.show');
 Route::get('/loja/{id}/logo', [StoreController::class, 'logo'])->name('store.logo');
+
+// Authentication routes
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [AuthController::class, 'login']);
+        
+        Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+        Route::post('/register', [AuthController::class, 'register']);
+        
+        Route::get('/recovery', [PasswordRecoveryController::class, 'showForgotPassword'])->name('recovery');
+        Route::post('/recovery', [PasswordRecoveryController::class, 'sendResetLink']);
+        
+        Route::get('/reset-password/{token}', [PasswordRecoveryController::class, 'showResetPassword'])->name('password.reset');
+        Route::post('/reset-password', [PasswordRecoveryController::class, 'resetPassword'])->name('password.update');
+    });
+    
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+});
+
+// Account routes (requires authentication)
+Route::prefix('account')->name('account.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [AccountController::class, 'dashboard'])->name('dashboard');
+    Route::get('/saved-products', [AccountController::class, 'savedProducts'])->name('saved-products');
+    Route::get('/price-alerts', [AccountController::class, 'priceAlerts'])->name('price-alerts');
+    Route::get('/history', [AccountController::class, 'browsingHistory'])->name('history');
+});
+
+// API routes for saved products and price alerts
+Route::prefix('api')->name('api.')->middleware('auth')->group(function () {
+    Route::post('/saved-products', [SavedProductController::class, 'store'])->name('saved-products.store');
+    Route::delete('/saved-products/{productId}', [SavedProductController::class, 'destroy'])->name('saved-products.destroy');
+    Route::get('/saved-products/{productId}/check', [SavedProductController::class, 'check'])->name('saved-products.check');
+    
+    Route::post('/price-alerts', [PriceAlertController::class, 'store'])->name('price-alerts.store');
+    Route::delete('/price-alerts/{productId}', [PriceAlertController::class, 'destroy'])->name('price-alerts.destroy');
+    Route::get('/price-alerts/{productId}/check', [PriceAlertController::class, 'check'])->name('price-alerts.check');
+});

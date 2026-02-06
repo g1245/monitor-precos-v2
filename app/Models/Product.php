@@ -165,4 +165,29 @@ class Product extends Model
 
         return $latestPrice === null || $latestPrice !== $this->price;
     }
+
+    /**
+     * Get users who saved this product.
+     */
+    public function savedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'saved_products')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get price alerts for this product.
+     */
+    public function priceAlerts(): HasMany
+    {
+        return $this->hasMany(PriceAlert::class);
+    }
+
+    /**
+     * Get active price alerts for this product.
+     */
+    public function activePriceAlerts(): HasMany
+    {
+        return $this->hasMany(PriceAlert::class)->where('is_active', true);
+    }
 }

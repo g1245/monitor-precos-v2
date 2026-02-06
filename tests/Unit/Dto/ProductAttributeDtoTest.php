@@ -9,6 +9,7 @@ class ProductAttributeDtoTest extends TestCase
 {
     /**
      * Test DTO can be created with all fields.
+     * Note: custom3 is intentionally omitted as per API specification.
      */
     public function test_dto_can_be_created_with_all_fields(): void
     {
@@ -24,7 +25,7 @@ class ProductAttributeDtoTest extends TestCase
             sizeType: 'regular',
             custom1: 'value1',
             custom2: 'value2',
-            custom4: 'value4',
+            custom4: 'value4', // custom3 not in API
             custom5: 'value5',
             custom6: 'value6',
             custom7: 'value7',
@@ -90,6 +91,7 @@ class ProductAttributeDtoTest extends TestCase
 
     /**
      * Test fromApiData creates DTO from API response.
+     * Note: API does not provide custom_3, only custom_1, custom_2, custom_4-8.
      */
     public function test_from_api_data_creates_dto_from_api_response(): void
     {
@@ -104,7 +106,7 @@ class ProductAttributeDtoTest extends TestCase
             'size_type' => 'regular',
             'custom_1' => 'value1',
             'custom_2' => 'value2',
-            'custom_4' => 'value4',
+            'custom_4' => 'value4', // custom_3 not provided by API
             'custom_5' => 'value5',
             'custom_6' => 'value6',
             'custom_7' => 'value7',

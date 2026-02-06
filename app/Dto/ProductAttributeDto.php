@@ -4,6 +4,13 @@ namespace App\Dto;
 
 class ProductAttributeDto
 {
+    /**
+     * Create new ProductAttributeDto instance.
+     * 
+     * Note: custom3 is intentionally omitted as per the API specification.
+     * The API provides custom_1, custom_2, custom_4, custom_5, custom_6, custom_7, custom_8
+     * but does not include custom_3.
+     */
     public function __construct(
         public int $productId,
         public ?string $inStock = null,
@@ -16,7 +23,7 @@ class ProductAttributeDto
         public ?string $sizeType = null,
         public ?string $custom1 = null,
         public ?string $custom2 = null,
-        public ?string $custom4 = null,
+        public ?string $custom4 = null, // Note: custom3 not provided by API
         public ?string $custom5 = null,
         public ?string $custom6 = null,
         public ?string $custom7 = null,
@@ -36,6 +43,8 @@ class ProductAttributeDto
     public function toAttributesArray(): array
     {
         $attributes = [];
+        // Mapping property names to database keys
+        // Note: custom3 is intentionally omitted as it's not provided by the API
         $mapping = [
             'inStock' => 'in_stock',
             'stockQuantity' => 'stock_quantity',
@@ -47,7 +56,7 @@ class ProductAttributeDto
             'sizeType' => 'size_type',
             'custom1' => 'custom_1',
             'custom2' => 'custom_2',
-            'custom4' => 'custom_4',
+            'custom4' => 'custom_4', // custom_3 not provided by API
             'custom5' => 'custom_5',
             'custom6' => 'custom_6',
             'custom7' => 'custom_7',
@@ -74,6 +83,8 @@ class ProductAttributeDto
 
     /**
      * Create DTO from API response data.
+     * 
+     * Note: custom_3 is not included as it's not provided by the API specification.
      */
     public static function fromApiData(int $productId, array $data): self
     {
@@ -89,7 +100,7 @@ class ProductAttributeDto
             sizeType: $data['size_type'] ?? null,
             custom1: $data['custom_1'] ?? null,
             custom2: $data['custom_2'] ?? null,
-            custom4: $data['custom_4'] ?? null,
+            custom4: $data['custom_4'] ?? null, // custom_3 not in API
             custom5: $data['custom_5'] ?? null,
             custom6: $data['custom_6'] ?? null,
             custom7: $data['custom_7'] ?? null,

@@ -16,6 +16,7 @@ class StoreController extends Controller
     public function index(Request $request)
     {
         $stores = Store::query()
+            ->where('has_public', true)
             ->orderBy('name')
             ->get();
 
@@ -34,7 +35,9 @@ class StoreController extends Controller
      */
     public function show(string $slug, int $id, Request $request)
     {
-        $store = Store::findOrFail($id);
+        $store = Store::query()
+            ->where('has_public', true)
+            ->findOrFail($id);
 
         return view('store.show', [
             'store' => $store,

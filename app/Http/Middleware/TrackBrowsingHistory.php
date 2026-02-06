@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\UserBrowsingHistory;
+use App\Jobs\TrackBrowsingHistoryJob;
 use Illuminate\Support\Facades\Auth;
 
 class TrackBrowsingHistory
@@ -62,7 +62,7 @@ class TrackBrowsingHistory
             $data['store_id'] = $route->parameter('id');
         }
 
-        UserBrowsingHistory::create($data);
+        TrackBrowsingHistoryJob::dispatch($data);
     }
 
     /**

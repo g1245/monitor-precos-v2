@@ -61,21 +61,21 @@
                     <div class="space-y-6">
                         <!-- Price Section -->
                         <div class="space-y-2">
-                            <div class="text-3xl lg:text-4xl font-bold price-current">
-                                R$ {{ number_format($product->price, 2, ',', '.') }}
-                            </div>
                             @if($product->price_regular && $product->price_regular > $product->price)
                                 <div class="text-lg price-original">
                                     De R$ {{ number_format($product->price_regular, 2, ',', '.') }}
                                 </div>
                             @endif
+                            <div class="text-3xl lg:text-4xl font-bold price-current">
+                                R$ {{ number_format($product->price, 2, ',', '.') }}
+                            </div>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="space-y-3">
-                            <button class="w-full action-button-primary text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-                                Comparar em {{ count($storeOffers) }} lojas
-                            </button>
+                            <a target="_blank-{{ $product->id }}" href="{{ $product->deep_link }}" class="block w-full text-center action-button-primary text-white font-semibold py-3 px-6 rounded-lg transition-colors" title="Comprar {{ $product->name }} na loja {{ $product->store->name }}">
+                                Comprar
+                            </a>
                             
                             <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                 <a href="{{ route('product.share.whatsapp', $product->id) }}" target="_blank" class="action-button-secondary flex items-center justify-center space-x-2 text-gray-700 py-2 px-4 rounded-lg transition-colors">

@@ -36,12 +36,12 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Produtos Salvos</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $user->savedProducts()->count() }}</p>
+                        <p class="text-sm font-medium text-gray-500">Lista de Desejos</p>
+                        <p class="text-2xl font-semibold text-gray-900">{{ $totalWishes ?? $user->userWishProducts()->count() }}</p>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <a href="{{ route('account.saved-products') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                    <a href="{{ route('account.wishlist') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                         Ver todos →
                     </a>
                 </div>
@@ -55,8 +55,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Alertas Ativos</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $user->priceAlerts()->where('is_active', true)->count() }}</p>
+                        <p class="text-sm font-medium text-gray-500">Alertas de Preço</p>
+                        <p class="text-2xl font-semibold text-gray-900">{{ $wishesWithAlerts ?? $user->userWishProducts()->whereNotNull('target_price')->where('is_active', true)->count() }}</p>
                     </div>
                 </div>
                 <div class="mt-4">
@@ -93,13 +93,13 @@
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="{{ route('account.saved-products') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                    <a href="{{ route('account.wishlist') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
                         <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                         </svg>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-900">Produtos Salvos</p>
-                            <p class="text-xs text-gray-500">Veja seus produtos favoritos</p>
+                            <p class="text-sm font-medium text-gray-900">Lista de Desejos</p>
+                            <p class="text-xs text-gray-500">Produtos que você acompanha</p>
                         </div>
                     </a>
 

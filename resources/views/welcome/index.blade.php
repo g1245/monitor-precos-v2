@@ -2,11 +2,11 @@
 @section('title', 'Monitor de Preços - Compare preços e encontre as melhores ofertas')
 @section('description', 'Compare preços de produtos de lojas virtuais de todo o Brasil e encontre as melhores ofertas.')
 @section('content')
+    @if($banners->isNotEmpty())
     <!-- Hero Banner Carousel -->
     <section class="banner-gradient py-12 relative overflow-hidden">
         <div class="container mx-auto px-4">
             <div class="relative bg-white/10 backdrop-blur-sm rounded-2xl p-8 overflow-hidden min-h-[300px]">
-                @if($banners->isNotEmpty())
                 <!-- Carousel Container -->
                 <!-- Each banner contains two images: one for desktop (hidden md:block) and one for mobile (block md:hidden) -->
                 <div class="carousel-container relative">
@@ -61,17 +61,6 @@
                     </svg>
                 </button>
                 @endif
-                @else
-                <!-- Empty State -->
-                <div class="flex items-center justify-center h-48">
-                    <div class="text-center text-white/70">
-                        <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <p class="text-lg">Nenhum banner cadastrado no momento</p>
-                    </div>
-                </div>
-                @endif
             </div>
 
             @if($banners->count() > 1)
@@ -84,6 +73,7 @@
             @endif
         </div>
     </section>
+    @endif
 
     <!-- Featured Categories -->
     <section class="py-12 bg-white">

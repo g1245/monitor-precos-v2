@@ -84,15 +84,25 @@
             <h2 class="text-3xl font-bold text-gray-800 mb-8">Destaques</h2>
             
             <div class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4">
-                @for($i = 0; $i < 10; $i++)
-                <div class="product-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 text-center hover:shadow-md transition-all cursor-pointer">
+                @forelse($highlights as $highlight)
+                <a href="{{ $highlight->link ?: '#' }}" class="product-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 text-center hover:shadow-md transition-all">
                     <div class="relative">
-                        <img src="{{ Vite::asset('resources/images/destaques.jpg') }}" alt="Ar e ventilação" class="w-16 h-16 mx-auto mb-2 rounded">
-                        <div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">20%</div>
+                        @if($highlight->image)
+                            <img src="{{ Storage::disk('public')->url($highlight->image) }}" alt="{{ $highlight->title }}" class="w-16 h-16 mx-auto mb-2 rounded object-cover">
+                        @else
+                            <img src="{{ Vite::asset('resources/images/destaques.jpg') }}" alt="{{ $highlight->title }}" class="w-16 h-16 mx-auto mb-2 rounded object-cover">
+                        @endif
+                        @if($highlight->discount_text)
+                            <div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">{{ $highlight->discount_text }}</div>
+                        @endif
                     </div>
-                    <p class="text-xs text-gray-600 font-medium">Ar e<br>ventilação</p>
+                    <p class="text-xs text-gray-600 font-medium">{{ $highlight->title }}</p>
+                </a>
+                @empty
+                <div class="col-span-full text-center text-gray-500 py-8">
+                    <p>Nenhum destaque cadastrado no momento.</p>
                 </div>
-                @endfor
+                @endforelse
             </div>
         </div>
     </section>

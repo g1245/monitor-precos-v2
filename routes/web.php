@@ -11,6 +11,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordRecoveryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserWishProductController;
+use App\Http\Controllers\NewsletterLeadController;
 
 // Public routes with browsing history tracking
 Route::middleware(['web', 'track.browsing'])->group(function () {
@@ -27,6 +28,9 @@ Route::middleware(['web', 'track.browsing'])->group(function () {
 });
 
 Route::get('/loja/{id}/logo', [StoreController::class, 'logo'])->name('store.logo');
+
+// Newsletter subscription route
+Route::post('/newsletter/subscribe', [NewsletterLeadController::class, 'store'])->name('newsletter.subscribe');
 
 // Authentication routes
 Route::prefix('auth')->name('auth.')->group(function () {

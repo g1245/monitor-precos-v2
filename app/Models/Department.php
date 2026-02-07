@@ -20,7 +20,6 @@ class Department extends Model
      */
     protected $fillable = [
         'name',
-        'permalink',
         'parent_id',
     ];
 
@@ -32,20 +31,6 @@ class Department extends Model
     protected $casts = [
         'parent_id' => 'integer',
     ];
-
-    /**
-     * The model's boot method.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->permalink)) {
-                $model->permalink = uniqid();
-            }
-        });
-    }
 
     /**
      * Get the parent department (self-relation for hierarchy).
@@ -77,14 +62,6 @@ class Department extends Model
     public function scopeRoots($query)
     {
         return $query->whereNull('parent_id');
-    }
-
-    /**
-     * Scope to find by permalink.
-     */
-    public function scopeByPermalink($query, string $permalink)
-    {
-        return $query->where('permalink', $permalink);
     }
 
     /**

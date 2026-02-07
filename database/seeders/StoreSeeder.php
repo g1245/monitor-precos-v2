@@ -14,24 +14,19 @@ class StoreSeeder extends Seeder
     {
         $stores = [
             [
-                'name' => 'Magazine Luiza',
-                'internal_name' => 'Magazine Luiza BR'
-            ],
-            [
-                'name' => 'Americanas',
-                'internal_name' => 'Americanas BR'
-            ],
-            [
-                'name' => 'Mercado Livre',
-                'internal_name' => 'Mercado Livre BR'
-            ],
-            [
                 'name' => 'Amazon',
                 'internal_name' => 'Amazon BR'
             ],
             [
                 'name' => 'Casas Bahia',
                 'internal_name' => 'Casas Bahia BR'
+            ],
+            [
+                'name' => 'Nike',
+                'internal_name' => 'nike',
+                'metadata' => [
+                    'SyncStoreName' => 'Nike BR'
+                ]
             ],
         ];
 

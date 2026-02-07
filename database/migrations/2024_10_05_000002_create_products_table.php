@@ -30,6 +30,10 @@ return new class extends Migration
             }
             $table->text('deep_link')->nullable();
             $table->text('external_link')->nullable();
+            $table->integer('discount_percentage')
+                ->storedAs('ROUND(((price_regular - price) / price_regular * 100), 0)')
+                ->nullable() // Para evitar divisão por zero se price_regular=0
+                ->index(); // Indexa diretamente para consultas eficientes
             $table->timestamps();
 
             // Indexes

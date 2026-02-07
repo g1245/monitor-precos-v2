@@ -45,6 +45,7 @@ class Product extends Model
         'is_active' => 'boolean',
         'deep_link' => 'string',
         'external_link' => 'string',
+        'discount_percentage' => 'integer',
     ];
 
     /**

@@ -7,7 +7,7 @@
         <nav class="mb-6 overflow-x-auto">
             <ol class="flex items-center space-x-2 text-sm text-gray-600 whitespace-nowrap">
                 <li>
-                    <a href="/" class="hover:text-primary transition-colors">Home</a>
+                    <a href="/" class="hover:text-primary transition-colors">Inicial</a>
                 </li>
                 <li class="flex items-center">
                     <svg class="w-4 h-4 mx-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

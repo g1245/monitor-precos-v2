@@ -7,15 +7,59 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PasswordRecoveryController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\UserWishProductController;
 
-Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+// Public routes with browsing history tracking
+Route::middleware(['web', 'track.browsing'])->group(function () {
+    Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+    
+    Route::get('/{alias}/{departmentId}/dp', [DepartmentController::class, 'index'])->name('department.index');
+    Route::get('/{id}/{slug}/p', [ProductController::class, 'index'])->name('product.show');
+    Route::get('/share/whatsapp/{id}', [ProductController::class, 'shareWhatsapp'])->name('product.share.whatsapp');
+    
+    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+    
+    Route::get('/lojas', [StoreController::class, 'index'])->name('stores.index');
+    Route::get('/{slug}/{id}/loja', [StoreController::class, 'show'])->name('store.show');
+});
 
-Route::get('/{alias}/{departmentId}/dp', [DepartmentController::class, 'index'])->name('department.index');
-Route::get('/{id}/{slug}/p', [ProductController::class, 'index'])->name('product.show');
-Route::get('/share/whatsapp/{id}', [ProductController::class, 'shareWhatsapp'])->name('product.share.whatsapp');
-
-Route::get('/search', [SearchController::class, 'index'])->name('search.index');
-
-Route::get('/lojas', [StoreController::class, 'index'])->name('stores.index');
-Route::get('/{slug}/{id}/loja', [StoreController::class, 'show'])->name('store.show');
 Route::get('/loja/{id}/logo', [StoreController::class, 'logo'])->name('store.logo');
+
+// Authentication routes
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [AuthController::class, 'login']);
+        
+        Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+        Route::post('/register', [AuthController::class, 'register']);
+        
+        Route::get('/recovery', [PasswordRecoveryController::class, 'showForgotPassword'])->name('recovery');
+        Route::post('/recovery', [PasswordRecoveryController::class, 'sendResetLink']);
+        
+        Route::get('/reset-password/{token}', [PasswordRecoveryController::class, 'showResetPassword'])->name('password.reset');
+        Route::post('/reset-password', [PasswordRecoveryController::class, 'resetPassword'])->name('password.update');
+    });
+    
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+});
+
+// Account routes (requires authentication)
+Route::prefix('account')->name('account.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [AccountController::class, 'dashboard'])->name('dashboard');
+    Route::get('/wishlist', [AccountController::class, 'wishlist'])->name('wishlist');
+    Route::get('/price-alerts', [AccountController::class, 'priceAlerts'])->name('price-alerts');
+    Route::get('/history', [AccountController::class, 'browsingHistory'])->name('history');
+});
+
+// User wish products routes (wishlist + price alerts)
+Route::prefix('wish-products')->middleware('auth')->group(function () {
+    Route::post('/', [UserWishProductController::class, 'store'])->name('wish-products.store');
+    Route::delete('/{productId}', [UserWishProductController::class, 'destroy'])->name('wish-products.destroy');
+    Route::get('/{productId}/check', [UserWishProductController::class, 'check'])->name('wish-products.check');
+    Route::patch('/{productId}/price-alert', [UserWishProductController::class, 'updatePriceAlert'])->name('wish-products.update-alert');
+    Route::post('/{productId}/toggle-alert', [UserWishProductController::class, 'toggleAlert'])->name('wish-products.toggle-alert');
+});

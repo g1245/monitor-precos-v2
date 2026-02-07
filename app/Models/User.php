@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -44,5 +46,58 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get user wish products (wishlist with optional price alerts).
+     */
+    public function userWishProducts(): HasMany
+    {
+        return $this->hasMany(UserWishProduct::class);
+    }
+
+    /**
+     * Get products wished by this user through the pivot table.
+     */
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'users_wish_products')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get browsing history for this user.
+     */
+    public function browsingHistory(): HasMany
+    {
+        return $this->hasMany(UserBrowsingHistory::class);
+    }
+
+    /**
+     * Check if user has wished for a specific product.
+     */
+    public function hasWishProduct(int $productId): bool
+    {
+        return $this->userWishProducts()->where('product_id', $productId)->exists();
+    }
+
+    /**
+     * Check if user has a price alert for a specific product.
+     */
+    public function hasPriceAlert(int $productId): bool
+    {
+        return $this->userWishProducts()
+            ->where('product_id', $productId)
+            ->whereNotNull('target_price')
+            ->where('is_active', true)
+            ->exists();
+    }
+
+    /**
+     * Get the wish product for a specific product.
+     */
+    public function getWishProduct(int $productId): ?UserWishProduct
+    {
+        return $this->userWishProducts()->where('product_id', $productId)->first();
     }
 }

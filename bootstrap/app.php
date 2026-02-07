@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'track.browsing' => \App\Http\Middleware\TrackBrowsingHistory::class,
+        ]);
+        $middleware->redirectGuestsTo('auth/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

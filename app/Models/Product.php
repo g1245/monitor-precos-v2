@@ -165,4 +165,31 @@ class Product extends Model
 
         return $latestPrice === null || $latestPrice !== $this->price;
     }
+
+    /**
+     * Get users who wished for this product.
+     */
+    public function wishedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'users_wish_products')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get user wish products for this product.
+     */
+    public function userWishProducts(): HasMany
+    {
+        return $this->hasMany(UserWishProduct::class);
+    }
+
+    /**
+     * Get active price alerts for this product (wishes with target price).
+     */
+    public function activePriceAlerts(): HasMany
+    {
+        return $this->hasMany(UserWishProduct::class)
+            ->whereNotNull('target_price')
+            ->where('is_active', true);
+    }
 }

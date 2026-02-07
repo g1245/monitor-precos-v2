@@ -45,6 +45,13 @@ class ProductForm
                 TextInput::make('brand')
                     ->default(null),
                 
+                Select::make('departments')
+                    ->relationship('departments', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->columnSpanFull()
+                    ->label('Departamentos'),
+                
                 TextInput::make('image_url')
                     ->label('Image URL')
                     ->url()

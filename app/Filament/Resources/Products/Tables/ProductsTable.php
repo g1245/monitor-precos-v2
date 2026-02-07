@@ -40,6 +40,11 @@ class ProductsTable
                 TextColumn::make('sku')
                     ->label('SKU')
                     ->searchable(),
+                TextColumn::make('departments.name')
+                    ->label('Departamentos')
+                    ->listWithLineBreaks()
+                    ->limitList(3)
+                    ->expandableLimitedList(),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

@@ -116,7 +116,7 @@
             
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 @foreach($topDiscountedProducts as $product)
-                    <a href="{{ route('product.show', ['slug' => Str::slug($product->name), 'id' => $product->id]) }}" 
+                    <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" 
                        class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group border border-gray-200">
                         @if($product->image_url)
                             <div class="aspect-square mb-3 relative overflow-hidden rounded-lg bg-gray-50">
@@ -164,8 +164,8 @@
                         @if($product->store)
                             <div class="mt-2 pt-2 border-t border-gray-100">
                                 <div class="flex items-center text-xs text-gray-600">
-                                    @if($product->store->logo)
-                                        <img src="{{ Storage::disk('public')->url($product->store->logo) }}" 
+                                    @if(isset($product->store->logo_url))
+                                        <img src="{{ $product->store->logo_url }}" 
                                              alt="{{ $product->store->name }}" 
                                              class="w-4 h-4 object-contain mr-1">
                                     @endif

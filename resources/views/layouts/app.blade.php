@@ -341,6 +341,10 @@
             });
         });
     </script>
+    
+    <!-- Toast Container -->
+    <x-toast-container />
+    
     @livewireScripts
     @stack('scripts')
 </body>

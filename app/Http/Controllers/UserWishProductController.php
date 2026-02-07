@@ -16,50 +16,39 @@ class UserWishProductController extends Controller
     {
         $validated = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
-            'target_price' => ['nullable', 'numeric', 'min:0'],
+            'target_price' => ['nullable', 'numeric', 'min:0', 'max:1000000000'],
         ]);
 
         $user = Auth::user();
         $productId = $validated['product_id'];
 
-        // Check if wish already exists
-        $existingWish = UserWishProduct::where('user_id', $user->id)
-            ->where('product_id', $productId)
-            ->first();
-
-        if ($existingWish) {
-            // Update existing wish with new target price
-            $existingWish->update([
+        // Use updateOrCreate to prevent duplicate entry errors
+        $wish = UserWishProduct::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'product_id' => $productId,
+            ],
+            [
                 'target_price' => $validated['target_price'] ?? null,
                 'is_active' => true,
-            ]);
+            ]
+        );
 
-            return response()->json([
-                'message' => $validated['target_price'] 
-                    ? 'Produto salvo e alerta de preço atualizado!' 
-                    : 'Produto já está na sua lista de desejos',
-                'wished' => true,
-                'has_alert' => $existingWish->hasPriceAlert(),
-                'wish' => $existingWish,
-            ]);
-        }
+        $isNew = $wish->wasRecentlyCreated;
 
-        // Create new wish
-        $wish = UserWishProduct::create([
-            'user_id' => $user->id,
-            'product_id' => $productId,
-            'target_price' => $validated['target_price'] ?? null,
-            'is_active' => true,
-        ]);
+        $message = match(true) {
+            $isNew && $wish->hasPriceAlert() => 'Produto salvo com alerta de preço!',
+            $isNew => 'Produto adicionado à sua lista de desejos!',
+            $wish->hasPriceAlert() => 'Produto salvo e alerta de preço atualizado!',
+            default => 'Produto atualizado na sua lista de desejos',
+        };
 
         return response()->json([
-            'message' => $wish->hasPriceAlert() 
-                ? 'Produto salvo com alerta de preço!' 
-                : 'Produto adicionado à sua lista de desejos!',
+            'message' => $message,
             'wished' => true,
             'has_alert' => $wish->hasPriceAlert(),
             'wish' => $wish,
-        ], 201);
+        ], $isNew ? 201 : 200);
     }
 
     /**
@@ -69,21 +58,23 @@ class UserWishProductController extends Controller
     {
         $user = Auth::user();
 
-        $deleted = UserWishProduct::where('user_id', $user->id)
+        $wish = UserWishProduct::where('user_id', $user->id)
             ->where('product_id', $productId)
-            ->delete();
+            ->first();
 
-        if ($deleted) {
+        if (!$wish) {
             return response()->json([
-                'message' => 'Produto removido da lista de desejos',
+                'message' => 'Produto não encontrado na lista de desejos',
                 'wished' => false,
-            ]);
+            ], 404);
         }
 
+        $wish->delete();
+
         return response()->json([
-            'message' => 'Produto não encontrado na lista de desejos',
+            'message' => 'Produto removido com sucesso',
             'wished' => false,
-        ], 404);
+        ], 200);
     }
 
     /**
@@ -117,7 +108,7 @@ class UserWishProductController extends Controller
     public function updatePriceAlert(Request $request, int $productId)
     {
         $validated = $request->validate([
-            'target_price' => ['nullable', 'numeric', 'min:0'],
+            'target_price' => ['nullable', 'numeric', 'min:0', 'max:1000000000'],
         ]);
 
         $user = Auth::user();

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banner;
 use App\Models\Highlight;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,6 +11,10 @@ class WelcomeController extends Controller
 {
     public function index()
     {
+        $banners = Banner::where('is_active', true)
+            ->orderBy('order')
+            ->get();
+
         $highlights = Highlight::latest()->limit(10)->get();
 
         // Get top discounted products from cache
@@ -24,6 +28,6 @@ class WelcomeController extends Controller
             }
         });
 
-        return view('welcome.index', compact('highlights', 'topDiscountedProducts'));
+        return view('welcome.index', compact('banners', 'highlights', 'topDiscountedProducts'));
     }
 }

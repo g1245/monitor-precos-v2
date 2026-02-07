@@ -2,6 +2,7 @@
 @section('title', 'Monitor de Preços - Compare preços e encontre as melhores ofertas')
 @section('description', 'Compare preços de produtos de lojas virtuais de todo o Brasil e encontre as melhores ofertas.')
 @section('content')
+    @if($banners->isNotEmpty())
     <!-- Hero Banner Carousel -->
     <section class="banner-gradient py-12 relative overflow-hidden">
         <div class="container mx-auto px-4">
@@ -11,51 +12,43 @@
                 <div class="carousel-container relative">
                     <div class="carousel-wrapper overflow-hidden rounded-lg">
                         <div class="carousel-slides flex transition-transform duration-750 ease-in-out">
-                            <!-- Banner 1 -->
+                            @foreach($banners as $banner)
+                            <!-- Banner {{ $loop->iteration }} -->
                             <div class="carousel-slide w-full flex-shrink-0">
-                                <a href="#" class="block">
+                                @if($banner->link)
+                                <a href="{{ $banner->link }}" class="block">
+                                @else
+                                <div class="block">
+                                @endif
                                     <!-- Desktop Image -->
-                                    <img src="{{ Vite::asset('resources/images/banner.png') }}" 
-                                         alt="Banner promocional 1" 
+                                    @if($banner->desktop_image)
+                                    <img src="{{ Storage::disk('public')->url($banner->desktop_image) }}" 
+                                         alt="{{ $banner->title }}" 
                                          class="hidden md:block w-full h-auto max-h-[250px] object-contain mx-auto">
+                                    @endif
                                     <!-- Mobile Image -->
-                                    <img src="{{ Vite::asset('resources/images/banner-mobile.png') }}" 
-                                         alt="Banner promocional 1" 
+                                    @if($banner->mobile_image)
+                                    <img src="{{ Storage::disk('public')->url($banner->mobile_image) }}" 
+                                         alt="{{ $banner->title }}" 
                                          class="block md:hidden w-full h-auto max-h-[200px] object-contain mx-auto">
-                                </a>
-                            </div>
-                            
-                            <!-- Banner 2 -->
-                            <div class="carousel-slide w-full flex-shrink-0">
-                                <a href="#" class="block">
-                                    <!-- Desktop Image -->
-                                    <img src="{{ Vite::asset('resources/images/banner-2.png') }}" 
-                                         alt="Banner promocional 2" 
-                                         class="hidden md:block w-full h-auto max-h-[250px] object-contain mx-auto">
-                                    <!-- Mobile Image -->
-                                    <img src="{{ Vite::asset('resources/images/banner-2-mobile.png') }}" 
-                                         alt="Banner promocional 2" 
+                                    @elseif($banner->desktop_image)
+                                    <!-- Fallback to desktop image if no mobile image -->
+                                    <img src="{{ Storage::disk('public')->url($banner->desktop_image) }}" 
+                                         alt="{{ $banner->title }}" 
                                          class="block md:hidden w-full h-auto max-h-[200px] object-contain mx-auto">
+                                    @endif
+                                @if($banner->link)
                                 </a>
+                                @else
+                                </div>
+                                @endif
                             </div>
-                            
-                            <!-- Banner 3 -->
-                            <div class="carousel-slide w-full flex-shrink-0">
-                                <a href="#" class="block">
-                                    <!-- Desktop Image -->
-                                    <img src="{{ Vite::asset('resources/images/banner-3.png') }}" 
-                                         alt="Banner promocional 3" 
-                                         class="hidden md:block w-full h-auto max-h-[250px] object-contain mx-auto">
-                                    <!-- Mobile Image -->
-                                    <img src="{{ Vite::asset('resources/images/banner-3-mobile.png') }}" 
-                                         alt="Banner promocional 3" 
-                                         class="block md:hidden w-full h-auto max-h-[200px] object-contain mx-auto">
-                                </a>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
+                @if($banners->count() > 1)
                 <!-- Navigation Arrows -->
                 <button id="prev-btn" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-black/30 rounded-full flex items-center justify-center text-white hover:bg-black/50 transition-colors z-10">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,16 +60,20 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </button>
+                @endif
             </div>
 
+            @if($banners->count() > 1)
             <!-- Carousel Indicators -->
             <div class="carousel-indicators mt-6">
-                <div class="carousel-indicator active" data-slide="0"></div>
-                <div class="carousel-indicator" data-slide="1"></div>
-                <div class="carousel-indicator" data-slide="2"></div>
+                @foreach($banners as $banner)
+                <div class="carousel-indicator {{ $loop->first ? 'active' : '' }}" data-slide="{{ $loop->index }}"></div>
+                @endforeach
             </div>
+            @endif
         </div>
     </section>
+    @endif
 
     <!-- Featured Categories -->
     <section class="py-12 bg-white">
@@ -225,6 +222,11 @@
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         
+        // Check if carousel elements exist (no banners = no carousel)
+        if (!carouselSlides || indicators.length === 0) {
+            return;
+        }
+        
         let currentSlide = 0;
         const totalSlides = indicators.length;
         let autoSlideInterval;
@@ -258,9 +260,11 @@
             updateCarousel();
         }
         
-        // Function to start auto-slide
+        // Function to start auto-slide (only if more than 1 slide)
         function startAutoSlide() {
-            autoSlideInterval = setInterval(nextSlide, 5000);
+            if (totalSlides > 1) {
+                autoSlideInterval = setInterval(nextSlide, 5000);
+            }
         }
         
         // Function to stop auto-slide
@@ -268,18 +272,22 @@
             clearInterval(autoSlideInterval);
         }
         
-        // Event listeners for navigation buttons
-        nextBtn.addEventListener('click', () => {
-            stopAutoSlide();
-            nextSlide();
-            startAutoSlide();
-        });
+        // Event listeners for navigation buttons (only if they exist)
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                stopAutoSlide();
+                nextSlide();
+                startAutoSlide();
+            });
+        }
         
-        prevBtn.addEventListener('click', () => {
-            stopAutoSlide();
-            prevSlide();
-            startAutoSlide();
-        });
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                stopAutoSlide();
+                prevSlide();
+                startAutoSlide();
+            });
+        }
         
         // Event listeners for indicators
         indicators.forEach((indicator, index) => {
@@ -292,49 +300,53 @@
         
         // Pause auto-slide on hover
         const carouselContainer = document.querySelector('.carousel-container');
-        carouselContainer.addEventListener('mouseenter', stopAutoSlide);
-        carouselContainer.addEventListener('mouseleave', startAutoSlide);
-        
-        // Touch/swipe support for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        carouselContainer.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-        
-        carouselContainer.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-        
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const diff = touchStartX - touchEndX;
+        if (carouselContainer) {
+            carouselContainer.addEventListener('mouseenter', stopAutoSlide);
+            carouselContainer.addEventListener('mouseleave', startAutoSlide);
             
-            if (Math.abs(diff) > swipeThreshold) {
-                stopAutoSlide();
-                if (diff > 0) {
-                    nextSlide(); // Swipe left - next slide
-                } else {
-                    prevSlide(); // Swipe right - previous slide
+            // Touch/swipe support for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            carouselContainer.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            carouselContainer.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    stopAutoSlide();
+                    if (diff > 0) {
+                        nextSlide(); // Swipe left - next slide
+                    } else {
+                        prevSlide(); // Swipe right - previous slide
+                    }
+                    startAutoSlide();
                 }
-                startAutoSlide();
             }
         }
         
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') {
-                stopAutoSlide();
-                prevSlide();
-                startAutoSlide();
-            } else if (e.key === 'ArrowRight') {
-                stopAutoSlide();
-                nextSlide();
-                startAutoSlide();
-            }
-        });
+        // Keyboard navigation (only if more than 1 slide)
+        if (totalSlides > 1) {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    stopAutoSlide();
+                    prevSlide();
+                    startAutoSlide();
+                } else if (e.key === 'ArrowRight') {
+                    stopAutoSlide();
+                    nextSlide();
+                    startAutoSlide();
+                }
+            });
+        }
         
         // Initialize carousel
         updateCarousel();

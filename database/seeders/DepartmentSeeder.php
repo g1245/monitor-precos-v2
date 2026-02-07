@@ -87,12 +87,8 @@ class DepartmentSeeder extends Seeder
         // Create departments with idempotency
         foreach ($departmentStructure as $rootName => $children) {
             // Create or retrieve root department
-            $rootDepartment = Department::firstOrCreate(
+            $rootDepartment = Department::create(
                 ['name' => $rootName, 'parent_id' => null],
-                [
-                    'slug' => \Illuminate\Support\Str::slug($rootName),
-                    'description' => "Categoria principal de {$rootName}",
-                ]
             );
 
             if ($rootDepartment->wasRecentlyCreated) {
@@ -101,12 +97,8 @@ class DepartmentSeeder extends Seeder
             
             // Create or retrieve child departments
             foreach ($children as $childName) {
-                $childDepartment = Department::firstOrCreate(
+                $childDepartment = Department::create(
                     ['name' => $childName, 'parent_id' => $rootDepartment->id],
-                    [
-                        'slug' => \Illuminate\Support\Str::slug($childName),
-                        'description' => "Subcategoria de {$rootName} - {$childName}",
-                    ]
                 );
 
                 if ($childDepartment->wasRecentlyCreated) {

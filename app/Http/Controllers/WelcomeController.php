@@ -9,7 +9,7 @@ class WelcomeController extends Controller
 {
     public function index()
     {
-        $highlights = Highlight::latest()->get();
+        $highlights = Highlight::latest()->limit(10)->get();
 
         return view('welcome.index', compact('highlights'));
     }

@@ -46,7 +46,7 @@
                 <div class="p-3 text-sm font-medium text-gray-700 border-b border-gray-100">{{ $product->brand }}</div>
                 
                 <!-- Imagem do produto -->
-                <a href="{{ route('product.show', ['alias' => $product->permalink, 'productId' => $product->id]) }}" class="block p-4">
+                <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4">
                     <img src="{{ $product->image_url ?? 'https://placehold.co/800x800' }}" 
                          alt="{{ $product->name }}" 
                          class="w-full h-48 object-contain mx-auto">
@@ -56,50 +56,31 @@
                 <div class="p-4">
                     <div class="flex flex-col h-full">
                         <!-- Nome do produto -->
-                        <a href="{{ route('product.show', ['alias' => $product->permalink, 'productId' => $product->id]) }}" class="block mb-2">
+                        <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block mb-2">
                             <h2 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary transition-colors">
                                 {{ $product->name }}
                             </h2>
                         </a>
                         
                         @if($product->price_regular && $product->price_regular > $product->price)
-                            <div class="line-through text-sm text-gray-500">
-                                R$ {{ number_format($product->price_regular, 2, ',', '.') }}
+                            <div class="">
+                                <span class="line-through text-sm text-gray-500">de R$ {{ number_format($product->price_regular, 2, ',', '.') }}</span>
+
+                                <span class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</span>
                             </div>
-                            <div class="flex items-center">
-                                <div class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded mr-2">
-                                    {{ round((($product->price_regular - $product->price) / $product->price_regular) * 100) }}% OFF
+
+                            @php $discount = round((($product->price_regular - $product->price) / $product->price_regular) * 100); @endphp
+
+                            @if($discount > 1)
+                                <div class="flex items-center mt-2 mb-2">
+                                    <div class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded mr-2">
+                                        {{ $discount }}% OFF
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
+                        @else
+                            <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
                         @endif
-                        
-                        <div class="text-xl font-bold text-primary mt-1">
-                            R$ {{ number_format($product->price, 2, ',', '.') }}
-                        </div>
-                        
-                        <div class="text-xs text-gray-500 mt-1">
-                            {{ floor($product->price / 10) }}x de R$ {{ number_format($product->price / floor($product->price / 10), 2, ',', '.') }} sem juros
-                        </div>
-                        
-                        <div class="text-xs flex items-center text-green-600 mt-2">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"></path>
-                            </svg>
-                            Até R$ {{ number_format($product->price * 0.1, 2, ',', '.') }} de cashback
-                        </div>
-                        
-                        <div class="mt-4 flex justify-between items-center">
-                            <div class="text-xs text-gray-700">
-                                Sai por:<br/>
-                                <span class="font-bold">R$ {{ number_format($product->price - ($product->price * 0.1), 2, ',', '.') }}</span>
-                            </div>
-                            
-                            <button class="bg-primary hover:bg-primary-dark text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                </svg>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>

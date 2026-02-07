@@ -4,7 +4,10 @@
             @foreach($departmentMenu as $parentDepartment)
                 <div>
                     <h3 class="font-bold text-blue-800 mb-3 pb-1 border-b border-gray-200">
-                        {{ $parentDepartment->name }}
+                        <a href="{{ route('department.index', ['alias' => Str::of($parentDepartment->name)->slug(), 'departmentId' => $parentDepartment->id]) }}" 
+                        class="hover:text-blue-600 transition-colors">
+                            {{ $parentDepartment->name }}
+                        </a>
                     </h3>
                     <ul class="space-y-2 text-sm">
                         @foreach($parentDepartment->children as $childDepartment)

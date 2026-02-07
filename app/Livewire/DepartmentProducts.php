@@ -45,7 +45,15 @@ class DepartmentProducts extends Component
 
     public function render()
     {
-        $products = $this->department->products()
+        $departmentIds = [$this->department->id];
+
+        if ($this->department->hasChildren()) {
+            $departmentIds = array_merge($departmentIds, $this->department->getAllDescendantIds());
+        }
+
+        $products = Product::whereHas('departments', function ($query) use ($departmentIds) {
+            $query->whereIn('departments.id', $departmentIds);
+        })
             ->when($this->sortField, function ($query) {
                 return $query->orderBy($this->sortField, $this->sortDirection);
             })

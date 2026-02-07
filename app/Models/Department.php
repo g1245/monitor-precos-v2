@@ -79,4 +79,19 @@ class Department extends Model
     {
         return is_null($this->parent_id);
     }
+
+    /**
+     * Get all descendant department IDs recursively.
+     */
+    public function getAllDescendantIds(): array
+    {
+        $ids = [];
+
+        foreach ($this->children as $child) {
+            $ids[] = $child->id;
+            $ids = array_merge($ids, $child->getAllDescendantIds());
+        }
+
+        return $ids;
+    }
 }

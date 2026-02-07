@@ -159,6 +159,14 @@
                                     R$ {{ number_format($product->price, 2, ',', '.') }}
                                 </div>
                             @endif
+
+                            @if($product->discount_percentage && $product->discount_percentage > 1)
+                                <div class="flex items-center mt-2">
+                                    <div class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
+                                        {{ $product->discount_percentage }}% OFF
+                                    </div>
+                                </div>
+                            @endif
                         </div>
 
                         @if($product->store)

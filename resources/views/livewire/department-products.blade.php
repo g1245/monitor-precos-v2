@@ -25,8 +25,7 @@
                     <select wire:model.live="sortField" class="bg-white border border-gray-300 rounded-md text-gray-700 h-10 pl-5 pr-10 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="name">Ordenar por: Nome</option>
                         <option value="price">Ordenar por: Preço</option>
-                        <option value="brand">Ordenar por: Marca</option>
-                        <option value="created_at">Ordenar por: Mais recentes</option>
+                        <option value="discount_percentage">Ordenar por: Desconto</option>
                     </select>
                 </div>
                 

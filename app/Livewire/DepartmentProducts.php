@@ -15,7 +15,7 @@ class DepartmentProducts extends Component
     public Department $department;
     public string $sortField = 'name';
     public string $sortDirection = 'asc';
-    public int $perPage = 4;
+    public int $perPage = 12;
 
     protected $queryString = [
         'sortField' => ['except' => 'name'],

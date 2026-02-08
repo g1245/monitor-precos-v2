@@ -186,7 +186,7 @@
     @endif
 
     <!-- Newsletter Subscription -->
-    <section class="py-12 bg-gray-100">
+    <section class="py-12 bg-gray-100 mt-auto">
         <div class="container mx-auto px-4 text-center">
             <h3 class="text-2xl font-bold text-gray-800 mb-4">Receba as melhores ofertas</h3>
             <p class="text-gray-600 mb-6">Cadastre-se e seja o primeiro a saber sobre promoções e descontos exclusivos</p>

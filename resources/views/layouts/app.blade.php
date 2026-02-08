@@ -9,7 +9,7 @@
     @vite('resources/css/app.css')
     @livewireStyles
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 min-h-screen flex flex-col">
     <!-- Header -->
     <header class="bg-primary shadow-md">
         <div class="container mx-auto px-4">
@@ -174,7 +174,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="min-h-screen">
+    <main class="flex-1 flex flex-col">
         @yield('content')
     </main>
 

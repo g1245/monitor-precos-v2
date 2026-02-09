@@ -194,10 +194,9 @@
                 <div>
                     <h4 class="font-semibold mb-4">Links Rápidos</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Sobre Nós</a></li>
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Como Funciona</a></li>
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Lojas Parceiras</a></li>
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Contato</a></li>
+                        <li><a href="{{ route('pages.about') }}" class="hover:text-blue-500 transition-colors">Sobre Nós</a></li>
+                        <li><a href="{{ route('pages.how') }}" class="hover:text-blue-500 transition-colors">Como Funciona</a></li>
+                        <li><a href="{{ route('stores.index') }}" class="hover:text-blue-500 transition-colors">Lojas Parceiras</a></li>
                     </ul>
                 </div>
 
@@ -205,11 +204,11 @@
                 <div>
                     <h4 class="font-semibold mb-4">Categorias</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Eletrônicos</a></li>
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Celulares</a></li>
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Informática</a></li>
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Eletrodomésticos</a></li>
-                        <li><a href="#" class="hover:text-blue-500 transition-colors">Casa e Decoração</a></li>
+                        <li><a href="/eletronicos/dp" class="hover:text-blue-500 transition-colors">Eletrônicos</a></li>
+                        <li><a href="/celulares/dp" class="hover:text-blue-500 transition-colors">Celulares</a></li>
+                        <li><a href="/informatica/dp" class="hover:text-blue-500 transition-colors">Informática</a></li>
+                        <li><a href="/eletrodomesticos/dp" class="hover:text-blue-500 transition-colors">Eletrodomésticos</a></li>
+                        <li><a href="/casa-e-decoracao/dp" class="hover:text-blue-500 transition-colors">Casa e Decoração</a></li>
                     </ul>
                 </div>
 
@@ -217,11 +216,9 @@
                 <div>
                     <h4 class="font-semibold mb-4">Ajuda</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" class="hover:text-blue-400 transition-colors">Central de Ajuda</a></li>
-                        <li><a href="#" class="hover:text-blue-400 transition-colors">Política de Privacidade</a></li>
-                        <li><a href="#" class="hover:text-blue-400 transition-colors">Termos de Uso</a></li>
-                        <li><a href="#" class="hover:text-blue-400 transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-blue-400 transition-colors">Suporte</a></li>
+                        <li><a href="{{ route('pages.help-center') }}" class="hover:text-blue-400 transition-colors">Central de Ajuda</a></li>
+                        <li><a href="{{ route('pages.privacy') }}" class="hover:text-blue-400 transition-colors">Política de Privacidade</a></li>
+                        <li><a href="{{ route('pages.terms') }}" class="hover:text-blue-400 transition-colors">Termos de Uso</a></li>
                     </ul>
                 </div>
             </div>

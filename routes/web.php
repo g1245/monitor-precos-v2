@@ -12,10 +12,13 @@ use App\Http\Controllers\PasswordRecoveryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserWishProductController;
 use App\Http\Controllers\NewsletterLeadController;
+use App\Http\Controllers\PagesController;
 
 // Public routes with browsing history tracking
 Route::middleware(['web', 'track.browsing'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+
+    Route::get('/categoria/{slug}', [PagesController::class, 'category'])->name('pages.category');
     
     Route::get('/{alias}/{departmentId}/dp', [DepartmentController::class, 'index'])->name('department.index');
     Route::get('/{id}/{slug}/p', [ProductController::class, 'index'])->name('product.show');
@@ -67,3 +70,11 @@ Route::prefix('wish-products')->middleware('auth')->group(function () {
     Route::patch('/{productId}/price-alert', [UserWishProductController::class, 'updatePriceAlert'])->name('wish-products.update-alert');
     Route::post('/{productId}/toggle-alert', [UserWishProductController::class, 'toggleAlert'])->name('wish-products.toggle-alert');
 });
+
+// Static pages
+Route::get('/sobre-nos', [PagesController::class, 'show'])->defaults('slug', 'sobre-nos')->name('pages.about');
+Route::get('/como-funciona', [PagesController::class, 'show'])->defaults('slug', 'como-funciona')->name('pages.how');
+Route::get('/central-de-ajuda', [PagesController::class, 'show'])->defaults('slug', 'central-de-ajuda')->name('pages.help-center');
+Route::get('/politica-de-privacidade', [PagesController::class, 'show'])->defaults('slug', 'politica-de-privacidade')->name('pages.privacy');
+Route::get('/termos-de-uso', [PagesController::class, 'show'])->defaults('slug', 'termos-de-uso')->name('pages.terms');
+

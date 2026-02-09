@@ -2,15 +2,16 @@
 
 namespace App\Providers;
 
-use App\Models\Department;
+use Livewire\Livewire;
 use App\Models\Product;
+use App\Models\Department;
 use App\Observers\ProductObserver;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
-use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->environment(['production', 'staging'])) {
+            URL::forceScheme('https');
+        }
+
         // Register model observers
         Product::observe(ProductObserver::class);
         

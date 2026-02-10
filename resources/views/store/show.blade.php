@@ -73,6 +73,66 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-2">Top 20 maiores descontos</h2>
         <h3 class="mb-4">Os maiores descontos disponíveis na loja {{ $store->name }} nesse momento.</h3>
         
+        <!-- Filtros -->
+        <div class="mb-6 bg-white p-4 rounded-lg shadow-sm">
+            <form method="GET" action="{{ route('store.show', ['slug' => $store->name, 'id' => $store->id]) }}" id="filterForm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Filtros</h3>
+                    @if(request()->hasAny(['minPrice', 'maxPrice', 'minPriceRegular', 'maxPriceRegular', 'brand', 'storeId']))
+                        <a href="{{ route('store.show', ['slug' => $store->name, 'id' => $store->id]) }}" class="text-sm text-primary hover:underline">
+                            Limpar filtros
+                        </a>
+                    @endif
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Filtro de preço -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Preço</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" name="minPrice" value="{{ request('minPrice') }}" placeholder="Mín." 
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                   onchange="document.getElementById('filterForm').submit()">
+                            <span class="text-gray-500">-</span>
+                            <input type="number" name="maxPrice" value="{{ request('maxPrice') }}" placeholder="Máx." 
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                   onchange="document.getElementById('filterForm').submit()">
+                        </div>
+                    </div>
+
+                    <!-- Filtro de preço regular -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Preço Regular</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" name="minPriceRegular" value="{{ request('minPriceRegular') }}" placeholder="Mín." 
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                   onchange="document.getElementById('filterForm').submit()">
+                            <span class="text-gray-500">-</span>
+                            <input type="number" name="maxPriceRegular" value="{{ request('maxPriceRegular') }}" placeholder="Máx." 
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                   onchange="document.getElementById('filterForm').submit()">
+                        </div>
+                    </div>
+
+                    <!-- Filtro de marca -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Marca</label>
+                        <input type="text" name="brand" value="{{ request('brand') }}" placeholder="Digite a marca" 
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                               onchange="document.getElementById('filterForm').submit()">
+                    </div>
+
+                    <!-- Filtro de loja -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ID da Loja</label>
+                        <input type="number" name="storeId" value="{{ request('storeId') }}" placeholder="ID da loja" 
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                               onchange="document.getElementById('filterForm').submit()">
+                    </div>
+                </div>
+            </form>
+        </div>
+        
         @if($store->products->count() > 0)
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach($store->products as $product)

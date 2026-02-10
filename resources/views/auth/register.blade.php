@@ -3,10 +3,10 @@
 @section('title', 'Criar Conta - Monitor de Preços')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+<div class="flex items-start justify-center bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-6">
         <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            <h2 class="mt-2 text-center text-3xl font-extrabold text-gray-900">
                 Criar nova conta
             </h2>
             <p class="mt-2 text-center text-sm text-gray-600">
@@ -17,7 +17,7 @@
             </p>
         </div>
 
-        <form class="mt-8 space-y-6" action="{{ route('auth.register') }}" method="POST">
+        <form class="mt-6 space-y-6" action="{{ route('auth.register') }}" method="POST">
             @csrf
             <div class="bg-white rounded-lg shadow p-6 space-y-6">
                 <div class="space-y-4">

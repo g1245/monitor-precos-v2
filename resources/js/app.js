@@ -18,21 +18,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Search functionality
-    const searchInput = document.querySelector('input[type="search"]');
-    if (searchInput) {
+    const searchInputs = document.querySelectorAll('input[type="search"]');
+    searchInputs.forEach(searchInput => {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const query = this.value.trim();
                 if (query) {
-                    // Placeholder for search functionality
-                    console.log('Searching for:', query);
-                    // Here you would typically redirect to search results
-                    // window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                    window.location.href = `/search?q=${encodeURIComponent(query)}`;
                 }
             }
         });
-    }
+    });
     
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

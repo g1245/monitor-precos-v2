@@ -221,14 +221,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!password || password.length === 0) {
             e.preventDefault();
-            alert('Por favor, digite uma senha.');
+            passwordStrengthDiv.classList.remove('hidden');
+            passwordStrengthBar.style.width = '0%';
+            passwordStrengthText.textContent = '';
+            passwordStrengthMessage.textContent = 'Por favor, digite uma senha.';
+            passwordStrengthMessage.style.color = '#ef4444';
             passwordInput.focus();
             return false;
         }
         
         if (currentPasswordStrength === 0) {
             e.preventDefault();
-            alert('A senha é muito fraca. Por favor, crie uma senha mais forte antes de continuar.');
+            // The indicator is already showing the weak password message
+            // Scroll to the password field to ensure user sees the message
+            passwordInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
             passwordInput.focus();
             return false;
         }

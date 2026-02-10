@@ -3,8 +3,8 @@
         <!-- Linha 1: Título da busca -->
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center">
-                @if($query)
-                    <h1 class="text-3xl font-bold text-gray-800">Resultados para "{{ $query }}"</h1>
+                @if($q)
+                    <h1 class="text-3xl font-bold text-gray-800">Resultados para "{{ $q }}"</h1>
                     <div class="ml-4 text-gray-600">{{ $products->total() }} produtos</div>
                 @else
                     <h1 class="text-3xl font-bold text-gray-800">Busca</h1>
@@ -48,7 +48,9 @@
                 @foreach($products as $product)
                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden transition-transform hover:shadow-lg">
                     <!-- Marca no topo -->
-                    <div class="p-3 text-sm font-medium text-gray-700 border-b border-gray-100">{{ $product->brand }}</div>
+                    @if($product->brand)
+                        <div class="p-3 text-sm font-medium text-gray-700 border-b border-gray-100">{{ $product->brand }}</div>
+                    @endif
                     
                     <!-- Imagem do produto -->
                     <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4">
@@ -96,7 +98,7 @@
             <div class="mt-8 flex justify-center">
                 {{ $products->links() }}
             </div>
-        @elseif($query)
+        @elseif($q)
             <!-- Mensagem de nenhum resultado -->
             <div class="bg-white rounded-lg p-8 text-center">
                 <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -10,7 +10,7 @@ class SearchProducts extends Component
 {
     use WithPagination;
 
-    public string $query = '';
+    public string $q = '';
 
     public string $sortField = 'name';
 
@@ -19,7 +19,7 @@ class SearchProducts extends Component
     public int $perPage = 12;
 
     protected $queryString = [
-        'query' => ['except' => ''],
+        'q' => ['except' => '', 'as' => 'q'],
         'sortField' => ['except' => 'name'],
         'sortDirection' => ['except' => 'asc'],
         'perPage' => ['except' => 12],
@@ -27,17 +27,7 @@ class SearchProducts extends Component
 
     public function mount(string $query = '')
     {
-        $this->query = $query;
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        $this->q = $query;
     }
 
     public function updatingPerPage()
@@ -48,8 +38,8 @@ class SearchProducts extends Component
     public function render()
     {
         $products = Product::query()
-            ->when($this->query, function ($query) {
-                return $query->search($this->query);
+            ->when($this->q, function ($query) {
+                return $query->search($this->q);
             })
             ->when($this->sortField, function ($query) {
                 return $query->orderBy($this->sortField, $this->sortDirection);

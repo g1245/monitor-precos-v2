@@ -58,6 +58,11 @@ class ContactMessageController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+            \Log::error('Failed to send contact message: ' . $e->getMessage(), [
+                'exception' => $e,
+                'email' => $request->email,
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente.',

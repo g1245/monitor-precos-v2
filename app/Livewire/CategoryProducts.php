@@ -2,17 +2,15 @@
 
 namespace App\Livewire;
 
-use App\Models\Department;
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\On;
 
-class DepartmentProducts extends Component
+class CategoryProducts extends Component
 {
     use WithPagination;
 
-    public Department $department;
+    public string $category;
     public string $sortField = 'name';
     public string $sortDirection = 'asc';
     public int $perPage = 12;
@@ -37,9 +35,9 @@ class DepartmentProducts extends Component
         'storeId' => ['except' => null],
     ];
 
-    public function mount(Department $department)
+    public function mount(string $category)
     {
-        $this->department = $department;
+        $this->category = $category;
     }
 
     public function sortBy($field)
@@ -100,15 +98,7 @@ class DepartmentProducts extends Component
 
     public function render()
     {
-        $departmentIds = [$this->department->id];
-
-        if ($this->department->hasChildren()) {
-            $departmentIds = array_merge($departmentIds, $this->department->getAllDescendantIds());
-        }
-
-        $products = Product::whereHas('departments', function ($query) use ($departmentIds) {
-            $query->whereIn('departments.id', $departmentIds);
-        })
+        $products = Product::query()
             ->when($this->minPrice !== null, function ($query) {
                 return $query->where('price', '>=', $this->minPrice);
             })
@@ -132,7 +122,7 @@ class DepartmentProducts extends Component
             })
             ->paginate($this->perPage);
 
-        return view('livewire.department-products', [
+        return view('livewire.category-products', [
             'products' => $products,
         ]);
     }

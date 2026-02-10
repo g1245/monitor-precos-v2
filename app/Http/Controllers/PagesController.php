@@ -57,6 +57,6 @@ class PagesController extends Controller
             abort(404);
         }
 
-        return view($view);
+        return view($view, ['category' => $slug]);
     }
 }

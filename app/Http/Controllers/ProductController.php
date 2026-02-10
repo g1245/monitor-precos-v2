@@ -47,6 +47,19 @@ class ProductController extends Controller
     }
 
     /**
+     * Redirect to product deep link (external store).
+     * This route is used to track clicks before redirecting to the store.
+     */
+    public function redirectToStore(int $id)
+    {
+        $product = Product::findOrFail($id);
+
+        // TODO: Add tracking logic here (e.g., log click event, update analytics)
+        
+        return redirect($product->deep_link);
+    }
+
+    /**
      * Generate mock store offers for demonstration.
      */
     private function getMockStoreOffers(Product $product): array

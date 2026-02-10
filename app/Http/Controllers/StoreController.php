@@ -38,7 +38,9 @@ class StoreController extends Controller
         $store = Store::query()
             ->where('has_public', true)
             ->with(['products' => function ($query) {
-                $query->limit(20);
+                $query->where('discount_percentage', '>', 0)
+                    ->orderBy('discount_percentage', 'desc')
+                    ->limit(20);
             }])
             ->findOrFail($id);
 

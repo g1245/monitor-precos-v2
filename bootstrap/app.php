@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'track.browsing' => \App\Http\Middleware\TrackBrowsingHistory::class,
         ]);
         $middleware->redirectGuestsTo('auth/login');
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

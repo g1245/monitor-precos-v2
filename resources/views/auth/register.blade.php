@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Medium password
             passwordStrengthBar.style.width = '66%';
             passwordStrengthBar.style.backgroundColor = '#f59e0b'; // amber-500
-            passwordStrengthText.textContent = 'Intermediária';
+            passwordStrengthText.textContent = 'Razoável';
             passwordStrengthText.style.color = '#f59e0b';
             
             passwordStrengthMessage.textContent = 'Senha razoável. Para maior segurança, adicione mais caracteres variados.';

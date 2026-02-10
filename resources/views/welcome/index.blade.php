@@ -354,20 +354,32 @@
     });
 
     // Newsletter subscription form handling
-    document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
+    const newsletterForm = document.getElementById('newsletter-form');
+    
+    if (newsletterForm) {
+        let isSubmitting = false;
         
-        const form = this;
-        const emailInput = document.getElementById('newsletter-email');
-        const submitBtn = document.getElementById('newsletter-submit');
-        const messageDiv = document.getElementById('newsletter-message');
-        
-        // Disable form during submission
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Cadastrando...';
-        messageDiv.classList.add('hidden');
-        
-        try {
+        newsletterForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Prevent multiple simultaneous submissions
+            if (isSubmitting) {
+                return;
+            }
+            
+            isSubmitting = true;
+            
+            const form = this;
+            const emailInput = document.getElementById('newsletter-email');
+            const submitBtn = document.getElementById('newsletter-submit');
+            const messageDiv = document.getElementById('newsletter-message');
+            
+            // Disable form during submission
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Cadastrando...';
+            messageDiv.classList.add('hidden');
+            
+            try {
             const formData = new FormData(form);
             
             const response = await fetch('{{ route('newsletter.subscribe') }}', {
@@ -403,9 +415,11 @@
             messageDiv.classList.add('text-red-600');
             messageDiv.textContent = 'Ocorreu um erro. Por favor, tente novamente.';
         } finally {
+            isSubmitting = false;
             submitBtn.disabled = false;
             submitBtn.textContent = 'Cadastrar';
         }
-    });
+        });
+    }
 </script>
 @endpush

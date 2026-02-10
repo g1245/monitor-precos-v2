@@ -93,14 +93,28 @@
                             </div>
                         @endif
                         
-                        <h3 class="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[2.5rem]">
+                        <div class="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[2.5rem]">
                             {{ $product->name }}
-                        </h3>
-                        
-                        @if($product->price)
-                            <div class="text-lg font-bold text-primary">
-                                R$ {{ number_format($product->price, 2, ',', '.') }}
+                        </div>
+
+                        @if($product->price_regular && $product->price_regular > $product->price)
+                            <div class="">
+                                <span class="line-through text-sm text-gray-500">de R$ {{ number_format($product->price_regular, 2, ',', '.') }}</span>
+
+                                <span class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</span>
                             </div>
+
+                            @php $discount = round((($product->price_regular - $product->price) / $product->price_regular) * 100); @endphp
+
+                            @if($discount > 1)
+                                <div class="flex items-center mt-2 mb-2">
+                                    <div class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded mr-2">
+                                        {{ $discount }}% OFF
+                                    </div>
+                                </div>
+                            @endif
+                        @else
+                            <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
                         @endif
                     </a>
                 @endforeach

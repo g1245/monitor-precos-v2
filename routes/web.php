@@ -13,6 +13,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserWishProductController;
 use App\Http\Controllers\NewsletterLeadController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ContactMessageController;
 
 // Public routes with browsing history tracking
 Route::middleware(['web', 'track.browsing'])->group(function () {
@@ -34,6 +35,9 @@ Route::get('/loja/{id}/logo', [StoreController::class, 'logo'])->name('store.log
 
 // Newsletter subscription route
 Route::post('/newsletter/subscribe', [NewsletterLeadController::class, 'store'])->name('newsletter.subscribe');
+
+// Contact message route
+Route::post('/contact-message', [ContactMessageController::class, 'store'])->name('contact-message.store');
 
 // Authentication routes
 Route::prefix('auth')->name('auth.')->group(function () {

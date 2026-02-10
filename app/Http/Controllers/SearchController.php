@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function index(string $permalink, Request $request)
+    public function index(Request $request)
     {
-        return view('search.index', ['permalink' => $permalink]);
+        $query = $request->input('q', '');
+
+        return view('search.index', ['query' => $query]);
     }
 }

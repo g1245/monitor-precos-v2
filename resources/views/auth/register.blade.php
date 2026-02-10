@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Scroll to the password field to ensure user sees the message
             passwordInput.scrollIntoView({ 
                 behavior: prefersReducedMotion.matches ? 'auto' : 'smooth', 
-                block: prefersReducedMotion.matches ? 'nearest' : 'center'
+                block: 'nearest'
             });
             passwordInput.focus();
         }

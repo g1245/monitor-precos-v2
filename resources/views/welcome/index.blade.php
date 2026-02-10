@@ -75,13 +75,13 @@
     </section>
     @endif
 
+    @if($highlights->isNotEmpty())
     <!-- Featured Categories -->
     <section class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-gray-800 mb-8">Destaques</h2>
-            
             <div class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4">
-                @forelse($highlights as $highlight)
+                @foreach($highlights as $highlight)
                 <a href="{{ $highlight->link ?: '#' }}" class="product-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 text-center hover:shadow-md transition-all">
                     <div class="relative">
                         @if($highlight->image)
@@ -95,17 +95,14 @@
                     </div>
                     <p class="text-xs text-gray-600 font-medium">{{ $highlight->title }}</p>
                 </a>
-                @empty
-                <div class="col-span-full text-center text-gray-500 py-8">
-                    <p>Nenhum destaque cadastrado no momento.</p>
-                </div>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </section>
+    @endif
 
-    <!-- Top Discounted Products -->
     @if($topDiscountedProducts->isNotEmpty())
+    <!-- Top Discounted Products -->
     <section class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-gray-800 mb-2">Maiores Descontos do Momento</h2>

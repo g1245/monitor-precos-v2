@@ -38,9 +38,8 @@ class StoreController extends Controller
         $store = Store::query()
             ->where('has_public', true)
             ->with(['products' => function ($query) {
-                $query->whereNotNull('price_regular')
-                    ->whereColumn('price_regular', '>', 'price')
-                    ->orderByRaw('((price_regular - price) / price_regular) DESC')
+                $query->where('discount_percentage', '>', 0)
+                    ->orderBy('discount_percentage', 'desc')
                     ->limit(20);
             }])
             ->findOrFail($id);

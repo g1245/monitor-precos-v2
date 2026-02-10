@@ -60,7 +60,7 @@
 
                         <!-- Action Buttons -->
                         <div class="space-y-3">
-                            <a target="_blank-{{ $product->id }}" href="{{ $product->deep_link }}" class="block w-full text-center action-button-primary text-white font-semibold py-3 px-6 rounded-lg transition-colors cursor-pointer" title="Comprar {{ $product->name }} na loja {{ $product->store->name }}">
+                            <a target="_blank-{{ $product->id }}" href="{{ route('product.redirect', $product->id) }}" class="block w-full text-center action-button-primary text-white font-semibold py-3 px-6 rounded-lg transition-colors cursor-pointer" title="Comprar {{ $product->name }} na loja {{ $product->store->name }}">
                                 Comprar
                             </a>
                             

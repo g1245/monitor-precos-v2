@@ -247,14 +247,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Scroll to the password field to ensure user sees the message
             passwordInput.scrollIntoView({ 
                 behavior: prefersReducedMotion.matches ? 'auto' : 'smooth', 
-                block: 'center' 
+                block: prefersReducedMotion.matches ? 'nearest' : 'center'
             });
             passwordInput.focus();
-            return false;
         }
         
-        // Allow submission for medium and strong passwords
-        return true;
+        // Allow submission for medium and strong passwords (default behavior)
     });
 });
 </script>

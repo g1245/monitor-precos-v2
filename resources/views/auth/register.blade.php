@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!result.criteria.numbers) missing.push('números');
             if (!result.criteria.special) missing.push('caracteres especiais');
             
-            passwordStrengthMessage.textContent = 'Senha muito fraca. Adicione: ' + missing.join(', ') + '.';
+            passwordStrengthMessage.textContent = `Senha muito fraca. Adicione: ${missing.join(', ')}.`;
             passwordStrengthMessage.style.color = '#ef4444';
         } else if (result.level === 1) {
             // Medium password
@@ -217,13 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Prevent form submission if password is weak
     registerForm.addEventListener('submit', function(e) {
-        const password = passwordInput.value;
-        
-        if (currentPasswordStrength === 0) {
+        if (currentPasswordStrength === 0 && passwordInput.value.length > 0) {
             e.preventDefault();
             // The indicator is already showing the weak password message
             // Scroll to the password field to ensure user sees the message
-            passwordInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            passwordInput.scrollIntoView({ 
+                behavior: prefersReducedMotion ? 'auto' : 'smooth', 
+                block: 'center' 
+            });
             passwordInput.focus();
             return false;
         }

@@ -52,7 +52,7 @@
                     <div id="password-strength" class="mt-2 hidden">
                         <div class="flex items-center space-x-2">
                             <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
-                                <div id="password-strength-bar" class="h-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
+                                <div id="password-strength-bar" class="h-full"></div>
                             </div>
                             <span id="password-strength-text" class="text-xs font-medium"></span>
                         </div>
@@ -97,11 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     /**
      * Calculate password strength
-     * Returns: 0 (weak), 1 (medium), 2 (strong)
+     * Returns: {level: 0|1|2, criteria: {...}, score: number}
      */
     function calculatePasswordStrength(password) {
-        if (!password) return 0;
-        
         let strength = 0;
         let criteria = {
             length: false,
@@ -110,6 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
             numbers: false,
             special: false
         };
+        
+        if (!password) {
+            return { level: 0, criteria, score: 0 };
+        }
         
         // Check length (minimum 8 characters)
         if (password.length >= 8) {
@@ -172,6 +174,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const result = calculatePasswordStrength(password);
         currentPasswordStrength = result.level;
         
+        // Respect prefers-reduced-motion for animations
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!prefersReducedMotion) {
+            passwordStrengthBar.style.transition = 'all 0.3s ease-in-out';
+        } else {
+            passwordStrengthBar.style.transition = 'none';
+        }
+        
         // Update visual indicator based on strength level
         if (result.level === 0) {
             // Weak password
@@ -187,7 +197,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!result.criteria.numbers) missing.push('números');
             if (!result.criteria.special) missing.push('caracteres especiais');
             
-            passwordStrengthMessage.textContent = `Senha muito fraca. Adicione: ${missing.join(', ')}.`;
+            // Format list with proper grammar: "item1, item2 e item3"
+            let missingText;
+            if (missing.length === 1) {
+                missingText = missing[0];
+            } else if (missing.length === 2) {
+                missingText = missing.join(' e ');
+            } else {
+                const lastItem = missing.pop();
+                missingText = missing.join(', ') + ' e ' + lastItem;
+            }
+            
+            passwordStrengthMessage.textContent = `Senha muito fraca. Adicione: ${missingText}.`;
             passwordStrengthMessage.style.color = '#ef4444';
         } else if (result.level === 1) {
             // Medium password

@@ -85,9 +85,7 @@ class StoreProducts extends Component
             ->when($this->brand !== null && $this->brand !== '', function ($query) {
                 return $query->where('brand', 'LIKE', "%{$this->brand}%");
             })
-            ->when($this->sortField, function ($query) {
-                return $query->orderBy($this->sortField, $this->sortDirection);
-            })
+            ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
         return view('livewire.store-products', [

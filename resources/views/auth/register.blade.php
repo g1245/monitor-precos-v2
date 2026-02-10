@@ -93,7 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordStrengthMessage = document.getElementById('password-strength-message');
     const registerForm = document.getElementById('register-form');
     
-    let currentPasswordStrength = 0;
+    // Cache media query for performance
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    
+    let currentPasswordStrengthLevel = 0;
     
     /**
      * Calculate password strength
@@ -165,18 +168,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function updatePasswordStrength(password) {
         if (!password || password.length === 0) {
             passwordStrengthDiv.classList.add('hidden');
-            currentPasswordStrength = 0;
+            currentPasswordStrengthLevel = 0;
             return;
         }
         
         passwordStrengthDiv.classList.remove('hidden');
         
         const result = calculatePasswordStrength(password);
-        currentPasswordStrength = result.level;
+        currentPasswordStrengthLevel = result.level;
         
         // Respect prefers-reduced-motion for animations
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!prefersReducedMotion) {
+        if (!prefersReducedMotion.matches) {
             passwordStrengthBar.style.transition = 'all 0.3s ease-in-out';
         } else {
             passwordStrengthBar.style.transition = 'none';
@@ -204,8 +206,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (missing.length === 2) {
                 missingText = missing.join(' e ');
             } else {
-                const lastItem = missing.pop();
-                missingText = missing.join(', ') + ' e ' + lastItem;
+                const lastItem = missing[missing.length - 1];
+                const otherItems = missing.slice(0, -1);
+                missingText = otherItems.join(', ') + ' e ' + lastItem;
             }
             
             passwordStrengthMessage.textContent = `Senha muito fraca. Adicione: ${missingText}.`;
@@ -238,13 +241,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Prevent form submission if password is weak
     registerForm.addEventListener('submit', function(e) {
-        if (currentPasswordStrength === 0 && passwordInput.value.length > 0) {
+        if (currentPasswordStrengthLevel === 0 && passwordInput.value.length > 0) {
             e.preventDefault();
             // The indicator is already showing the weak password message
             // Scroll to the password field to ensure user sees the message
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             passwordInput.scrollIntoView({ 
-                behavior: prefersReducedMotion ? 'auto' : 'smooth', 
+                behavior: prefersReducedMotion.matches ? 'auto' : 'smooth', 
                 block: 'center' 
             });
             passwordInput.focus();

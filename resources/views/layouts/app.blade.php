@@ -10,6 +10,7 @@
     @livewireStyles
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
+    
     <!-- Header -->
     <header class="bg-primary shadow-md">
         <div class="container mx-auto px-4">
@@ -19,9 +20,7 @@
                 <div class="flex items-center justify-between py-3">
                     <!-- Logo -->
                     <div class="flex items-center">
-                        <h1 class="text-xl font-bold text-white">
-                            Monitor de Preços
-                        </h1>
+                        <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-8">
                     </div>
 
                     <!-- Account Icon -->
@@ -61,9 +60,9 @@
             <div class="hidden md:flex items-center justify-between py-3">
                 <!-- Logo -->
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-white">
-                        Monitor de Preços
-                    </h1>
+                    <a href="/">
+                        <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-10">
+                    </a>
                 </div>
 
                 <!-- Search Bar -->

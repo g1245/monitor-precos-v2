@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!result.criteria.numbers) missing.push('números');
             if (!result.criteria.special) missing.push('caracteres especiais');
             
-            passwordStrengthMessage.textContent = 'Senha muito fraca. Adicione: ' + missing.slice(0, 2).join(', ') + '.';
+            passwordStrengthMessage.textContent = 'Senha muito fraca. Adicione: ' + missing.join(', ') + '.';
             passwordStrengthMessage.style.color = '#ef4444';
         } else if (result.level === 1) {
             // Medium password
@@ -218,17 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Prevent form submission if password is weak
     registerForm.addEventListener('submit', function(e) {
         const password = passwordInput.value;
-        
-        if (!password || password.length === 0) {
-            e.preventDefault();
-            passwordStrengthDiv.classList.remove('hidden');
-            passwordStrengthBar.style.width = '0%';
-            passwordStrengthText.textContent = '';
-            passwordStrengthMessage.textContent = 'Por favor, digite uma senha.';
-            passwordStrengthMessage.style.color = '#ef4444';
-            passwordInput.focus();
-            return false;
-        }
         
         if (currentPasswordStrength === 0) {
             e.preventDefault();

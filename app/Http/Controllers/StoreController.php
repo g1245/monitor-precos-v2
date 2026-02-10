@@ -38,14 +38,11 @@ class StoreController extends Controller
         // Get filter parameters from request
         $minPrice = $request->input('minPrice');
         $maxPrice = $request->input('maxPrice');
-        $minPriceRegular = $request->input('minPriceRegular');
-        $maxPriceRegular = $request->input('maxPriceRegular');
         $brand = $request->input('brand');
-        $storeIdFilter = $request->input('storeId');
 
         $store = Store::query()
             ->where('has_public', true)
-            ->with(['products' => function ($query) use ($minPrice, $maxPrice, $minPriceRegular, $maxPriceRegular, $brand, $storeIdFilter) {
+            ->with(['products' => function ($query) use ($minPrice, $maxPrice, $brand) {
                 $query->where('discount_percentage', '>', 0)
                     ->when($minPrice !== null, function ($q) use ($minPrice) {
                         return $q->where('price', '>=', $minPrice);
@@ -53,17 +50,8 @@ class StoreController extends Controller
                     ->when($maxPrice !== null, function ($q) use ($maxPrice) {
                         return $q->where('price', '<=', $maxPrice);
                     })
-                    ->when($minPriceRegular !== null, function ($q) use ($minPriceRegular) {
-                        return $q->where('price_regular', '>=', $minPriceRegular);
-                    })
-                    ->when($maxPriceRegular !== null, function ($q) use ($maxPriceRegular) {
-                        return $q->where('price_regular', '<=', $maxPriceRegular);
-                    })
                     ->when($brand !== null && $brand !== '', function ($q) use ($brand) {
                         return $q->where('brand', 'LIKE', "%{$brand}%");
-                    })
-                    ->when($storeIdFilter !== null, function ($q) use ($storeIdFilter) {
-                        return $q->where('store_id', $storeIdFilter);
                     })
                     ->orderBy('discount_percentage', 'desc')
                     ->limit(20);

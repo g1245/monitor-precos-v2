@@ -20,8 +20,6 @@ class DepartmentProducts extends Component
     // Filter properties
     public ?float $minPrice = null;
     public ?float $maxPrice = null;
-    public ?float $minPriceRegular = null;
-    public ?float $maxPriceRegular = null;
     public ?string $brand = null;
     public ?int $storeId = null;
 
@@ -31,8 +29,6 @@ class DepartmentProducts extends Component
         'perPage' => ['except' => 12],
         'minPrice' => ['except' => null],
         'maxPrice' => ['except' => null],
-        'minPriceRegular' => ['except' => null],
-        'maxPriceRegular' => ['except' => null],
         'brand' => ['except' => null],
         'storeId' => ['except' => null],
     ];
@@ -67,16 +63,6 @@ class DepartmentProducts extends Component
         $this->resetPage();
     }
 
-    public function updatingMinPriceRegular()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingMaxPriceRegular()
-    {
-        $this->resetPage();
-    }
-
     public function updatingBrand()
     {
         $this->resetPage();
@@ -91,8 +77,6 @@ class DepartmentProducts extends Component
     {
         $this->minPrice = null;
         $this->maxPrice = null;
-        $this->minPriceRegular = null;
-        $this->maxPriceRegular = null;
         $this->brand = null;
         $this->storeId = null;
         $this->resetPage();
@@ -114,12 +98,6 @@ class DepartmentProducts extends Component
             })
             ->when($this->maxPrice !== null, function ($query) {
                 return $query->where('price', '<=', $this->maxPrice);
-            })
-            ->when($this->minPriceRegular !== null, function ($query) {
-                return $query->where('price_regular', '>=', $this->minPriceRegular);
-            })
-            ->when($this->maxPriceRegular !== null, function ($query) {
-                return $query->where('price_regular', '<=', $this->maxPriceRegular);
             })
             ->when($this->brand !== null && $this->brand !== '', function ($query) {
                 return $query->where('brand', 'LIKE', "%{$this->brand}%");

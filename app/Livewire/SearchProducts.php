@@ -12,11 +12,9 @@ class SearchProducts extends Component
 
     public string $q = '';
 
-    public string $sortField = 'name';
-
-    public string $sortDirection = 'asc';
-
-    public int $perPage = 12;
+    public string $sortField = 'updated_at';
+    public string $sortDirection = 'desc';
+    public int $perPage = 20;
 
     // Filter properties
     public ?float $minPrice = null;
@@ -26,9 +24,9 @@ class SearchProducts extends Component
 
     protected $queryString = [
         'q' => ['except' => '', 'as' => 'q'],
-        'sortField' => ['except' => 'name'],
-        'sortDirection' => ['except' => 'asc'],
-        'perPage' => ['except' => 12],
+        'sortField' => ['except' => 'updated_at'],
+        'sortDirection' => ['except' => 'desc'],
+        'perPage' => ['except' => 20],
         'minPrice' => ['except' => null],
         'maxPrice' => ['except' => null],
         'brand' => ['except' => null],

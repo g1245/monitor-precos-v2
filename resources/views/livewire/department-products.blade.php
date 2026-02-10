@@ -49,7 +49,7 @@
                 @endif
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Filtro de preço -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Preço</label>
@@ -67,14 +67,6 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Marca</label>
                     <input type="text" wire:model.live.debounce.500ms="brand" placeholder="Digite a marca" 
                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                </div>
-
-                <!-- Filtro de loja -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Loja (ID)</label>
-                    <input type="number" wire:model.live.debounce.500ms="storeId" placeholder="ID da loja" 
-                           class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                    <p class="text-xs text-gray-500 mt-1">Informe o ID da loja para filtrar</p>
                 </div>
             </div>
         </div>

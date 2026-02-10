@@ -55,10 +55,10 @@
             <div class="flex flex-wrap items-center gap-2">
                 <div class="mb-2 md:mb-0">
                     <select wire:model.live="perPage" class="bg-white border border-gray-300 rounded-md text-gray-700 h-10 pl-5 pr-10 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="12">12 por página</option>
-                        <option value="24">24 por página</option>
-                        <option value="36">36 por página</option>
-                        <option value="48">48 por página</option>
+                        <option value="20">20 por página</option>
+                        <option value="25">25 por página</option>
+                        <option value="40">40 por página</option>
+                        <option value="60">60 por página</option>
                     </select>
                 </div>
                 

@@ -109,14 +109,15 @@ class Product extends Model
     }
 
     /**
-     * Scope to search products by name or description.
+     * Scope to search products by name, description, brand or exact SKU match.
      */
     public function scopeSearch($query, string $search)
     {
         return $query->where(function ($q) use ($search) {
-            $q->where('name', 'LIKE', "%{$search}%")
+            $q->where('sku', '=', $search)
+                ->orWhere('name', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%")
-                ->orWhere('sku', 'LIKE', "%{$search}%");
+                ->orWhere('brand', 'LIKE', "%{$search}%");
         });
     }
 

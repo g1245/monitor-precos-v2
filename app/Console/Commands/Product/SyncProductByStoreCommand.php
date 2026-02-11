@@ -58,12 +58,12 @@ class SyncProductByStoreCommand extends Command
 
             $totalPages = $products['totalPages'];
 
-            $this->info("Fetched page {$page} of products for store: {$store}");
+            $this->info("Fetched page {$page} of products for store: {$store->name}");
             $this->info("Total Pages: {$totalPages}");
 
             foreach ($products['data'] as $product) {
                 // Here you would typically save or update the product in your database
-                $this->info("Processing product ID: {$product['product_name']} for store: {$store}");
+                $this->info("Processing product ID: " . $product['aw_product_id'] . " for store: {$store->name}");
 
                 $savedProduct = ProductService::createOrUpdate(
                     new ProductDto(
@@ -81,8 +81,22 @@ class SyncProductByStoreCommand extends Command
                 );
 
                 // Sync product attributes after saving the product
-                $attributeDto = ProductAttributeDto::fromApiData($savedProduct->id, $product);
-                ProductAttributeService::sync($attributeDto);
+                ProductAttributeService::sync(
+                    ProductAttributeDto::fromApiData($savedProduct->id, $product)
+                );
+
+                // Sync product departments from category path
+                $categoryPath = $product['merchant_category'] ?? $product['merchant_product_category_path'] ?? null;
+                
+                if ($categoryPath) {
+                    $this->info("Syncing departments for product ID: " . $savedProduct->id);
+                    $this->info("Department Path: " . $categoryPath);
+
+                    ProductService::syncDepartmentsFromPath(
+                        $savedProduct->id,
+                        $categoryPath
+                    );
+                }
             }
         } while ($page < $totalPages);
 
@@ -96,7 +110,7 @@ class SyncProductByStoreCommand extends Command
     {
         $request = Http::withHeaders([
             'x-api-key' => config('services.awin.token')
-        ])->get( config('services.awin.url') . '/products', [
+        ])->get(config('services.awin.url') . '/products', [
             'store' => $storeName,
             'page' => $page,
             'limit' => $limit,

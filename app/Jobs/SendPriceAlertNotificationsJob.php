@@ -22,7 +22,7 @@ class SendPriceAlertNotificationsJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(PriceAlertService $priceAlertService): void
+    public function handle(): void
     {
         $product = Product::find($this->productId);
 
@@ -31,6 +31,6 @@ class SendPriceAlertNotificationsJob implements ShouldQueue
             return;
         }
 
-        $priceAlertService->sendPriceAlerts($product);
+        PriceAlertService::sendPriceAlerts($product);
     }
 }

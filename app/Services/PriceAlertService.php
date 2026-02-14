@@ -21,6 +21,7 @@ class PriceAlertService
         $alerts = $product->activePriceAlerts;
 
         foreach ($alerts as $alert) {
+
             if ($alert->shouldTrigger($product->price) && self::canSendNotification($alert)) {
                 try {
                     $alert->user->notify(new PriceAlertNotification($product, $alert));

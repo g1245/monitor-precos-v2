@@ -121,7 +121,7 @@
                     @endphp
 
                     <!-- First page (if separate from range) -->
-                    @if (isset($showFirstPage) && $showFirstPage)
+                    @if ($showFirstPage)
                         <button wire:click="gotoPage(1, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center justify-center w-8 h-8 text-xs font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50" aria-label="Go to page 1">
                             1
                         </button>
@@ -136,7 +136,7 @@
                     @endfor
 
                     <!-- Last page (if separate from range) -->
-                    @if (isset($showLastPage) && $showLastPage)
+                    @if ($showLastPage)
                         <span class="text-gray-700 px-1">...</span>
                         <button wire:click="gotoPage({{ $lastPage }}, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center justify-center w-8 h-8 text-xs font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50" aria-label="Go to page {{ $lastPage }}">
                             {{ $lastPage }}

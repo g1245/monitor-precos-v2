@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendWelcomeEmailJob;
 use App\Models\User;
-use App\Notifications\WelcomeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -68,7 +68,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        $user->notify(new WelcomeNotification());
+        SendWelcomeEmailJob::dispatch($user);
 
         return redirect()->route('account.dashboard')
             ->with('success', 'Conta criada com sucesso! Bem-vindo(a)!');

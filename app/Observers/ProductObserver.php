@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\SendPriceAlertNotificationsJob;
 use App\Models\Product;
 
 class ProductObserver
@@ -14,6 +15,9 @@ class ProductObserver
         // Check if price was changed and should be recorded in history
         if ($product->wasChanged('price') && $product->shouldRecordPriceHistory()) {
             $product->addPriceHistory($product->price);
+
+            // Dispatch job to send price alert notifications
+            SendPriceAlertNotificationsJob::dispatch($product->id);
         }
     }
 

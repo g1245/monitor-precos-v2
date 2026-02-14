@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\UserWishProduct;
+use App\Models\PriceAlertLog;
 use App\Notifications\PriceAlertNotification;
 use Illuminate\Support\Facades\Log;
 
@@ -15,14 +16,24 @@ class PriceAlertService
      * @param Product $product
      * @return void
      */
-    public function sendPriceAlerts(Product $product): void
+    public static function sendPriceAlerts(Product $product): void
     {
         $alerts = $product->activePriceAlerts;
 
         foreach ($alerts as $alert) {
-            if ($alert->shouldTrigger($product->price)) {
+            if ($alert->shouldTrigger($product->price) && self::canSendNotification($alert)) {
                 try {
                     $alert->user->notify(new PriceAlertNotification($product, $alert));
+
+                    // Create log entry
+                    PriceAlertLog::create([
+                        'user_id' => $alert->user_id,
+                        'product_id' => $product->id,
+                        'user_wish_product_id' => $alert->id,
+                        'price_at_notification' => $product->price,
+                        'target_price' => $alert->target_price,
+                        'notified_at' => now(),
+                    ]);
 
                     // Update last notified timestamp
                     $alert->update(['last_notified_at' => now()]);
@@ -50,10 +61,24 @@ class PriceAlertService
      * @param UserWishProduct $wish
      * @return void
      */
-    public function sendPriceAlert(UserWishProduct $wish): void
+    public static function sendPriceAlert(UserWishProduct $wish): void
     {
+        if (!self::canSendNotification($wish)) {
+            return;
+        }
+
         try {
             $wish->user->notify(new PriceAlertNotification($wish->product, $wish));
+
+            // Create log entry
+            PriceAlertLog::create([
+                'user_id' => $wish->user_id,
+                'product_id' => $wish->product_id,
+                'user_wish_product_id' => $wish->id,
+                'price_at_notification' => $wish->product->price,
+                'target_price' => $wish->target_price,
+                'notified_at' => now(),
+            ]);
 
             // Update last notified timestamp
             $wish->update(['last_notified_at' => now()]);
@@ -71,5 +96,20 @@ class PriceAlertService
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Check if a notification can be sent for this wish (throttle to once per hour).
+     *
+     * @param UserWishProduct $wish
+     * @return bool
+     */
+    private static function canSendNotification(UserWishProduct $wish): bool
+    {
+        if (!$wish->last_notified_at) {
+            return true;
+        }
+
+        return now()->diffInHours($wish->last_notified_at) >= 1;
     }
 }

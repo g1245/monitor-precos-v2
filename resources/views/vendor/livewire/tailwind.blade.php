@@ -89,27 +89,43 @@
                         $currentPage = $paginator->currentPage();
                         $lastPage = $paginator->lastPage();
                         
-                        // Calculate the range of pages to show (max 5 pages)
-                        $startPage = max(1, $currentPage - 2);
-                        $endPage = min($lastPage, $currentPage + 2);
-                        
-                        // Adjust if we're near the start or end
-                        if ($currentPage <= 3) {
-                            $endPage = min(5, $lastPage);
-                        }
-                        if ($currentPage > $lastPage - 3) {
-                            $startPage = max(1, $lastPage - 4);
+                        // Calculate the range of pages to show (max 5 pages total)
+                        if ($lastPage <= 5) {
+                            // Show all pages if 5 or less
+                            $startPage = 1;
+                            $endPage = $lastPage;
+                            $showFirstPage = false;
+                            $showLastPage = false;
+                        } else {
+                            // More than 5 pages: show window around current page
+                            if ($currentPage <= 3) {
+                                // Near start: show pages 1-5
+                                $startPage = 1;
+                                $endPage = 5;
+                                $showFirstPage = false;
+                                $showLastPage = true;
+                            } elseif ($currentPage >= $lastPage - 2) {
+                                // Near end: show last 5 pages
+                                $startPage = $lastPage - 4;
+                                $endPage = $lastPage;
+                                $showFirstPage = true;
+                                $showLastPage = false;
+                            } else {
+                                // Middle: show current page +/- 1, plus first and last
+                                $startPage = $currentPage - 1;
+                                $endPage = $currentPage + 1;
+                                $showFirstPage = true;
+                                $showLastPage = true;
+                            }
                         }
                     @endphp
 
-                    <!-- First page -->
-                    @if ($startPage > 1)
-                        <button wire:click="gotoPage(1, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center justify-center w-8 h-8 text-xs font-medium rounded-md {{ $currentPage == 1 ? 'text-white bg-primary border border-primary' : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50' }}" aria-label="Go to page 1">
+                    <!-- First page (if separate from range) -->
+                    @if (isset($showFirstPage) && $showFirstPage)
+                        <button wire:click="gotoPage(1, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center justify-center w-8 h-8 text-xs font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50" aria-label="Go to page 1">
                             1
                         </button>
-                        @if ($startPage > 2)
-                            <span class="text-gray-700 px-1">...</span>
-                        @endif
+                        <span class="text-gray-700 px-1">...</span>
                     @endif
 
                     <!-- Page numbers in range -->
@@ -119,12 +135,10 @@
                         </button>
                     @endfor
 
-                    <!-- Last page -->
-                    @if ($endPage < $lastPage)
-                        @if ($endPage < $lastPage - 1)
-                            <span class="text-gray-700 px-1">...</span>
-                        @endif
-                        <button wire:click="gotoPage({{ $lastPage }}, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center justify-center w-8 h-8 text-xs font-medium rounded-md {{ $currentPage == $lastPage ? 'text-white bg-primary border border-primary' : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50' }}" aria-label="Go to page {{ $lastPage }}">
+                    <!-- Last page (if separate from range) -->
+                    @if (isset($showLastPage) && $showLastPage)
+                        <span class="text-gray-700 px-1">...</span>
+                        <button wire:click="gotoPage({{ $lastPage }}, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center justify-center w-8 h-8 text-xs font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50" aria-label="Go to page {{ $lastPage }}">
                             {{ $lastPage }}
                         </button>
                     @endif

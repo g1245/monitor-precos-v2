@@ -21,7 +21,9 @@ class SyncProductsForStoreJob implements ShouldQueue
      */
     public function __construct(
         public Store $store
-    ) {}
+    ) {
+        $this->onQueue('imports');
+    }
 
     /**
      * Execute the job.

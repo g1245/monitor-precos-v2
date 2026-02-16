@@ -15,7 +15,9 @@ class TrackBrowsingHistoryJob implements ShouldQueue
      */
     public function __construct(
         protected array $data
-    ) {}
+    ) {
+        $this->onQueue('browsing-history');
+    }
 
     /**
      * Execute the job.

@@ -18,9 +18,13 @@ class SyncProductsForStoreJob implements ShouldQueue
      * Create a new job instance.
      *
      * @param Store $store
+     * @param int $page
+     * @param int|null $totalPages
      */
     public function __construct(
-        public Store $store
+        public Store $store,
+        public int $page = 1,
+        public ?int $totalPages = null
     ) {
         $this->onQueue('imports');
     }
@@ -32,6 +36,6 @@ class SyncProductsForStoreJob implements ShouldQueue
      */
     public function handle(): void
     {
-        ProductSyncService::syncForStore($this->store);
+        ProductSyncService::syncForStore($this->store, $this->page, $this->totalPages);
     }
 }

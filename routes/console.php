@@ -7,3 +7,6 @@ Schedule::command('app:cache-top-discounted-products')->everyFifteenMinutes();
 
 // Schedule command to create daily price history entries for all active products
 Schedule::command('app:create-today-price')->dailyAt('00:01');
+
+// Schedule command to sync product data by store every three hours
+Schedule::command('app:sync-product-by-store')->everyThreeHours();

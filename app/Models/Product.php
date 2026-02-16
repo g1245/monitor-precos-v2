@@ -139,11 +139,23 @@ class Product extends Model
 
     /**
      * Add price to history.
+     * Ensures only one price per specified date by updating if already exists.
+     * If $date is null, uses today's date.
      */
-    public function addPriceHistory(float $price): ProductPriceHistory
+    public function addPriceHistory(float $price, ?string $date = null): ProductPriceHistory
     {
+        $targetDate = $date ?? now()->toDateString();
+
+        $existing = $this->priceHistories()->whereDate('created_at', $targetDate)->first();
+
+        if ($existing) {
+            $existing->update(['price' => $price]);
+            return $existing;
+        }
+
         return $this->priceHistories()->create([
             'price' => $price,
+            'created_at' => $targetDate . ' ' . now()->toTimeString(), // Preserve time if needed, but date is key
         ]);
     }
 

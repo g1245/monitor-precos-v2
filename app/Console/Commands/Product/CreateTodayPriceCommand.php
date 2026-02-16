@@ -31,13 +31,18 @@ class CreateTodayPriceCommand extends Command
 
         $createdCount = 0;
 
-        foreach ($products as $product) {
+        $this->withProgressBar($products, function ($product) use (&$createdCount) {
             if ($product->shouldRecordPriceHistory()) {
                 $product->addPriceHistory($product->price);
                 $createdCount++;
-            }
-        }
 
+                if ($this->getOutput()->isVerbose()) {
+                    $this->info("Created price history for product: {$product->name} (ID: {$product->id})");
+                }
+            }
+        });
+
+        $this->newLine();
         $this->info("Daily price history creation completed. Created {$createdCount} new entries.");
     }
 }

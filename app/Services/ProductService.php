@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Dto\ProductDto;
 use App\Models\Product;
 use App\Models\Department;
-use Illuminate\Support\Facades\DB;
 
 class ProductService
 {

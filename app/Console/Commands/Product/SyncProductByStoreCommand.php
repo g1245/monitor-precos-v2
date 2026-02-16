@@ -80,6 +80,11 @@ class SyncProductByStoreCommand extends Command
                     )
                 );
 
+                // Record price history if price has changed
+                if ($savedProduct->shouldRecordPriceHistory()) {
+                    $savedProduct->addPriceHistory($savedProduct->price);
+                }
+
                 // Sync product attributes after saving the product
                 ProductAttributeService::sync(
                     ProductAttributeDto::fromApiData($savedProduct->id, $product)

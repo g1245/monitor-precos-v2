@@ -10,3 +10,6 @@ Schedule::command('app:create-today-price')->dailyAt('00:01');
 
 // Schedule command to sync product data by store every three hours
 Schedule::command('app:sync-product-by-store')->everyThreeHours();
+
+// Schedule command to sync top discounted products to Department 1 every hour
+Schedule::command('app:sync-top-discounted-products-to-department')->hourly();

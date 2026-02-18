@@ -22,12 +22,25 @@ class ProductSyncService
      */
     public static function syncForStore(Store $store, int $page = 1, ?int $totalPages = null): void
     {
+        $startTime = now();
         $storeName = $store->metadata['SyncStoreName'];
+
+        Log::channel('sync-store')->info("Processing page {$page} for store: {$store->name}", [
+            'store_id' => $store->id,
+            'store_name' => $store->name,
+            'page' => $page,
+            'started_at' => $startTime->format('Y-m-d H:i:s'),
+        ]);
 
         $products = self::fetchProducts($storeName, $page);
 
         if (empty($products)) {
             Log::error("Failed to fetch products for store: {$store->name} on page: {$page}");
+            Log::channel('sync-store')->error("Failed to fetch products", [
+                'store_id' => $store->id,
+                'store_name' => $store->name,
+                'page' => $page,
+            ]);
             return;
         }
 
@@ -37,6 +50,8 @@ class ProductSyncService
 
         Log::info("Fetched page {$page} of products for store: {$store->name}");
         Log::info("Total Pages: {$totalPages}");
+
+        $productsProcessed = 0;
 
         foreach ($products['data'] as $product) {
             Log::info("Processing product ID: " . $product['aw_product_id'] . " for store: {$store->name}");
@@ -78,13 +93,34 @@ class ProductSyncService
                     $categoryPath
                 );
             }
+
+            $productsProcessed++;
         }
+
+        $endTime = now();
+
+        Log::channel('sync-store')->info("Completed page {$page} for store: {$store->name}", [
+            'store_id' => $store->id,
+            'store_name' => $store->name,
+            'page' => $page,
+            'total_pages' => $totalPages,
+            'products_processed' => $productsProcessed,
+            'started_at' => $startTime->format('Y-m-d H:i:s'),
+            'finished_at' => $endTime->format('Y-m-d H:i:s'),
+            'duration_seconds' => $endTime->diffInSeconds($startTime),
+        ]);
 
         // If there are more pages, dispatch the next job
         if ($page < $totalPages) {
             \App\Jobs\SyncProductsForStoreJob::dispatch($store, $page + 1, $totalPages);
         } else {
             Log::info("Products synchronized for store: {$store->name}");
+            Log::channel('sync-store')->info("All products synchronized for store: {$store->name}", [
+                'store_id' => $store->id,
+                'store_name' => $store->name,
+                'total_pages' => $totalPages,
+                'finished_at' => now()->format('Y-m-d H:i:s'),
+            ]);
         }
     }
 

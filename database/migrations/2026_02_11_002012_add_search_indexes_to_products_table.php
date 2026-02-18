@@ -12,10 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            // FULLTEXT index for text search optimization
-            DB::statement('ALTER TABLE products ADD FULLTEXT search_index (name, description, brand)');
-        });
+        // FULLTEXT indexes are only supported in MySQL/MariaDB
+        if (config('database.default') !== 'sqlite') {
+            Schema::table('products', function (Blueprint $table) {
+                // FULLTEXT index for text search optimization
+                DB::statement('ALTER TABLE products ADD FULLTEXT search_index (name, description, brand)');
+            });
+        }
     }
 
     /**
@@ -23,8 +26,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            DB::statement('ALTER TABLE products DROP INDEX search_index');
-        });
+        // FULLTEXT indexes are only supported in MySQL/MariaDB
+        if (config('database.default') !== 'sqlite') {
+            Schema::table('products', function (Blueprint $table) {
+                DB::statement('ALTER TABLE products DROP INDEX search_index');
+            });
+        }
     }
 };

@@ -130,7 +130,7 @@ return [
         'sync-store' => [
             'driver' => 'daily',
             'path' => storage_path('logs/sync-store.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
+            'level' => env('LOG_LEVEL_SYNC_STORE', 'debug'),
             'days' => 2,
             'replace_placeholders' => true,
         ],

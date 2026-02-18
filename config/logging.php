@@ -127,6 +127,14 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'sync-store' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/sync-store.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 2,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

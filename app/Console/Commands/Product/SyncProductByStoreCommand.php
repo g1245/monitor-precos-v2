@@ -4,6 +4,7 @@ namespace App\Console\Commands\Product;
 
 use App\Models\Store;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SyncProductByStoreCommand extends Command
 {
@@ -26,7 +27,13 @@ class SyncProductByStoreCommand extends Command
      */
     public function handle()
     {
+        $startTime = now();
         $name = $this->argument('name');
+
+        Log::channel('sync-store')->info('Sync process started', [
+            'started_at' => $startTime->format('Y-m-d H:i:s'),
+            'store_filter' => $name ?? 'all stores',
+        ]);
 
         if ($name) {
             $store = Store::query()
@@ -35,6 +42,11 @@ class SyncProductByStoreCommand extends Command
 
             if (!$store) {
                 $this->error("Store not found: {$name}");
+                Log::channel('sync-store')->error('Store not found', [
+                    'store_name' => $name,
+                    'started_at' => $startTime->format('Y-m-d H:i:s'),
+                    'finished_at' => now()->format('Y-m-d H:i:s'),
+                ]);
                 return Command::FAILURE;
             }
 
@@ -50,6 +62,14 @@ class SyncProductByStoreCommand extends Command
                 $this->info("Job dispatched for store: {$store->name}");
             }
         }
+
+        $endTime = now();
+
+        Log::channel('sync-store')->info('Sync jobs dispatched', [
+            'started_at' => $startTime->format('Y-m-d H:i:s'),
+            'finished_at' => $endTime->format('Y-m-d H:i:s'),
+            'duration_seconds' => $endTime->diffInSeconds($startTime),
+        ]);
 
         return Command::SUCCESS;
     }

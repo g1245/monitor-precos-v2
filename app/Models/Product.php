@@ -29,6 +29,7 @@ class Product extends Model
         'brand',
         'image_url',
         'is_active',
+        'is_parent',
         'deep_link',
         'external_link',
     ];
@@ -43,6 +44,7 @@ class Product extends Model
         'price' => 'decimal:2',
         'price_regular' => 'decimal:2',
         'is_active' => 'boolean',
+        'is_parent' => 'integer',
         'deep_link' => 'string',
         'external_link' => 'string',
         'discount_percentage' => 'integer',
@@ -205,5 +207,45 @@ class Product extends Model
         return $this->hasMany(UserWishProduct::class)
             ->whereNotNull('target_price')
             ->where('is_active', true);
+    }
+
+    /**
+     * Check if this product is a parent product.
+     */
+    public function isParentProduct(): bool
+    {
+        return $this->is_parent === 0;
+    }
+
+    /**
+     * Check if this product is a child product.
+     */
+    public function isChildProduct(): bool
+    {
+        return $this->is_parent !== null && $this->is_parent > 0;
+    }
+
+    /**
+     * Get the parent product if this is a child product.
+     */
+    public function parentProduct(): ?Product
+    {
+        if (!$this->isChildProduct()) {
+            return null;
+        }
+
+        return Product::find($this->is_parent);
+    }
+
+    /**
+     * Get child products if this is a parent product.
+     */
+    public function childProducts()
+    {
+        if (!$this->isParentProduct()) {
+            return collect([]);
+        }
+
+        return Product::where('is_parent', $this->id)->get();
     }
 }

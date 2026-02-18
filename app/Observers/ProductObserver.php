@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Jobs\SendPriceAlertNotificationsJob;
+use App\Jobs\Product\ProcessProductJob;
 use App\Models\Product;
 
 class ProductObserver
@@ -19,6 +20,9 @@ class ProductObserver
             // Dispatch job to send price alert notifications
             SendPriceAlertNotificationsJob::dispatch($product->id);
         }
+
+        // Dispatch job to process product attributes and grouping
+        ProcessProductJob::dispatch($product->id);
     }
 
     /**
@@ -28,5 +32,8 @@ class ProductObserver
     {
         // Add initial price to history when product is created
         $product->addPriceHistory($product->price);
+
+        // Dispatch job to process product attributes and grouping
+        ProcessProductJob::dispatch($product->id);
     }
 }

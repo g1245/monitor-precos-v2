@@ -28,7 +28,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
     /**
      * The department ID for top discounts.
      */
-    private const TOP_DISCOUNTS_DEPARTMENT_ID = 1;
+    private const TOP_DISCOUNTS_DEPARTMENT_ID = 154;
 
     /**
      * Execute the console command.

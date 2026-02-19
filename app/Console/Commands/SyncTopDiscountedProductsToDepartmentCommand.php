@@ -43,7 +43,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
         $department = Department::find(self::TOP_DISCOUNTS_DEPARTMENT_ID);
         
         if (!$department) {
-            $this->error('Department with ID 1 does not exist. Please create it first.');
+            $this->error('Department with ID ' . self::TOP_DISCOUNTS_DEPARTMENT_ID . ' does not exist. Please create it first.');
             return Command::FAILURE;
         }
 
@@ -103,21 +103,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
      */
     private function getTopDiscountedProducts(int $limit)
     {
-        // Subquery to get the previous price (second to last price) for each product
-        $previousPricesSubquery = DB::table('products_prices_histories as pph1')
-            ->select('pph1.product_id', 'pph1.price as previous_price')
-            ->whereRaw('pph1.created_at = (
-                SELECT MAX(pph2.created_at) 
-                FROM products_prices_histories as pph2 
-                WHERE pph2.product_id = pph1.product_id 
-                AND pph2.created_at < (
-                    SELECT MAX(pph3.created_at) 
-                    FROM products_prices_histories as pph3 
-                    WHERE pph3.product_id = pph1.product_id
-                )
-            )');
-
-        // Main query to get products with price reductions
+        // Query to get products with the biggest discounts
         $products = Product::query()
             ->select([
                 'products.id',
@@ -125,16 +111,15 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
                 'products.price',
                 'products.price_regular',
                 'products.discount_percentage',
-                'previous_prices.previous_price',
-                DB::raw('ROUND(((previous_prices.previous_price - products.price) / previous_prices.previous_price * 100), 2) as price_reduction_percentage'),
-                DB::raw('(previous_prices.previous_price - products.price) as price_reduction_value'),
+                DB::raw('MAX(products_prices_histories.price) as previous_price'),
+                DB::raw('ROUND((1 - products.price / MAX(products_prices_histories.price)) * 100, 2) as price_reduction_percentage'),
+                DB::raw('(MAX(products_prices_histories.price) - products.price) as price_reduction_value'),
             ])
-            ->joinSub($previousPricesSubquery, 'previous_prices', function ($join) {
-                $join->on('products.id', '=', 'previous_prices.product_id');
-            })
+            ->leftJoin('products_prices_histories', 'products_prices_histories.product_id', '=', 'products.id')
             ->active()
-            ->where('products.price', '<', DB::raw('previous_prices.previous_price')) // Only products with price reduction
-            ->whereRaw('previous_prices.previous_price > 0') // Avoid division by zero
+            ->groupBy('products.id')
+            ->havingRaw('MAX(products_prices_histories.price) <> MIN(products_prices_histories.price)')
+            ->having('products.price', '=', DB::raw('MIN(products_prices_histories.price)'))
             ->orderByDesc('price_reduction_percentage')
             ->limit($limit)
             ->get();

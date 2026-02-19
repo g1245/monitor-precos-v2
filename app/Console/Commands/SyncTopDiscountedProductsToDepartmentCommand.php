@@ -103,23 +103,21 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
      */
     private function getTopDiscountedProducts(int $limit)
     {
-        // Query to get products with the biggest discounts
+        // Query to get products with the biggest discounts using subqueries to avoid GROUP BY issues
         $products = Product::query()
             ->select([
                 'products.id',
-                DB::raw('ANY_VALUE(products.name) as name'),
-                DB::raw('ANY_VALUE(products.price) as price'),
-                DB::raw('ANY_VALUE(products.price_regular) as price_regular'),
-                DB::raw('ANY_VALUE(products.discount_percentage) as discount_percentage'),
-                DB::raw('MAX(products_prices_histories.price) as previous_price'),
-                DB::raw('ROUND((1 - ANY_VALUE(products.price) / MAX(products_prices_histories.price)) * 100, 2) as price_reduction_percentage'),
-                DB::raw('(MAX(products_prices_histories.price) - ANY_VALUE(products.price)) as price_reduction_value'),
+                'products.name',
+                'products.price',
+                'products.price_regular',
+                'products.discount_percentage',
+                DB::raw('(SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) as previous_price'),
+                DB::raw('ROUND((1 - products.price / (SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id)) * 100, 2) as price_reduction_percentage'),
+                DB::raw('((SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) - products.price) as price_reduction_value'),
             ])
-            ->leftJoin('products_prices_histories', 'products_prices_histories.product_id', '=', 'products.id')
             ->active()
-            ->groupBy('products.id')
-            ->havingRaw('MAX(products_prices_histories.price) <> MIN(products_prices_histories.price)')
-            ->having('products.price', '=', DB::raw('MIN(products_prices_histories.price)'))
+            ->whereRaw('products.price = (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
+            ->whereRaw('(SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) <> (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
             ->orderByDesc('price_reduction_percentage')
             ->limit($limit)
             ->get();

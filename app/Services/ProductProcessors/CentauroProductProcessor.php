@@ -25,12 +25,35 @@ class CentauroProductProcessor extends BaseProductProcessor
             'sku' => $product->sku,
         ]);
 
-        // TODO: Implement Centauro-specific product processing logic
-        // This is where business rules for Centauro products will be applied
-        // For example:
-        // - Identify configurable products (e.g., shoes with multiple sizes)
-        // - Group products by SKU patterns
-        // - Set is_parent = 0 for parent products
-        // - Set is_parent = {parent_id} for child products
+        // Get the custom_4 attribute for this product
+        $custom4Attribute = $product->attributes()->where('key', 'custom_4')->first();
+
+        if (!$custom4Attribute) {
+            // If no custom_4, treat as standalone product (parent)
+            $product->is_parent = 0;
+            $product->save();
+            return;
+        }
+
+        $custom4Value = $custom4Attribute->description;
+
+        // Find all products from the same store with the same custom_4 value
+        $productsInGroup = Product::where('store_id', $product->store_id)
+            ->whereHas('attributes', function ($query) use ($custom4Value) {
+                $query->where('key', 'custom_4')->where('description', $custom4Value);
+            })
+            ->get();
+
+        // The product with the smallest ID is the parent
+        $parentId = $productsInGroup->min('id');
+
+        // Set is_parent accordingly
+        if ($product->id == $parentId) {
+            $product->is_parent = 0; // This is the parent
+        } else {
+            $product->is_parent = $parentId; // This is a child, reference the parent
+        }
+
+        $product->save();
     }
 }

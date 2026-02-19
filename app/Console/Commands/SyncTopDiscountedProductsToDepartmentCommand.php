@@ -107,13 +107,13 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
         $products = Product::query()
             ->select([
                 'products.id',
-                'products.name',
-                'products.price',
-                'products.price_regular',
-                'products.discount_percentage',
+                DB::raw('ANY_VALUE(products.name) as name'),
+                DB::raw('ANY_VALUE(products.price) as price'),
+                DB::raw('ANY_VALUE(products.price_regular) as price_regular'),
+                DB::raw('ANY_VALUE(products.discount_percentage) as discount_percentage'),
                 DB::raw('MAX(products_prices_histories.price) as previous_price'),
-                DB::raw('ROUND((1 - products.price / MAX(products_prices_histories.price)) * 100, 2) as price_reduction_percentage'),
-                DB::raw('(MAX(products_prices_histories.price) - products.price) as price_reduction_value'),
+                DB::raw('ROUND((1 - ANY_VALUE(products.price) / MAX(products_prices_histories.price)) * 100, 2) as price_reduction_percentage'),
+                DB::raw('(MAX(products_prices_histories.price) - ANY_VALUE(products.price)) as price_reduction_value'),
             ])
             ->leftJoin('products_prices_histories', 'products_prices_histories.product_id', '=', 'products.id')
             ->active()

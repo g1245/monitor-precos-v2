@@ -10,6 +10,11 @@
     restart-services
 @endstory
 
+@story('restart')
+    clear-caches
+    restart-services
+@endstory
+
 @task('git-update', ['on' => ['web']])
     cd /var/www/monitor-precos-v2
 

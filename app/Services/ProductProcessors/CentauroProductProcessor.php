@@ -27,6 +27,7 @@ class CentauroProductProcessor extends BaseProductProcessor
 
         // Get the custom_4 attribute for this product
         $custom4Attribute = $product->attributes()->where('key', 'custom_4')->first();
+        $colorAttribute = $product->attributes()->where('key', 'colour')->first();
 
         if (!$custom4Attribute) {
             // If no custom_4, treat as standalone product (parent)
@@ -40,12 +41,30 @@ class CentauroProductProcessor extends BaseProductProcessor
             return;
         }
 
-        $custom4Value = $custom4Attribute->description;
+        if (!$colorAttribute) {
+            // If no colour attribute, treat as standalone product (parent)
+            $product->is_parent = 0;
+            $product->save();
 
-        // Find all products from the same store with the same custom_4 value
+            Log::info('[CentauroProductProcessor] Product has no colour attribute, set as standalone parent', [
+                'product_id' => $product->id,
+            ]);
+            
+            return;
+        }
+
+        $custom4Value = $custom4Attribute->description;
+        $colorValue = $colorAttribute->description;
+
+        // Find all products from the same store with the same custom_4 value and colour    
         $productsInGroup = Product::where('store_id', $product->store_id)
             ->whereHas('attributes', function ($query) use ($custom4Value) {
                 $query->where('key', 'custom_4')->where('description', $custom4Value);
+            })
+            ->when($colorValue, function ($query) use ($colorValue) {
+                $query->whereHas('attributes', function ($q) use ($colorValue) {
+                    $q->where('key', 'colour')->where('description', $colorValue);
+                });
             })
             ->get();
 

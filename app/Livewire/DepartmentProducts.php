@@ -90,9 +90,11 @@ class DepartmentProducts extends Component
             $departmentIds = array_merge($departmentIds, $this->department->getAllDescendantIds());
         }
 
-        $products = Product::whereHas('departments', function ($query) use ($departmentIds) {
-            $query->whereIn('departments.id', $departmentIds);
-        })
+        $products = Product::query()
+            ->where('is_parent', 0)
+            ->whereHas('departments', function ($query) use ($departmentIds) {
+                $query->whereIn('departments.id', $departmentIds);
+            })
             ->when($this->minPrice !== null, function ($query) {
                 return $query->where('price', '>=', $this->minPrice);
             })

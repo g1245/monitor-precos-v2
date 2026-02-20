@@ -75,6 +75,10 @@ class SearchProducts extends Component
     public function render()
     {
         $products = Product::query()
+            ->where('is_parent', 0)
+             ->when($this->q, function ($query) {
+                return $query->search($this->q);
+            })
             ->when($this->q, function ($query) {
                 return $query->search($this->q);
             })

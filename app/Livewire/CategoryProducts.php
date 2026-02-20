@@ -83,6 +83,7 @@ class CategoryProducts extends Component
     public function render()
     {
         $products = Product::query()
+            ->where('is_parent', 0)
             ->when($this->minPrice !== null, function ($query) {
                 return $query->where('price', '>=', $this->minPrice);
             })

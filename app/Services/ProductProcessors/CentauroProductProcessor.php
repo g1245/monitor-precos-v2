@@ -71,30 +71,33 @@ class CentauroProductProcessor extends BaseProductProcessor
         // The product with the smallest ID is the parent
         $parentId = $productsInGroup->min('id');
 
-        // Set is_parent accordingly
-        if ($product->id == $parentId) {
-            $product->is_parent = 0; // This is the parent
-            
-            Log::info('[CentauroProductProcessor] Product is the parent of the group', [
-                'product_id' => $product->id,
-                'custom_4' => $custom4Value,
-            ]);
+        // Set is_parent for all products in the group
+        foreach ($productsInGroup as $groupProduct) {
+            if ($groupProduct->id == $parentId) {
+                $groupProduct->is_parent = 0; // This is the parent
+                
+                Log::info('[CentauroProductProcessor] Product is the parent of the group', [
+                    'product_id' => $groupProduct->id,
+                    'custom_4' => $custom4Value,
+                ]);
 
-        } else {
-            $product->is_parent = $parentId; // This is a child, reference the parent
+            } else {
+                $groupProduct->is_parent = $parentId; // This is a child, reference the parent
 
-            Log::info('[CentauroProductProcessor] Product is a child of the group', [
-                'product_id' => $product->id,
-                'parent_id' => $parentId,
-                'custom_4' => $custom4Value,
-            ]);
+                Log::info('[CentauroProductProcessor] Product is a child of the group', [
+                    'product_id' => $groupProduct->id,
+                    'parent_id' => $parentId,
+                    'custom_4' => $custom4Value,
+                ]);
+            }
+
+            $groupProduct->save();
         }
 
-        $product->save();
-
-        Log::info('[CentauroProductProcessor] Finished processing product for Centauro', [
-            'product_id' => $product->id,
-            'is_parent' => $product->is_parent,
+        Log::info('[CentauroProductProcessor] Finished processing product group for Centauro', [
+            'input_product_id' => $product->id,
+            'group_size' => $productsInGroup->count(),
+            'parent_id' => $parentId,
         ]);
     }
 }

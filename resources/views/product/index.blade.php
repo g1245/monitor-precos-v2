@@ -22,6 +22,9 @@
             <div class="lg:col-span-3">
                 <div class="mb-8">
                     <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{{ ucwords($product->name) }}</h1>
+                    <div class="text-sm text-gray-700 mb-2">
+                        {{ $product->sku }}
+                    </div>
                     <div class="flex items-center space-x-2 mb-4">
                         <div class="flex">
                             <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
@@ -47,12 +50,12 @@
                         <!-- Price Section -->
                         <div class="space-y-2">
                             @if($product->price_regular && $product->price_regular > $product->price)
-                                        <div class="text-lg price-original line-through text-gray-400">
-                                            de R$ {{ number_format($product->price_regular, 2, ',', '.') }}
-                                        </div>
-                                        <div class="inline-block px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-semibold mb-1">
-                                            {{ round((($product->price_regular - $product->price) / $product->price_regular) * 100) }}% OFF
-                                        </div>
+                                <div class="text-lg price-original line-through text-gray-400">
+                                    de R$ {{ number_format($product->price_regular, 2, ',', '.') }}
+                                </div>
+                                <div class="inline-block px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-semibold mb-1">
+                                    {{ round((($product->price_regular - $product->price) / $product->price_regular) * 100) }}% OFF
+                                </div>
                             @endif
                             <div class="text-3xl lg:text-4xl font-bold price-current">
                                 R$ {{ number_format($product->price, 2, ',', '.') }}

@@ -119,8 +119,8 @@
                                      class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
                                      loading="lazy">
                                 @if($product->discount_percentage)
-                                    <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                                        -{{ $product->discount_percentage }}%
+                                    <div class="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
+                                        -{{ $product->discount_percentage }}% OFF
                                     </div>
                                 @endif
                             </div>
@@ -130,8 +130,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                 </svg>
                                 @if($product->discount_percentage)
-                                    <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                                        -{{ $product->discount_percentage }}%
+                                    <div class="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
+                                        -{{ $product->discount_percentage }}% OFF
                                     </div>
                                 @endif
                             </div>
@@ -151,14 +151,6 @@
                             @if($product->price)
                                 <div class="text-lg font-bold text-primary">
                                     R$ {{ number_format($product->price, 2, ',', '.') }}
-                                </div>
-                            @endif
-
-                            @if($product->discount_percentage && $product->discount_percentage > 1)
-                                <div class="flex items-center mt-2">
-                                    <div class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
-                                        {{ $product->discount_percentage }}% OFF
-                                    </div>
                                 </div>
                             @endif
                         </div>

@@ -38,7 +38,7 @@ class CacheTopDiscountedProductsCommand extends Command
             ->where('discount_percentage', '>', 0)
             ->with('store:id,name,logo')
             ->orderBy('discount_percentage', 'desc')
-            ->limit(30)
+            ->limit(40)
             ->get([
                 'id',
                 'store_id',

@@ -34,6 +34,7 @@ class ProductAttributeDto
         public ?string $merchantProductCategoryPath = null,
         public ?string $productGTIN = null,
         public ?string $installment = null,
+        public ?string $merchantProductId = null,
     ) { }
 
     /**
@@ -67,6 +68,7 @@ class ProductAttributeDto
             'merchantProductCategoryPath' => 'merchant_product_category_path',
             'productGTIN' => 'product_GTIN',
             'installment' => 'installment',
+            'merchantProductId' => 'merchant_product_id',
         ];
 
         foreach ($mapping as $property => $key) {
@@ -111,6 +113,7 @@ class ProductAttributeDto
             merchantProductCategoryPath: $data['merchant_product_category_path'] ?? null,
             productGTIN: $data['product_GTIN'] ?? null,
             installment: $data['installment'] ?? null,
+            merchantProductId: $data['merchant_product_id'] ?? null,
         );
     }
 }

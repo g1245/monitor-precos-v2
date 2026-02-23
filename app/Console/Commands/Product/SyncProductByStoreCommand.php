@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Product;
 
+use App\Jobs\SyncProductsForStoreJob;
 use App\Models\Store;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -42,15 +43,18 @@ class SyncProductByStoreCommand extends Command
 
             if (!$store) {
                 $this->error("Store not found: {$name}");
+
                 Log::channel('sync-store')->error('Store not found', [
                     'store_name' => $name,
                     'started_at' => $startTime->format('Y-m-d H:i:s'),
                     'finished_at' => now()->format('Y-m-d H:i:s'),
                 ]);
+                
                 return Command::FAILURE;
             }
 
-            \App\Jobs\SyncProductsForStoreJob::dispatch($store);
+            SyncProductsForStoreJob::dispatch($store);
+
             $this->info("Job dispatched for store: {$store->name}");
         } else {
             $stores = Store::query()
@@ -58,7 +62,8 @@ class SyncProductByStoreCommand extends Command
                 ->get();
 
             foreach ($stores as $store) {
-                \App\Jobs\SyncProductsForStoreJob::dispatch($store);
+                SyncProductsForStoreJob::dispatch($store);
+
                 $this->info("Job dispatched for store: {$store->name}");
             }
         }

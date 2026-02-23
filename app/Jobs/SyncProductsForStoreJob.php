@@ -36,6 +36,10 @@ class SyncProductsForStoreJob implements ShouldQueue
      */
     public function handle(): void
     {
-        ProductSyncService::syncForStore($this->store, $this->page, $this->totalPages);
+        ProductSyncService::syncForStore(
+            $this->store,
+            $this->page,
+            $this->totalPages
+        );
     }
 }

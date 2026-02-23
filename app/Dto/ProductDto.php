@@ -15,6 +15,7 @@ class ProductDto
         public ?string $imageUrl = null,
         public ?string $deepLink = null,
         public ?string $externalLink = null,
+        public ?string $merchantProductId = null,
     ) { }
 
     /**
@@ -33,6 +34,7 @@ class ProductDto
             'image_url' => $this->imageUrl,
             'deep_link' => $this->deepLink,
             'external_link' => $this->externalLink,
+            'merchant_product_id' => $this->merchantProductId,
         ];
     }
 }

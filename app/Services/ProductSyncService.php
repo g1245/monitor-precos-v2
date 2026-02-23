@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Store;
-use App\Dto\ProductDto;
 use App\Dto\ProductAttributeDto;
-use App\Services\ProductService;
+use App\Dto\ProductDto;
+use App\Jobs\SyncProductsForStoreJob;
+use App\Models\Store;
 use App\Services\ProductAttributeService;
+use App\Services\ProductService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -36,11 +37,13 @@ class ProductSyncService
 
         if (empty($products)) {
             Log::error("Failed to fetch products for store: {$store->name} on page: {$page}");
+
             Log::channel('sync-store')->error("Failed to fetch products", [
                 'store_id' => $store->id,
                 'store_name' => $store->name,
                 'page' => $page,
             ]);
+            
             return;
         }
 
@@ -68,6 +71,7 @@ class ProductSyncService
                     imageUrl: $product['merchant_image_url'],
                     deepLink: $product['aw_deep_link'] ?? null,
                     externalLink: $product['merchant_deep_link'] ?? null,
+                    merchantProductId: $product['merchant_product_id'] ?? null,
                 )
             );
 
@@ -112,9 +116,10 @@ class ProductSyncService
 
         // If there are more pages, dispatch the next job
         if ($page < $totalPages) {
-            \App\Jobs\SyncProductsForStoreJob::dispatch($store, $page + 1, $totalPages);
+            SyncProductsForStoreJob::dispatch($store, $page + 1, $totalPages);
         } else {
             Log::info("Products synchronized for store: {$store->name}");
+            
             Log::channel('sync-store')->info("All products synchronized for store: {$store->name}", [
                 'store_id' => $store->id,
                 'store_name' => $store->name,

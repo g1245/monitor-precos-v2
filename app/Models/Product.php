@@ -26,6 +26,7 @@ class Product extends Model
         'price',
         'price_regular',
         'sku',
+        'merchant_product_id',
         'brand',
         'image_url',
         'is_active',

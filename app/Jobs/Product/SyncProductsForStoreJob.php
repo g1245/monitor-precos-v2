@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Product;
 
 use App\Models\Store;
 use App\Services\ProductSyncService;

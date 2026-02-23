@@ -20,7 +20,9 @@ class ProcessProductJob implements ShouldQueue
      */
     public function __construct(
         public int $productId
-    ) {}
+    ) {
+        $this->onQueue('products');
+    }
 
     /**
      * Execute the job.

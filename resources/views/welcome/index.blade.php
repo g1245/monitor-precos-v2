@@ -343,20 +343,22 @@
     });
 
     // Newsletter subscription form handling
-    const newsletterForm = document.getElementById('newsletter-form');
-    
-    if (newsletterForm) {
-        let isSubmitting = false;
+    if (!window.newsletterScriptLoaded) {
+        window.newsletterScriptLoaded = true;
+        const newsletterForm = document.getElementById('newsletter-form');
         
-        newsletterForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        if (newsletterForm) {
+            let isSubmitting = false;
             
-            // Prevent multiple simultaneous submissions
-            if (isSubmitting) {
-                return;
-            }
-            
-            isSubmitting = true;
+            newsletterForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Prevent multiple simultaneous submissions
+                if (isSubmitting) {
+                    return;
+                }
+                
+                isSubmitting = true;
             
             const form = this;
             const emailInput = document.getElementById('newsletter-email');

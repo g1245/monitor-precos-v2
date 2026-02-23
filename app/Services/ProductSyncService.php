@@ -66,7 +66,7 @@ class ProductSyncService
                     description: $product['description'] ?? null,
                     price: isset($product['search_price']) ? (float) $product['search_price'] : null,
                     priceRegular: isset($product['product_price_old']) ? (float) $product['product_price_old'] : (isset($product['base_price']) ? (float) str_replace('R$ ', '', $product['base_price']) : null),
-                    sku: $product['aw_product_id'],
+                    sku: $product['merchant_product_id'],
                     brand: $product['brand_name'] ?? null,
                     imageUrl: $product['merchant_image_url'],
                     deepLink: $product['aw_deep_link'] ?? null,

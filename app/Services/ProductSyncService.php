@@ -57,7 +57,11 @@ class ProductSyncService
         $productsProcessed = 0;
 
         foreach ($products['data'] as $product) {
-            Log::info("Processing product ID: " . $product['aw_product_id'] . " for store: {$store->name}");
+            Log::info("Processing product ID", [
+                'merchant_product_id' => $product['merchant_product_id'] ?? 'N/A',
+                'aw_product_id' => $product['aw_product_id'] ?? 'N/A',
+                'store_name' => $store->name,
+            ]);
 
             $savedProduct = ProductService::createOrUpdate(
                 new ProductDto(

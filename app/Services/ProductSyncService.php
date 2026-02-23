@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Dto\ProductAttributeDto;
 use App\Dto\ProductDto;
-use App\Jobs\SyncProductsForStoreJob;
+use App\Jobs\Product\SyncProductsForStoreJob;
 use App\Models\Store;
 use App\Services\ProductAttributeService;
 use App\Services\ProductService;

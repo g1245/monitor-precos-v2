@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Product;
 
-use App\Jobs\SyncProductsForStoreJob;
+use App\Jobs\Product\SyncProductsForStoreJob;
 use App\Models\Store;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

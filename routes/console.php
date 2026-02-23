@@ -13,3 +13,9 @@ Schedule::command('app:sync-product-by-store')->everyThreeHours();
 
 // Schedule command to sync top discounted products to Department 1 every hour
 Schedule::command('app:sync-top-discounted-products-to-department')->hourly();
+
+/** 
+ * Schedule commands for backup and cleanup of old backups
+ **/
+Schedule::command('backup:run')->dailyAt('01:00');
+Schedule::command('backup:clean')->dailyAt('02:00');

@@ -1,7 +1,7 @@
 <div class="search-products">
     <div class="container mx-auto px-4 py-8">
         <!-- Linha 1: Título da busca -->
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex justify-between items-center mb-2">
             <div class="flex items-center">
                 @if($q)
                     <h1 class="text-3xl font-bold text-gray-800">Resultados para "{{ $q }}"</h1>
@@ -11,6 +11,20 @@
                     <div class="ml-4 text-gray-600">Digite algo para buscar produtos</div>
                 @endif
             </div>
+        </div>
+
+        {{-- Dica de pesquisa por campo específico --}}
+        <div class="flex flex-wrap items-center gap-2 mb-6 text-xs text-gray-500">
+            <span>Pesquisa por campo:</span>
+            @if($searchField)
+                <span class="bg-primary/10 text-primary font-medium px-2 py-0.5 rounded">
+                    Filtrando por <strong>{{ $searchField }}</strong>
+                </span>
+            @else
+                <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">sku:ABC123</code>
+                <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">name:"tênis nike"</code>
+                <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">brand:samsung</code>
+            @endif
         </div>
         
         @if($products->total() > 0)

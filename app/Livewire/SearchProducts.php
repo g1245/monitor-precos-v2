@@ -74,13 +74,24 @@ class SearchProducts extends Component
 
     public function render()
     {
+        $parsed = $this->parseSearchQuery();
+
         $products = Product::query()
             ->where('is_parent', 0)
-             ->when($this->q, function ($query) {
-                return $query->search($this->q);
-            })
-            ->when($this->q, function ($query) {
-                return $query->search($this->q);
+            ->when($this->q, function ($query) use ($parsed) {
+                if ($parsed['field'] === 'sku') {
+                    return $query->where('sku', '=', $parsed['value']);
+                }
+
+                if ($parsed['field'] === 'name') {
+                    return $query->where('name', 'LIKE', "%{$parsed['value']}%");
+                }
+
+                if ($parsed['field'] === 'brand') {
+                    return $query->where('brand', 'LIKE', "%{$parsed['value']}%");
+                }
+
+                return $query->search($parsed['value']);
             })
             ->when($this->minPrice !== null, function ($query) {
                 return $query->where('price', '>=', $this->minPrice);
@@ -101,7 +112,32 @@ class SearchProducts extends Component
 
         return view('livewire.search-products', [
             'products' => $products,
+            'searchField' => $parsed['field'],
         ]);
+    }
+
+    /**
+     * Parse a key:value search query into field and value components.
+     *
+     * Supported syntax:
+     *   sku:ABC123
+     *   name:"tênis nike"
+     *   brand:samsung
+     *
+     * @return array{field: string|null, value: string}
+     */
+    private function parseSearchQuery(): array
+    {
+        $pattern = '/^(sku|name|brand):(?:"([^"]+)"|(\S+))/u';
+
+        if ($this->q && preg_match($pattern, $this->q, $matches)) {
+            return [
+                'field' => $matches[1],
+                'value' => $matches[2] !== '' ? $matches[2] : $matches[3],
+            ];
+        }
+
+        return ['field' => null, 'value' => $this->q];
     }
 
     /**

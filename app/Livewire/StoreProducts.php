@@ -70,6 +70,7 @@ class StoreProducts extends Component
         $this->minPrice = null;
         $this->maxPrice = null;
         $this->brand = null;
+        
         $this->resetPage();
     }
 

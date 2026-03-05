@@ -3,7 +3,6 @@
 namespace App\Services\ProductProcessors;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Log;
 
 class CentauroProductProcessor extends BaseProductProcessor
 {
@@ -20,7 +19,7 @@ class CentauroProductProcessor extends BaseProductProcessor
      */
     public function process(Product $product): void
     {
-        Log::info('[CentauroProductProcessor] Processing product for Centauro', [
+        $this->logger()->info('[CentauroProductProcessor] Processing product for Centauro', [
             'product_id' => $product->id,
             'sku' => $product->sku,
         ]);
@@ -34,7 +33,7 @@ class CentauroProductProcessor extends BaseProductProcessor
             $product->is_parent = 0;
             $product->save();
 
-            Log::info('[CentauroProductProcessor] Product has no custom_4 attribute, set as standalone parent', [
+            $this->logger()->info('[CentauroProductProcessor] Product has no custom_4 attribute, set as standalone parent', [
                 'product_id' => $product->id,
             ]);
             
@@ -46,7 +45,7 @@ class CentauroProductProcessor extends BaseProductProcessor
             $product->is_parent = 0;
             $product->save();
 
-            Log::info('[CentauroProductProcessor] Product has no colour attribute, set as standalone parent', [
+            $this->logger()->info('[CentauroProductProcessor] Product has no colour attribute, set as standalone parent', [
                 'product_id' => $product->id,
             ]);
             
@@ -76,7 +75,7 @@ class CentauroProductProcessor extends BaseProductProcessor
             if ($groupProduct->id == $parentId) {
                 $groupProduct->is_parent = 0; // This is the parent
                 
-                Log::info('[CentauroProductProcessor] Product is the parent of the group', [
+                $this->logger()->info('[CentauroProductProcessor] Product is the parent of the group', [
                     'product_id' => $groupProduct->id,
                     'custom_4' => $custom4Value,
                 ]);
@@ -84,7 +83,7 @@ class CentauroProductProcessor extends BaseProductProcessor
             } else {
                 $groupProduct->is_parent = $parentId; // This is a child, reference the parent
 
-                Log::info('[CentauroProductProcessor] Product is a child of the group', [
+                $this->logger()->info('[CentauroProductProcessor] Product is a child of the group', [
                     'product_id' => $groupProduct->id,
                     'parent_id' => $parentId,
                     'custom_4' => $custom4Value,
@@ -94,7 +93,7 @@ class CentauroProductProcessor extends BaseProductProcessor
             $groupProduct->save();
         }
 
-        Log::info('[CentauroProductProcessor] Finished processing product group for Centauro', [
+        $this->logger()->info('[CentauroProductProcessor] Finished processing product group for Centauro', [
             'input_product_id' => $product->id,
             'group_size' => $productsInGroup->count(),
             'parent_id' => $parentId,

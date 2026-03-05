@@ -3,7 +3,6 @@
 namespace App\Services\ProductProcessors;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Log;
 
 class NikeProductProcessor extends BaseProductProcessor
 {
@@ -20,10 +19,13 @@ class NikeProductProcessor extends BaseProductProcessor
      */
     public function process(Product $product): void
     {
-        Log::info('Processing product for Nike', [
+        $this->logger()->info('Processing product for Nike', [
             'product_id' => $product->id,
             'sku' => $product->sku,
         ]);
+
+        $product->is_parent = 0; // Default to not a parent product
+        $product->save();
 
         // TODO: Implement Nike-specific product processing logic
         // This is where business rules for Nike products will be applied

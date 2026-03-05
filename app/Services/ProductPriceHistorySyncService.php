@@ -1,0 +1,227 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Product;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class ProductPriceHistorySyncService
+{
+    /**
+     * Sync price history for a product from external API.
+     *
+     * @param Product $product
+     * @return array ['success' => bool, 'synced_count' => int, 'message' => string]
+     */
+    public static function syncPriceHistoryForProduct(Product $product): array
+    {
+        $startTime = now();
+
+        Log::channel('sync-price-history')->info("Starting price history sync for product", [
+            'product_id' => $product->id,
+            'product_sku' => $product->sku,
+            'product_name' => $product->name,
+            'started_at' => $startTime->format('Y-m-d H:i:s'),
+        ]);
+
+        // First, try to fetch by merchant_product_id
+        $priceHistory = self::fetchPriceHistory($product->sku, 'merchant_product_id');
+
+        // If empty, try with aw_product_id
+        if (empty($priceHistory)) {
+            Log::channel('sync-price-history')->info("No price history found with merchant_product_id, trying aw_product_id", [
+                'product_id' => $product->id,
+                'sku' => $product->sku,
+            ]);
+
+            $priceHistory = self::fetchPriceHistory($product->sku, 'aw_product_id');
+        }
+
+        if (empty($priceHistory)) {
+            Log::channel('sync-price-history')->warning("No price history found for product", [
+                'product_id' => $product->id,
+                'sku' => $product->sku,
+            ]);
+
+            return [
+                'success' => false,
+                'synced_count' => 0,
+                'message' => 'No price history found in API',
+            ];
+        }
+
+        $syncedCount = 0;
+        $latestPrice = null;
+        $latestPriceRegular = null;
+        $latestTimestamp = null;
+
+        foreach ($priceHistory as $priceEntry) {
+            try {
+                // Calculate price and price_regular from available price fields
+                $prices = self::calculatePrices($priceEntry);
+
+                if ($prices['price'] === null) {
+                    Log::channel('sync-price-history')->warning("No valid price found in entry", [
+                        'product_id' => $product->id,
+                        'entry' => $priceEntry,
+                    ]);
+                    continue;
+                }
+
+                // Extract date from timestamp
+                $timestamp = $priceEntry['timestamp'] ?? null;
+                if (!$timestamp) {
+                    Log::channel('sync-price-history')->warning("No timestamp in price entry", [
+                        'product_id' => $product->id,
+                        'entry' => $priceEntry,
+                    ]);
+                    continue;
+                }
+
+                $date = date('Y-m-d', strtotime($timestamp));
+
+                // Add price to history (updates if already exists for this date)
+                $product->addPriceHistory($prices['price'], $date);
+
+                $syncedCount++;
+
+                // Track latest entry to update product's current price
+                if ($latestTimestamp === null || strtotime($timestamp) > strtotime($latestTimestamp)) {
+                    $latestTimestamp = $timestamp;
+                    $latestPrice = $prices['price'];
+                    $latestPriceRegular = $prices['price_regular'];
+                }
+
+                Log::channel('sync-price-history')->debug("Synced price history entry", [
+                    'product_id' => $product->id,
+                    'date' => $date,
+                    'price' => $prices['price'],
+                    'price_regular' => $prices['price_regular'],
+                ]);
+
+            } catch (\Exception $e) {
+                Log::channel('sync-price-history')->error("Error syncing price entry", [
+                    'product_id' => $product->id,
+                    'entry' => $priceEntry,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        // Update product's current price with latest historical data
+        if ($latestPrice !== null) {
+            $product->update([
+                'price' => $latestPrice,
+                'price_regular' => $latestPriceRegular ?? $latestPrice,
+            ]);
+
+            Log::channel('sync-price-history')->info("Updated product current prices", [
+                'product_id' => $product->id,
+                'price' => $latestPrice,
+                'price_regular' => $latestPriceRegular,
+            ]);
+        }
+
+        $endTime = now();
+
+        Log::channel('sync-price-history')->info("Completed price history sync for product", [
+            'product_id' => $product->id,
+            'synced_count' => $syncedCount,
+            'started_at' => $startTime->format('Y-m-d H:i:s'),
+            'finished_at' => $endTime->format('Y-m-d H:i:s'),
+            'duration_seconds' => $endTime->diffInSeconds($startTime),
+        ]);
+
+        return [
+            'success' => true,
+            'synced_count' => $syncedCount,
+            'message' => "Synced {$syncedCount} price history entries",
+        ];
+    }
+
+    /**
+     * Fetch price history from the external API.
+     *
+     * @param string $identifier
+     * @param string $parameterName (merchant_product_id or aw_product_id)
+     * @return array
+     */
+    private static function fetchPriceHistory(string $identifier, string $parameterName): array
+    {
+        try {
+            /** @var \Illuminate\Http\Client\Response $response */
+            $response = Http::withHeaders([
+                'x-api-key' => config('services.awin.token')
+            ])->get(config('services.awin.url') . '/products/price-history', [
+                $parameterName => $identifier,
+            ]);
+
+            if (!$response->successful()) {
+                Log::channel('sync-price-history')->error("API request failed", [
+                    'parameter' => $parameterName,
+                    'identifier' => $identifier,
+                    'status' => $response->status(),
+                ]);
+                return [];
+            }
+
+            $data = $response->json();
+
+            return $data['prices'] ?? [];
+
+        } catch (\Exception $e) {
+            Log::channel('sync-price-history')->error("Exception fetching price history", [
+                'parameter' => $parameterName,
+                'identifier' => $identifier,
+                'error' => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Calculate price and price_regular from API price data.
+     * 
+     * Price = minimum value among all *_price fields
+     * PriceRegular = second highest value (or highest if only one value)
+     *
+     * @param array $priceData
+     * @return array ['price' => float|null, 'price_regular' => float|null]
+     */
+    private static function calculatePrices(array $priceData): array
+    {
+        $priceFields = ['search_price', 'base_price', 'display_price'];
+        $prices = [];
+
+        foreach ($priceFields as $field) {
+            if (isset($priceData[$field]) && is_numeric($priceData[$field])) {
+                $prices[] = (float) $priceData[$field];
+            }
+        }
+
+        if (empty($prices)) {
+            return ['price' => null, 'price_regular' => null];
+        }
+
+        // Sort prices in ascending order
+        sort($prices);
+
+        // Price is the minimum (first element)
+        $price = $prices[0];
+
+        // Price regular is the second highest
+        // If we have 2+ prices, get the second-to-last (second highest)
+        // Otherwise, use the highest (same as price)
+        if (count($prices) >= 2) {
+            $priceRegular = $prices[count($prices) - 2];
+        } else {
+            $priceRegular = $prices[count($prices) - 1];
+        }
+
+        return [
+            'price' => $price,
+            'price_regular' => $priceRegular,
+        ];
+    }
+}

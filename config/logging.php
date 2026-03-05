@@ -135,6 +135,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'sync-price-history' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/sync-price-history.log'),
+            'level' => env('LOG_LEVEL_SYNC_PRICE_HISTORY', 'debug'),
+            'days' => 2,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

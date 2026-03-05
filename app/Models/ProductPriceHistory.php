@@ -26,6 +26,7 @@ class ProductPriceHistory extends Model
     protected $fillable = [
         'product_id',
         'price',
+        'created_at',
     ];
 
     /**

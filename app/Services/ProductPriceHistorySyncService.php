@@ -52,9 +52,11 @@ class ProductPriceHistorySyncService
         }
 
         $syncedCount = 0;
-        $latestPrice = null;
-        $latestPriceRegular = null;
-        $latestTimestamp = null;
+
+        // The first item in the array is the most recent (latest date)
+        // Use it to update the product's current price fields
+        $mostRecentEntry = $priceHistory[0];
+        $currentPrices = self::calculatePrices($mostRecentEntry);
 
         foreach ($priceHistory as $priceEntry) {
             try {
@@ -86,13 +88,6 @@ class ProductPriceHistorySyncService
 
                 $syncedCount++;
 
-                // Track latest entry to update product's current price
-                if ($latestTimestamp === null || strtotime($timestamp) > strtotime($latestTimestamp)) {
-                    $latestTimestamp = $timestamp;
-                    $latestPrice = $prices['price'];
-                    $latestPriceRegular = $prices['price_regular'];
-                }
-
                 Log::channel('sync-price-history')->debug("Synced price history entry", [
                     'product_id' => $product->id,
                     'date' => $date,
@@ -109,17 +104,17 @@ class ProductPriceHistorySyncService
             }
         }
 
-        // Update product's current price with latest historical data
-        if ($latestPrice !== null) {
+        // Update product's current price with the most recent data (first item)
+        if ($currentPrices['price'] !== null) {
             $product->update([
-                'price' => $latestPrice,
-                'price_regular' => $latestPriceRegular ?? $latestPrice,
+                'price' => $currentPrices['price'],
+                'price_regular' => $currentPrices['price_regular'] ?? $currentPrices['price'],
             ]);
 
             Log::channel('sync-price-history')->info("Updated product current prices", [
                 'product_id' => $product->id,
-                'price' => $latestPrice,
-                'price_regular' => $latestPriceRegular,
+                'price' => $currentPrices['price'],
+                'price_regular' => $currentPrices['price_regular'],
             ]);
         }
 

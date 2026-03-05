@@ -179,7 +179,7 @@ class ProductPriceHistorySyncService
      * Calculate price and price_regular from API price data.
      * 
      * Price = minimum value among all *_price fields
-     * PriceRegular = second highest value (or highest if only one value)
+     * PriceRegular = maximum value among all *_price fields
      *
      * @param array $priceData
      * @return array ['price' => float|null, 'price_regular' => float|null]
@@ -199,20 +199,11 @@ class ProductPriceHistorySyncService
             return ['price' => null, 'price_regular' => null];
         }
 
-        // Sort prices in ascending order
-        sort($prices);
+        // Price is the minimum value
+        $price = min($prices);
 
-        // Price is the minimum (first element)
-        $price = $prices[0];
-
-        // Price regular is the second highest
-        // If we have 2+ prices, get the second-to-last (second highest)
-        // Otherwise, use the highest (same as price)
-        if (count($prices) >= 2) {
-            $priceRegular = $prices[count($prices) - 2];
-        } else {
-            $priceRegular = $prices[count($prices) - 1];
-        }
+        // Price regular is the maximum value
+        $priceRegular = max($prices);
 
         return [
             'price' => $price,

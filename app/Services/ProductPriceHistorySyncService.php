@@ -191,7 +191,7 @@ class ProductPriceHistorySyncService
      */
     private static function calculatePrices(array $priceData): array
     {
-        $priceFields = ['search_price', 'base_price', 'display_price'];
+        $priceFields = ['search_price', 'base_price', 'display_price', 'product_price_old'];
         $prices = [];
 
         foreach ($priceFields as $field) {

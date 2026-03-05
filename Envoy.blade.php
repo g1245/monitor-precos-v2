@@ -19,7 +19,6 @@
     cd /var/www/monitor-precos-v2
 
     sudo -u web01 git fetch origin main
-    sudo -u web01 git checkout main
     sudo -u web01 git reset --hard "origin/main"
 @endtask
 

@@ -47,13 +47,17 @@ class SyncProductPriceHistoryCommand extends Command
             'sku' => $sku,
         ]);
 
-        // Handle specific SKU sync
-        if ($sku) {
-            return $this->syncSingleProduct($sku, $startTime);
-        }
+        // Disable Product model events during this sync to prevent
+        // observer side effects (ProcessProductJob, SendPriceAlertNotificationsJob, etc.)
+        return Product::withoutEvents(function () use ($sku, $storeId, $startTime): int {
+            // Handle specific SKU sync
+            if ($sku) {
+                return $this->syncSingleProduct($sku, $startTime);
+            }
 
-        // Handle store filter or all products
-        return $this->syncMultipleProducts($storeId, $startTime);
+            // Handle store filter or all products
+            return $this->syncMultipleProducts($storeId, $startTime);
+        });
     }
 
     /**

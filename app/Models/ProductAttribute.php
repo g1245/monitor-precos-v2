@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,26 @@ class ProductAttribute extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductAttributeFactory> */
     use HasFactory;
+
+    /**
+     * Attribute keys that should be hidden from public-facing views.
+     * These are either internal metadata fields or generic custom slots
+     * whose values are not meaningful to end users.
+     *
+     * @var array<int, string>
+     */
+    public const IGNORED_KEYS = [
+        'custom_1',
+        'custom_2',
+        'custom_4',
+        'custom_5',
+        'custom_6',
+        'custom_7',
+        'custom_8',
+        'in_stock',
+        'stock_quantity',
+        'installment',
+    ];
 
     /**
      * The table associated with the model.
@@ -43,5 +64,13 @@ class ProductAttribute extends Model
     public function scopeByKey($query, string $key)
     {
         return $query->where('key', $key);
+    }
+
+    /**
+     * Scope to exclude attributes that are hidden from public-facing views.
+     */
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->whereNotIn('key', self::IGNORED_KEYS);
     }
 }

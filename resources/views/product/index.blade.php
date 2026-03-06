@@ -201,16 +201,20 @@
         <div class="space-y-6 mb-12">
             <h2 class="text-xl font-semibold text-gray-900">Ficha técnica</h2>
             
-            @if($product->attributes->count() > 0)
+            @if($product->visibleAttributes->count() > 0)
                 <div class="grid lg:grid-cols-2 gap-8">
                     <!-- Product Specifications -->
                     <div class="space-y-4">
                         <h3 class="text-lg font-medium text-gray-900">Características do Produto</h3>
                         
                         <div class="space-y-3">
-                            @foreach($product->attributes as $attribute)
+                            @foreach($product->visibleAttributes as $attribute)
                                 <div class="flex flex-col sm:flex-row py-3 border-b border-gray-100">
-                                    <div class="sm:w-1/2 text-sm text-gray-600 font-medium mb-1 sm:mb-0">{{ $attribute->key }}</div>
+                                    <div class="sm:w-1/2 text-sm text-gray-600 font-medium mb-1 sm:mb-0">
+                                        {{ __('product_attributes.' . $attribute->key) !== 'product_attributes.' . $attribute->key
+                                            ? __('product_attributes.' . $attribute->key)
+                                            : ucwords(str_replace('_', ' ', $attribute->key)) }}
+                                    </div>
                                     <div class="sm:w-1/2 text-sm text-gray-900">{{ $attribute->description }}</div>
                                 </div>
                             @endforeach

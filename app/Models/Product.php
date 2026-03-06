@@ -85,6 +85,15 @@ class Product extends Model
     }
 
     /**
+     * Get only the public-facing attributes for this product,
+     * excluding internal metadata keys defined in ProductAttribute::IGNORED_KEYS.
+     */
+    public function visibleAttributes(): HasMany
+    {
+        return $this->hasMany(ProductAttribute::class)->visible();
+    }
+
+    /**
      * Get price history for this product.
      */
     public function priceHistories(): HasMany

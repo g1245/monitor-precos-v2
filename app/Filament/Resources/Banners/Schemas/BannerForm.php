@@ -22,7 +22,7 @@ class BannerForm
 
                 FileUpload::make('desktop_image')
                     ->label('Imagem Desktop')
-                    ->helperText('Imagem para visualização em computadores (recomendado: 1200x250px)')
+                    ->helperText('Imagem para visualização em computadores (dimensão: 16:9)')
                     ->image()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)
@@ -32,7 +32,7 @@ class BannerForm
 
                 FileUpload::make('mobile_image')
                     ->label('Imagem Mobile')
-                    ->helperText('Imagem para visualização em dispositivos móveis (recomendado: 600x200px)')
+                    ->helperText('Imagem para visualização em dispositivos móveis (dimensão: 1:1)')
                     ->image()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)

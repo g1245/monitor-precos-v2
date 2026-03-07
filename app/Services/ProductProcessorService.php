@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Product;
-use App\Services\ProductProcessors\ProductProcessorInterface;
 use App\Services\ProductProcessors\CentauroProductProcessor;
+use App\Services\ProductProcessors\KabumProductProcessor;
 use App\Services\ProductProcessors\NikeProductProcessor;
+use App\Services\ProductProcessors\ProductProcessorInterface;
+use App\Services\ProductProcessors\TrocafyProductProcessor;
 use Illuminate\Support\Facades\Log;
 
 class ProductProcessorService
@@ -23,8 +25,10 @@ class ProductProcessorService
     public function __construct()
     {
         $this->processors = [
-            new CentauroProductProcessor(),
-            new NikeProductProcessor(),
+            new CentauroProductProcessor,
+            new NikeProductProcessor,
+            new TrocafyProductProcessor,
+            new KabumProductProcessor,
         ];
     }
 

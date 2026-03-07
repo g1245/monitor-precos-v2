@@ -30,7 +30,7 @@ class ProductService
         } 
         
         return Product::updateOrCreate(
-            ['sku' => $dto->sku],
+            ['store_id' => $dto->storeId, 'sku' => $dto->sku],
             $dto->toArray()
         );
     }

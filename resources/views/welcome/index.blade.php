@@ -4,9 +4,9 @@
 @section('content')
     @if($banners->isNotEmpty())
     <!-- Hero Banner Carousel -->
-    <section class="banner-gradient py-12 relative overflow-hidden">
+    <section class="banner-gradient py-4 relative overflow-hidden">
         <div class="container mx-auto px-4">
-            <div class="relative bg-white/10 backdrop-blur-sm rounded-2xl p-8 overflow-hidden min-h-[300px]">
+            <div class="relative bg-white/10 backdrop-blur-sm rounded-2xl p-2 overflow-hidden min-h-[300px]">
                 <!-- Carousel Container -->
                 <!-- Each banner contains two images: one for desktop (hidden md:block) and one for mobile (block md:hidden) -->
                 <div class="carousel-container relative">
@@ -22,20 +22,26 @@
                                 @endif
                                     <!-- Desktop Image -->
                                     @if($banner->desktop_image)
-                                    <img src="{{ Storage::disk('public')->url($banner->desktop_image) }}" 
-                                         alt="{{ $banner->title }}" 
-                                         class="hidden md:block w-full h-auto max-h-[250px] object-contain mx-auto">
+                                    <div class="hidden md:block w-full aspect-video overflow-hidden">
+                                        <img src="{{ Storage::disk('public')->url($banner->desktop_image) }}" 
+                                             alt="{{ $banner->title }}" 
+                                             class="w-full h-full object-cover">
+                                    </div>
                                     @endif
                                     <!-- Mobile Image -->
                                     @if($banner->mobile_image)
-                                    <img src="{{ Storage::disk('public')->url($banner->mobile_image) }}" 
-                                         alt="{{ $banner->title }}" 
-                                         class="block md:hidden w-full h-auto max-h-[200px] object-contain mx-auto">
+                                    <div class="block md:hidden w-full aspect-[3/4] overflow-hidden">
+                                        <img src="{{ Storage::disk('public')->url($banner->mobile_image) }}" 
+                                             alt="{{ $banner->title }}" 
+                                             class="w-full h-full object-cover">
+                                    </div>
                                     @elseif($banner->desktop_image)
                                     <!-- Fallback to desktop image if no mobile image -->
-                                    <img src="{{ Storage::disk('public')->url($banner->desktop_image) }}" 
-                                         alt="{{ $banner->title }}" 
-                                         class="block md:hidden w-full h-auto max-h-[200px] object-contain mx-auto">
+                                    <div class="block md:hidden w-full aspect-[3/4] overflow-hidden">
+                                        <img src="{{ Storage::disk('public')->url($banner->desktop_image) }}" 
+                                             alt="{{ $banner->title }}" 
+                                             class="w-full h-full object-cover">
+                                    </div>
                                     @endif
                                 @if($banner->link)
                                 </a>

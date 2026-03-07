@@ -63,21 +63,33 @@ class ProductSyncService
                 'store_name' => $store->name,
             ]);
 
-            $savedProduct = ProductService::createOrUpdate(
-                new ProductDto(
-                    storeId: $store->id,
-                    name: $product['product_name'],
-                    description: $product['description'] ?? null,
-                    price: isset($product['search_price']) ? (float) $product['search_price'] : null,
-                    priceRegular: isset($product['product_price_old']) ? (float) $product['product_price_old'] : (isset($product['base_price']) ? (float) str_replace('R$ ', '', $product['base_price']) : null),
-                    sku: $product['merchant_product_id'],
-                    brand: $product['brand_name'] ?? null,
-                    imageUrl: $product['merchant_image_url'],
-                    deepLink: $product['aw_deep_link'] ?? null,
-                    externalLink: $product['merchant_deep_link'] ?? null,
-                    merchantProductId: $product['merchant_product_id'] ?? null,
-                )
-            );
+            try {
+                $savedProduct = ProductService::createOrUpdate(
+                    new ProductDto(
+                        storeId: $store->id,
+                        name: $product['product_name'],
+                        description: $product['description'] ?? null,
+                        price: isset($product['search_price']) ? (float) $product['search_price'] : null,
+                        priceRegular: isset($product['product_price_old']) ? (float) $product['product_price_old'] : (isset($product['base_price']) ? (float) str_replace('R$ ', '', $product['base_price']) : null),
+                        sku: $product['merchant_product_id'],
+                        brand: $product['brand_name'] ?? null,
+                        imageUrl: $product['merchant_image_url'],
+                        deepLink: $product['aw_deep_link'] ?? null,
+                        externalLink: $product['merchant_deep_link'] ?? null,
+                        merchantProductId: $product['merchant_product_id'] ?? null,
+                    )
+                );
+            } catch (\Throwable $e) {
+                Log::error("Failed to create or update product", [
+                    'merchant_product_id' => $product['merchant_product_id'] ?? 'N/A',
+                    'aw_product_id' => $product['aw_product_id'] ?? 'N/A',
+                    'store_name' => $store->name,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                continue;
+            }
 
             // Record price history if price has changed
             if ($savedProduct->shouldRecordPriceHistory()) {

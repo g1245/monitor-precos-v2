@@ -32,7 +32,7 @@ class BannerForm
 
                 FileUpload::make('mobile_image')
                     ->label('Imagem Mobile')
-                    ->helperText('Imagem para visualização em dispositivos móveis (dimensão: 1:1)')
+                    ->helperText('Imagem para visualização em dispositivos móveis (dimensão: 3:4)')
                     ->image()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)

@@ -113,7 +113,7 @@
         </div>
 
         @if($products->count() > 0)
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach($products as $product)
                     <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" 
                        class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group">

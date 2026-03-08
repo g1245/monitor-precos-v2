@@ -86,10 +86,16 @@
                 <div class="p-3 text-sm font-medium text-gray-700 border-b border-gray-100">{{ $product->brand }}</div>
                 
                 <!-- Imagem do produto -->
-                <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4">
-                    <img src="{{ $product->image_url ?? 'https://placehold.co/800x800' }}" 
-                         alt="{{ $product->name }}" 
-                         class="w-full h-48 object-contain mx-auto">
+                <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4" x-data="{ loaded: false }">
+                    <div class="relative w-full h-48">
+                        <div x-show="!loaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded"></div>
+                        <img src="{{ $product->image_url ?? 'https://placehold.co/800x800' }}"
+                             alt="{{ $product->name }}"
+                             class="w-full h-48 object-contain mx-auto transition-opacity duration-300"
+                             :class="loaded ? 'opacity-100' : 'opacity-0'"
+                             @load="loaded = true"
+                             @error="loaded = true">
+                    </div>
                 </a>
                 
                 <!-- Detalhes do produto -->

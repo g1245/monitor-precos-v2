@@ -118,11 +118,15 @@
                     <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" 
                        class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group">
                         @if($product->image_url !== null)
-                            <div class="aspect-square mb-3 relative overflow-hidden rounded-lg bg-gray-50">
-                                <img src="{{ $product->image_url }}" 
+                            <div class="aspect-square mb-3 relative overflow-hidden rounded-lg bg-gray-50" x-data="{ loaded: false }">
+                                <div x-show="!loaded" class="absolute inset-0 bg-gray-200 animate-pulse"></div>
+                                <img src="{{ $product->image_url }}"
                                      alt="{{ $product->name }}"
-                                     class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
-                                     loading="lazy">
+                                     class="w-full h-full object-contain group-hover:scale-105 transition duration-300"
+                                     :class="loaded ? 'opacity-100' : 'opacity-0'"
+                                     loading="lazy"
+                                     @load="loaded = true"
+                                     @error="loaded = true">
                             </div>
                         @else
                             <div class="aspect-square mb-3 bg-gray-100 rounded-lg flex items-center justify-center">

@@ -39,7 +39,7 @@
         </div>
 
         <!-- Filtros avançados -->
-        <div class="mb-6 bg-white p-4 rounded-lg shadow-sm">
+        <div id="filters" class="mb-6 bg-white p-4 rounded-lg shadow-sm">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-800">Filtros</h3>
                 @if($minPrice || $maxPrice || $brand || $storeId)
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($products as $product)
             <div class="bg-white rounded-lg border border-gray-200 overflow-hidden transition-transform hover:shadow-lg">
                 <!-- Marca no topo -->

@@ -29,7 +29,7 @@
         
         @if($products->total() > 0)
             <!-- Linha 2: Filtros e paginação -->
-            <div class="flex flex-wrap justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
+            <div id="filters" class="flex flex-wrap justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
                 <!-- Filtros à esquerda -->
                 <div class="flex flex-wrap items-center gap-2">
                     <div class="mb-2 md:mb-0">
@@ -99,7 +99,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach($products as $product)
                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden transition-transform hover:shadow-lg">
                     <!-- Marca no topo -->

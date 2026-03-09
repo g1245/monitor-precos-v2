@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Concerns\ScrollsToProductsOnPageChange;
 use App\Models\Store;
 use App\Models\Product;
 use Livewire\Component;
@@ -10,6 +11,7 @@ use Livewire\WithPagination;
 class StoreProducts extends Component
 {
     use WithPagination;
+    use ScrollsToProductsOnPageChange;
 
     public Store $store;
     public string $sortField = 'created_at';

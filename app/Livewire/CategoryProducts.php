@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Concerns\ScrollsToProductsOnPageChange;
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -9,6 +10,7 @@ use Livewire\WithPagination;
 class CategoryProducts extends Component
 {
     use WithPagination;
+    use ScrollsToProductsOnPageChange;
 
     public string $category;
     public string $sortField = 'updated_at';

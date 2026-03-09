@@ -73,18 +73,19 @@
 
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($products as $product)
-            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden transition-transform hover:shadow-lg">
+            <div wire:key="department-product-{{ $product->id }}" class="bg-white rounded-lg border border-gray-200 overflow-hidden transition-transform hover:shadow-lg">
                 <!-- Marca no topo -->
                 <div class="p-3 text-sm font-medium text-gray-700 border-b border-gray-100">{{ $product->brand }}</div>
                 
                 <!-- Imagem do produto -->
-                <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4" x-data="{ loaded: false }">
+                <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4" x-data="{ loaded: false }" x-init="loaded = $refs.img.complete && $refs.img.naturalWidth > 0">
                     <div class="relative w-full h-48">
                         <div x-show="!loaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded"></div>
                         <img src="{{ $product->image_url ?? 'https://placehold.co/800x800' }}"
                              alt="{{ $product->name }}"
                              class="w-full h-48 object-contain mx-auto transition-opacity duration-300"
                              :class="loaded ? 'opacity-100' : 'opacity-0'"
+                             x-ref="img"
                              @load="loaded = true"
                              @error="loaded = true">
                     </div>

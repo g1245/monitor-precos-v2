@@ -16,7 +16,7 @@ class StoreProducts extends Component
     public Store $store;
     public string $sortField = 'created_at';
     public string $sortDirection = 'desc';
-    public int $perPage = 20;
+    public int $perPage = 30;
     
     // Filter properties
     public ?float $minPrice = null;
@@ -26,7 +26,7 @@ class StoreProducts extends Component
     protected $queryString = [
         'sortField' => ['except' => 'created_at'],
         'sortDirection' => ['except' => 'desc'],
-        'perPage' => ['except' => 20],
+        'perPage' => ['except' => 30],
         'minPrice' => ['except' => null],
         'maxPrice' => ['except' => null],
         'brand' => ['except' => null],

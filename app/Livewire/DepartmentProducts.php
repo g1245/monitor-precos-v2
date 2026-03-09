@@ -17,7 +17,7 @@ class DepartmentProducts extends Component
     public Department $department;
     public string $sortField = 'updated_at';
     public string $sortDirection = 'desc';
-    public int $perPage = 20;
+    public int $perPage = 30;
     
     // Filter properties
     public ?float $minPrice = null;
@@ -28,7 +28,7 @@ class DepartmentProducts extends Component
     protected $queryString = [
         'sortField' => ['except' => 'updated_at'],
         'sortDirection' => ['except' => 'desc'],
-        'perPage' => ['except' => 20],
+        'perPage' => ['except' => 30],
         'minPrice' => ['except' => null],
         'maxPrice' => ['except' => null],
         'brand' => ['except' => null],

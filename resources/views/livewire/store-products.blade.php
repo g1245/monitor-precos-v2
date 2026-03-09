@@ -125,8 +125,8 @@
                                      class="w-full h-full object-contain group-hover:scale-105 transition duration-300"
                                      :class="loaded ? 'opacity-100' : 'opacity-0'"
                                      loading="lazy"
-                                     @load="loaded = true"
-                                     @error="loaded = true">
+                                     x-on:load="loaded = true"
+                                     x-on:error="loaded = true">
                             </div>
                         @else
                             <div class="aspect-square mb-3 bg-gray-100 rounded-lg flex items-center justify-center">

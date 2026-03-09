@@ -9,6 +9,6 @@ trait ScrollsToProductsOnPageChange
      */
     public function updatedPage(): void
     {
-        $this->js("document.getElementById('products-grid')?.scrollIntoView({behavior: 'smooth'})");
+        $this->js("document.getElementById('filters')?.scrollIntoView({behavior: 'smooth'})");
     }
 }

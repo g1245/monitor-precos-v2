@@ -29,7 +29,7 @@
         
         @if($products->total() > 0)
             <!-- Linha 2: Filtros e paginação -->
-            <div class="flex flex-wrap justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
+            <div id="filters" class="flex flex-wrap justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
                 <!-- Filtros à esquerda -->
                 <div class="flex flex-wrap items-center gap-2">
                     <div class="mb-2 md:mb-0">

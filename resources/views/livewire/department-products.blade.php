@@ -39,7 +39,7 @@
         </div>
 
         <!-- Filtros avançados -->
-        <div class="mb-6 bg-white p-4 rounded-lg shadow-sm">
+        <div id="filters" class="mb-6 bg-white p-4 rounded-lg shadow-sm">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-800">Filtros</h3>
                 @if($minPrice || $maxPrice || $brand || $storeId)

@@ -143,6 +143,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'product-audit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/product-audit.log'),
+            'level' => 'info',
+            'days' => 2,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

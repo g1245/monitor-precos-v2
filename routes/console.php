@@ -14,6 +14,10 @@ Schedule::command('app:sync-product-by-store')->everyThreeHours();
 // Schedule command to sync top discounted products to Department 1 every hour
 Schedule::command('app:sync-top-discounted-products-to-department')->hourly();
 
+// Prune expired product audit logs daily
+Schedule::command('model:prune', ['--model' => [\App\Models\ProductAuditLog::class]])
+    ->daily();
+
 /** 
  * Schedule commands for backup and cleanup of old backups
  **/

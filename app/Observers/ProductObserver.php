@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Jobs\SendPriceAlertNotificationsJob;
 use App\Jobs\Product\ProcessProductJob;
 use App\Models\Product;
+use App\Models\ProductAuditLog;
 
 class ProductObserver
 {
@@ -20,6 +21,9 @@ class ProductObserver
         dispatch(function () use ($product): void {
             $product->addPriceHistory($product->price);
         });
+
+        // Record audit log for product creation
+        $this->upsertAuditLog($product, 'created');
     }
 
     /**
@@ -39,5 +43,30 @@ class ProductObserver
             // Dispatch job to send price alert notifications
             SendPriceAlertNotificationsJob::dispatch($product->id);
         }
+
+        // Record audit log for product update
+        $this->upsertAuditLog($product, 'updated');
+    }
+
+    /**
+     * Create or update the audit log entry for the given product.
+     * The log is unique per store/product pair and expires after two days.
+     *
+     * @param Product $product The product that was created or updated.
+     * @param string  $event   The event type ('created' or 'updated').
+     */
+    private function upsertAuditLog(Product $product, string $event): void
+    {
+        ProductAuditLog::updateOrCreate(
+            [
+                'store_id'   => $product->store_id,
+                'product_id' => $product->id,
+            ],
+            [
+                'event'            => $event,
+                'product_snapshot' => $product->getAttributes(),
+                'expires_at'       => now()->addDays(2),
+            ]
+        );
     }
 }

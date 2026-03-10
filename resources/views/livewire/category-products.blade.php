@@ -94,8 +94,8 @@
                              class="w-full h-48 object-contain mx-auto transition-opacity duration-300"
                              :class="loaded ? 'opacity-100' : 'opacity-0'"
                              x-ref="img"
-                             @load="loaded = true"
-                             @error="loaded = true">
+                             x-on:load="loaded = true"
+                             x-on:error="loaded = true">
                     </div>
                 </a>
                 

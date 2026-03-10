@@ -158,7 +158,7 @@ class ProductSyncService
         $request = Http::withHeaders([
             'x-api-key' => config('services.awin.token')
         ])->get(config('services.awin.url') . '/products', [
-            'store' => $storeName,
+            'merchant_name' => $storeName,
             'page' => $page,
             'limit' => $limit,
         ]);

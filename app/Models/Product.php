@@ -30,6 +30,7 @@ class Product extends Model
         'image_url',
         'is_active',
         'is_parent',
+        'views_count',
         'deep_link',
         'external_link',
     ];
@@ -45,6 +46,7 @@ class Product extends Model
         'price_regular' => 'decimal:2',
         'is_active' => 'boolean',
         'is_parent' => 'integer',
+        'views_count' => 'integer',
         'deep_link' => 'string',
         'external_link' => 'string',
         'discount_percentage' => 'integer',

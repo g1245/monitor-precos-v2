@@ -18,6 +18,8 @@ use App\Http\Controllers\ContactMessageController;
 // Public routes with browsing history tracking
 Route::middleware(['web', 'track.browsing'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+    Route::get('/recentes', [WelcomeController::class, 'index'])->name('welcome.recentes');
+    Route::get('/mais-acessados', [WelcomeController::class, 'index'])->name('welcome.mais-acessados');
 
     Route::get('/categoria/{slug}', [PagesController::class, 'category'])->name('pages.category');
     

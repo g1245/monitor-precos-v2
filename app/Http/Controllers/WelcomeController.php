@@ -2,32 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Banner;
 use App\Models\Highlight;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $banners = Banner::where('is_active', true)
-            ->orderBy('order')
-            ->get();
-
         $highlights = Highlight::latest()->limit(10)->get();
 
-        // Get top discounted products from cache
-        // If cache is empty, return empty collection
-        $topDiscountedProducts = Cache::get('welcome.top_discounted_products', collect());
+        $tab = match ($request->route()->getName()) {
+            'welcome.recentes'      => 'recentes',
+            'welcome.mais-acessados' => 'mais-acessados',
+            default                 => 'destaques',
+        };
 
-        // Process store logos for cached products
-        $topDiscountedProducts->each(function ($product) {
-            if ($product->store && $product->store->logo) {
-                $product->store->logo_url = Storage::disk('public')->url($product->store->logo);
-            }
-        });
-
-        return view('welcome.index', compact('banners', 'highlights', 'topDiscountedProducts'));
+        return view('welcome.index', compact('highlights', 'tab'));
     }
 }

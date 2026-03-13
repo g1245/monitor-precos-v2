@@ -14,7 +14,7 @@ class SearchProducts extends Component
 
     public string $q = '';
 
-    public string $sortField = 'updated_at';
+    public string $sortField = 'discount_percentage';
     public string $sortDirection = 'desc';
     public int $perPage = 30;
 
@@ -26,7 +26,7 @@ class SearchProducts extends Component
 
     protected $queryString = [
         'q' => ['except' => '', 'as' => 'q'],
-        'sortField' => ['except' => 'updated_at'],
+        'sortField' => ['except' => 'discount_percentage'],
         'sortDirection' => ['except' => 'desc'],
         'perPage' => ['except' => 30],
         'minPrice' => ['except' => null],

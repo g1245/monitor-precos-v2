@@ -42,6 +42,7 @@ services:
   
   embeddings:
     image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.8
+    platform: ${DOCKER_PLATFORM:-linux/arm64}
     ports:
       - ${EMBEDDINGS_PORT:-8989}:80
     environment:

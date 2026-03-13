@@ -113,7 +113,7 @@ class SearchProducts extends Component
             })
             ->paginate($this->perPage);
 
-        $stores = Store::orderBy('name')->get(['id', 'name']);
+        $stores = Store::where('has_public', true)->orderBy('name')->get(['id', 'name']);
 
         return view('livewire.search-products', [
             'products' => $products,

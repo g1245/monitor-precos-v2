@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Product;
 use App\Models\Department;
-use App\Models\ProductPriceHistory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +15,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
      * @var string
      */
     protected $signature = 'app:sync-top-discounted-products-to-department 
-                            {--limit=50 : Number of top discounted products to sync}';
+                            {--limit= : Number of top discounted products to sync (default: all)}';
 
     /**
      * The console command description.
@@ -37,7 +36,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
     {
         $this->info('Starting synchronization of top discounted products...');
 
-        $limit = (int) $this->option('limit');
+        $limit = $this->option('limit') !== null ? (int) $this->option('limit') : null;
 
         // Get or verify Department 1 exists
         $department = Department::find(self::TOP_DISCOUNTS_DEPARTMENT_ID);
@@ -59,6 +58,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
         // Step 2: Calculate price reductions and get top discounted products
         $this->info('Calculating price reductions from price history...');
         $topDiscountedProducts = $this->getTopDiscountedProducts($limit);
+
 
         if ($topDiscountedProducts->isEmpty()) {
             $this->warn('No products with price reductions found.');
@@ -101,7 +101,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
      * @param int $limit
      * @return \Illuminate\Support\Collection
      */
-    private function getTopDiscountedProducts(int $limit)
+    private function getTopDiscountedProducts(?int $limit)
     {
         // Query to get products with the biggest discounts using subqueries to avoid GROUP BY issues
         $products = Product::query()
@@ -120,7 +120,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
             ->whereRaw('products.price = (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
             ->whereRaw('(SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) <> (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
             ->orderByDesc('price_reduction_percentage')
-            ->limit($limit)
+            ->when($limit !== null, fn ($q) => $q->limit($limit))
             ->get();
 
         return $products;

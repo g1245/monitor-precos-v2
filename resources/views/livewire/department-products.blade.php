@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             @foreach($products as $product)
             <div wire:key="department-product-{{ $product->id }}" class="bg-white rounded-lg border border-gray-200 overflow-hidden transition-transform hover:shadow-lg">
                 <!-- Marca no topo -->

@@ -8,16 +8,22 @@ use Livewire\Component;
 class WelcomeProducts extends Component
 {
     public string $tab = 'destaques';
-    public int $limit = 16;
+    public int $page = 1;
     public bool $hasMore = true;
+
+    protected $queryString = [
+        'page' => ['except' => 1],
+    ];
 
     public function loadMore(): void
     {
-        $this->limit += 16;
+        $this->page++;
     }
 
     public function render()
     {
+        $limit = $this->page * 16;
+
         $query = Product::query()
             ->active()
             ->where('is_parent', 0)
@@ -30,11 +36,11 @@ class WelcomeProducts extends Component
                                        ->orderByDesc('discount_percentage'),
         };
 
-        $products = $query->limit($this->limit + 1)->get();
+        $products = $query->limit($limit + 1)->get();
 
-        $this->hasMore = $products->count() > $this->limit;
-        $products = $products->take($this->limit);
+        $this->hasMore = $products->count() > $limit;
+        $products = $products->take($limit);
 
-        return view('livewire.welcome-products', compact('products'));
+        return view('livewire.welcome-products', compact('products', 'limit'));
     }
 }

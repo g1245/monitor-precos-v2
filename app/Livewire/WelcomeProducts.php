@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class WelcomeProducts extends Component
@@ -24,6 +25,27 @@ class WelcomeProducts extends Component
     {
         $limit = $this->page * 16;
 
+        // Only cache the first page (highest traffic); subsequent pages (loadMore) bypass cache.
+        if ($this->page === 1) {
+            $cacheKey = "welcome_products:{$this->tab}";
+            $products = Cache::remember($cacheKey, now()->addMinutes(10), fn () => $this->queryProducts(17));
+        } else {
+            $products = $this->queryProducts($limit + 1);
+        }
+
+        $this->hasMore = $products->count() > $limit;
+        $products = $products->take($limit);
+
+        return view('livewire.welcome-products', compact('products', 'limit'));
+    }
+
+    /**
+     * Execute the products query for the current tab.
+     *
+     * @param  int  $fetchLimit  Number of rows to fetch (limit + 1 to detect next page).
+     */
+    private function queryProducts(int $fetchLimit)
+    {
         $query = Product::query()
             ->active()
             ->where('is_parent', 0)
@@ -36,11 +58,6 @@ class WelcomeProducts extends Component
                                        ->orderByDesc('discount_percentage'),
         };
 
-        $products = $query->limit($limit + 1)->get();
-
-        $this->hasMore = $products->count() > $limit;
-        $products = $products->take($limit);
-
-        return view('livewire.welcome-products', compact('products', 'limit'));
+        return $query->limit($fetchLimit)->get();
     }
 }

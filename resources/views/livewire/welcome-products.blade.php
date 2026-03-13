@@ -18,7 +18,7 @@
     </div>
 
     {{-- Product Grid --}}
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         @forelse($products as $product)
             <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}"
                class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group border border-gray-200">

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Livewire\Concerns\ScrollsToProductsOnPageChange;
 use App\Models\Product;
+use App\Models\Store;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -112,9 +113,12 @@ class SearchProducts extends Component
             })
             ->paginate($this->perPage);
 
+        $stores = Store::orderBy('name')->get(['id', 'name']);
+
         return view('livewire.search-products', [
             'products' => $products,
             'searchField' => $parsed['field'],
+            'stores' => $stores,
         ]);
     }
 

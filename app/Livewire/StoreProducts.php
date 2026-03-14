@@ -14,7 +14,7 @@ class StoreProducts extends Component
     use ScrollsToProductsOnPageChange;
 
     public Store $store;
-    public string $sortField = 'created_at';
+    public string $sortField = 'discount_percentage';
     public string $sortDirection = 'desc';
     public int $perPage = 30;
     
@@ -24,7 +24,7 @@ class StoreProducts extends Component
     public ?string $brand = null;
 
     protected $queryString = [
-        'sortField' => ['except' => 'created_at'],
+        'sortField' => ['except' => 'discount_percentage'],
         'sortDirection' => ['except' => 'desc'],
         'perPage' => ['except' => 30],
         'minPrice' => ['except' => null],

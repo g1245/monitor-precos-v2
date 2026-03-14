@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Livewire\Concerns\ScrollsToProductsOnPageChange;
 use App\Models\Product;
+use App\Models\Store;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,7 +15,7 @@ class SearchProducts extends Component
 
     public string $q = '';
 
-    public string $sortField = 'updated_at';
+    public string $sortField = 'discount_percentage';
     public string $sortDirection = 'desc';
     public int $perPage = 30;
 
@@ -26,7 +27,7 @@ class SearchProducts extends Component
 
     protected $queryString = [
         'q' => ['except' => '', 'as' => 'q'],
-        'sortField' => ['except' => 'updated_at'],
+        'sortField' => ['except' => 'discount_percentage'],
         'sortDirection' => ['except' => 'desc'],
         'perPage' => ['except' => 30],
         'minPrice' => ['except' => null],
@@ -112,9 +113,12 @@ class SearchProducts extends Component
             })
             ->paginate($this->perPage);
 
+        $stores = Store::where('has_public', true)->orderBy('name')->get(['id', 'name']);
+
         return view('livewire.search-products', [
             'products' => $products,
             'searchField' => $parsed['field'],
+            'stores' => $stores,
         ]);
     }
 

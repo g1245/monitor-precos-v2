@@ -15,7 +15,7 @@ class DepartmentProducts extends Component
     use ScrollsToProductsOnPageChange;
 
     public Department $department;
-    public string $sortField = 'updated_at';
+    public string $sortField = 'discount_percentage';
     public string $sortDirection = 'desc';
     public int $perPage = 30;
     
@@ -26,7 +26,7 @@ class DepartmentProducts extends Component
     public ?int $storeId = null;
 
     protected $queryString = [
-        'sortField' => ['except' => 'updated_at'],
+        'sortField' => ['except' => 'discount_percentage'],
         'sortDirection' => ['except' => 'desc'],
         'perPage' => ['except' => 30],
         'minPrice' => ['except' => null],

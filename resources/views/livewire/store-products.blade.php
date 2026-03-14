@@ -113,54 +113,58 @@
         </div>
 
         @if($products->count() > 0)
-            <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($products as $product)
-                    <a wire:key="store-product-{{ $product->id }}" href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" 
-                       class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group">
-                        @if($product->image_url !== null)
-                            <div class="aspect-square mb-3 relative overflow-hidden rounded-lg bg-gray-50" x-data="{ loaded: false }" x-init="loaded = $refs.img.complete && $refs.img.naturalWidth > 0">
-                                <div x-show="!loaded" class="absolute inset-0 bg-gray-200 animate-pulse"></div>
-                                <img src="{{ $product->image_url }}"
+                    <div wire:key="store-product-{{ $product->id }}" class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                        {{-- Imagem --}}
+                        <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}"
+                           class="block p-4"
+                           x-data="{ loaded: false }"
+                           x-init="loaded = $refs.img.complete && $refs.img.naturalWidth > 0">
+                            <div class="aspect-square relative overflow-hidden rounded-lg bg-gray-50">
+                                <div x-show="!loaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded"></div>
+                                <img src="{{ $product->image_url ?? 'https://placehold.co/800x800' }}"
                                      alt="{{ $product->name }}"
-                                     class="w-full h-full object-contain group-hover:scale-105 transition duration-300"
+                                     class="w-full h-full object-contain transition-opacity duration-300"
                                      :class="loaded ? 'opacity-100' : 'opacity-0'"
-                                     loading="lazy"
                                      x-ref="img"
                                      x-on:load="loaded = true"
                                      x-on:error="loaded = true">
                             </div>
-                        @else
-                            <div class="aspect-square mb-3 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                </svg>
-                            </div>
-                        @endif
-                        
-                        <div class="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[2.5rem]">
-                            {{ $product->name }}
+                        </a>
+
+                        {{-- Informações --}}
+                        <div class="px-4 pb-3 flex-1 flex flex-col">
+                            <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block mb-2">
+                                <h2 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary transition-colors">
+                                    {{ $product->name }}
+                                </h2>
+                            </a>
+
+                            @if($product->price_regular && $product->price_regular > $product->price)
+                                <div class="text-xs text-gray-500 line-through">de R$ {{ number_format($product->price_regular, 2, ',', '.') }}</div>
+                                <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
+                                @php $discount = round((($product->price_regular - $product->price) / $product->price_regular) * 100); @endphp
+                                @if($discount > 1)
+                                    <div class="mt-2">
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">{{ $discount }}% OFF</span>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
+                            @endif
                         </div>
 
-                        @if($product->price_regular && $product->price_regular > $product->price)
-                            <div class="">
-                                <span class="line-through text-sm text-gray-500">de R$ {{ number_format($product->price_regular, 2, ',', '.') }}</span>
-
-                                <span class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</span>
-                            </div>
-
-                            @php $discount = round((($product->price_regular - $product->price) / $product->price_regular) * 100); @endphp
-
-                            @if($discount > 1)
-                                <div class="flex items-center mt-2 mb-2">
-                                    <div class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded mr-2">
-                                        {{ $discount }}% OFF
-                                    </div>
-                                </div>
+                        {{-- Footer: Loja --}}
+                        <div class="px-4 py-2 border-t border-gray-100 flex items-center gap-1.5">
+                            @if($store->logo)
+                                <img src="{{ Storage::disk('public')->url($store->logo) }}"
+                                     alt="{{ $store->name }}"
+                                     class="w-4 h-4 object-contain">
                             @endif
-                        @else
-                            <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
-                        @endif
-                    </a>
+                            <span class="text-xs text-gray-500 truncate">{{ $store->name }}</span>
+                        </div>
+                    </div>
                 @endforeach
             </div>
         @else

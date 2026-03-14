@@ -275,6 +275,7 @@ class Product extends Model
             'discount_percentage' => (int) $this->discount_percentage,
             'sku' => $this->sku,
             'brand' => $this->brand,
+            'store_id' => (int) $this->store_id,
         ];
     }
 }

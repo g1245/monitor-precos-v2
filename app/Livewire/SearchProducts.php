@@ -79,23 +79,19 @@ class SearchProducts extends Component
     {
         $parsed = $this->parseSearchQuery();
 
-        $products = Product::query()
+        $query = Product::search($this->q);
+
+        // Apply parsed query filters
+        if ($parsed['field'] === 'sku') {
+            $query->where('sku', $parsed['value']);
+        } elseif ($parsed['field'] === 'name') {
+            $query->where('name', $parsed['value']);
+        } elseif ($parsed['field'] === 'brand') {
+            $query->where('brand', $parsed['value']);
+        }
+
+        $products = $query
             ->where('is_parent', 0)
-            ->when($this->q, function ($query) use ($parsed) {
-                if ($parsed['field'] === 'sku') {
-                    return $query->where('sku', '=', $parsed['value']);
-                }
-
-                if ($parsed['field'] === 'name') {
-                    return $query->where('name', 'LIKE', "%{$parsed['value']}%");
-                }
-
-                if ($parsed['field'] === 'brand') {
-                    return $query->where('brand', 'LIKE', "%{$parsed['value']}%");
-                }
-
-                return $query->search($parsed['value']);
-            })
             ->when($this->minPrice !== null, function ($query) {
                 return $query->where('price', '>=', $this->minPrice);
             })
@@ -103,7 +99,7 @@ class SearchProducts extends Component
                 return $query->where('price', '<=', $this->maxPrice);
             })
             ->when($this->brand !== null && $this->brand !== '', function ($query) {
-                return $query->where('brand', 'LIKE', "%{$this->brand}%");
+                return $query->where('brand', $this->brand);
             })
             ->when($this->storeId !== null, function ($query) {
                 return $query->where('store_id', $this->storeId);

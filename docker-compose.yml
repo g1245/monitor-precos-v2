@@ -40,18 +40,21 @@ services:
     networks:
       - monitor-precos-network
   
-  embeddings:
-    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.8
-    platform: ${DOCKER_PLATFORM:-linux/arm64}
+  meilisearch:
+    image: getmeili/meilisearch:latest
     ports:
-      - ${EMBEDDINGS_PORT:-8989}:80
+      - ${MEILISEARCH_PORT:-7700}:7700
     environment:
-      MODEL_ID: sentence-transformers/all-MiniLM-L6-v2
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+    volumes:
+      - meilisearch_data:/meili_data
     networks:
       - monitor-precos-network
   
 volumes:
   mariadb_data:
+    driver: local
+  meilisearch_data:
     driver: local
 
 networks:

@@ -363,7 +363,7 @@
                                 backgroundColor: 'rgba(6, 182, 212, 0.1)',
                                 borderWidth: 3,
                                 fill: true,
-                                tension: 0.3,
+                                tension: 0.1,
                                 pointBackgroundColor: '#06b6d4',
                                 pointBorderColor: '#ffffff',
                                 pointBorderWidth: 2,
@@ -398,7 +398,8 @@
                                         },
                                         font: {
                                             size: 11
-                                        }
+                                        },
+                                        maxTicksLimit: 4
                                     }
                                 },
                                 x: {

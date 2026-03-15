@@ -56,7 +56,7 @@ class ProductController extends Controller
 
         // TODO: Add tracking logic here (e.g., log click event, update analytics)
         
-        return redirect($product->deep_link);
+        return redirect($product->deep_link)->header('X-Robots-Tag', 'noindex');
     }
 
     /**

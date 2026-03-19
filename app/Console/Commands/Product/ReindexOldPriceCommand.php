@@ -4,6 +4,7 @@ namespace App\Console\Commands\Product;
 
 use App\Models\Product;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class ReindexOldPriceCommand extends Command
 {
@@ -71,6 +72,12 @@ class ReindexOldPriceCommand extends Command
             return Command::SUCCESS;
         }
 
+        $resetCount = (clone $productsQuery)
+            ->toBase()
+            ->update(['old_price' => null]);
+
+        $this->info("Reset old_price for {$resetCount} product(s) before reindex.");
+
         $this->info("Starting old_price reindex for {$totalProducts} product(s) using last 3 days history...");
 
         $processed = 0;
@@ -89,18 +96,16 @@ class ReindexOldPriceCommand extends Command
                         ->orderByDesc('id')
                         ->value('price');
 
-                    $currentOldPrice = $product->old_price !== null
-                        ? number_format((float) $product->old_price, 4, '.', '')
-                        : null;
-
                     $newOldPrice = $reindexedOldPrice !== null
                         ? number_format((float) $reindexedOldPrice, 4, '.', '')
                         : null;
 
-                    if ($currentOldPrice !== $newOldPrice) {
-                        $product->updateQuietly([
-                            'old_price' => $reindexedOldPrice,
-                        ]);
+                    if ($newOldPrice !== null) {
+                        DB::table('products')
+                            ->where('id', $product->id)
+                            ->update([
+                                'old_price' => $reindexedOldPrice,
+                            ]);
 
                         $updated++;
                     }

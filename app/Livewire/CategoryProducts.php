@@ -107,7 +107,7 @@ class CategoryProducts extends Component
                 return $query->where('store_id', $this->storeId);
             })
             ->when($this->recentDiscountOnly, function ($query) {
-                return $query->withRecentDiscount(3);
+                return $query->withRecentPriceChange(3);
             })
             ->when($this->sortField, function ($query) {
                 return $query->orderBy($this->sortField, $this->sortDirection);

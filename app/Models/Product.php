@@ -154,11 +154,12 @@ class Product extends Model
     }
 
     /**
-     * Scope to get products with recent real discount in the given window.
+     * Scope to get products with price changes in the given day window.
      */
-    public function scopeWithRecentDiscount($query, int $days = 3)
+    public function scopeWithRecentPriceChange($query, int $days = 3)
     {
-        return $query->withDiscount()
+        return $query->whereNotNull('old_price')
+            ->whereColumn('old_price', '<>', 'price')
             ->where('updated_at', '>=', now()->subDays($days));
     }
 

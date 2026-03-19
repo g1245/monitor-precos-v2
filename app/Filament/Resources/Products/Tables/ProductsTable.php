@@ -59,8 +59,8 @@ class ProductsTable
                     ->relationship('store', 'name')
                     ->label('Store'),
                 Filter::make('recent_discount')
-                    ->label('Desconto recente (3 dias)')
-                    ->query(fn ($query) => $query->withRecentDiscount(3)),
+                    ->label('Alteração de preço recente')
+                    ->query(fn ($query) => $query->withRecentPriceChange(3)),
             ])
             ->recordActions([
                 Action::make('view_product')

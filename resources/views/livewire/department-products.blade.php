@@ -72,7 +72,7 @@
                 <div class="lg:col-span-2">
                     <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
                         <input type="checkbox" wire:model.live="recentDiscountOnly" class="rounded border-gray-300 text-primary focus:ring-primary">
-                        Somente descontos recentes (3 dias)
+                        Somente com alteração de preço recente
                     </label>
                 </div>
             </div>

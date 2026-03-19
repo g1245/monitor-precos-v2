@@ -99,7 +99,7 @@ class StoreProducts extends Component
                 return $query->where('brand', 'LIKE', "%{$this->brand}%");
             })
             ->when($this->recentDiscountOnly, function ($query) {
-                return $query->withRecentDiscount(3);
+                return $query->withRecentPriceChange(3);
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);

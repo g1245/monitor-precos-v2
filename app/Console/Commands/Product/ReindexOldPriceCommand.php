@@ -100,7 +100,7 @@ class ReindexOldPriceCommand extends Command
 
                     $reindexedOldPrice = $product->priceHistories()
                         ->where('created_at', '>=', now()->subDays($days))
-                        ->where('price', '<>', $product->price)
+                        ->where('price', '>', $product->price)
                         ->orderByDesc('created_at')
                         ->orderByDesc('id')
                         ->value('price');

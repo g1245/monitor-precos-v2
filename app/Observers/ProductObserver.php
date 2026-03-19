@@ -34,6 +34,16 @@ class ProductObserver
         // Dispatch job to process product attributes and grouping
         ProcessProductJob::dispatch($product->id);
 
+        if ($product->wasChanged('price')) {
+            $previousPrice = $product->getOriginal('price');
+
+            if ($previousPrice !== null) {
+                $product->updateQuietly([
+                    'old_price' => $previousPrice,
+                ]);
+            }
+        }
+
         // Check if price was changed and should be recorded in history
         if ($product->wasChanged('price') && $product->shouldRecordPriceHistory()) {
             dispatch(function () use ($product): void {

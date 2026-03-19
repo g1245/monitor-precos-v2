@@ -22,6 +22,7 @@ class StoreProducts extends Component
     public ?float $minPrice = null;
     public ?float $maxPrice = null;
     public ?string $brand = null;
+    public bool $recentDiscountOnly = false;
 
     protected $queryString = [
         'sortField' => ['except' => 'discount_percentage'],
@@ -30,6 +31,7 @@ class StoreProducts extends Component
         'minPrice' => ['except' => null],
         'maxPrice' => ['except' => null],
         'brand' => ['except' => null],
+        'recentDiscountOnly' => ['except' => false],
     ];
 
     public function mount(Store $store)
@@ -67,11 +69,17 @@ class StoreProducts extends Component
         $this->resetPage();
     }
 
+    public function updatingRecentDiscountOnly()
+    {
+        $this->resetPage();
+    }
+
     public function clearFilters()
     {
         $this->minPrice = null;
         $this->maxPrice = null;
         $this->brand = null;
+        $this->recentDiscountOnly = false;
         
         $this->resetPage();
     }
@@ -89,6 +97,9 @@ class StoreProducts extends Component
             })
             ->when($this->brand !== null && $this->brand !== '', function ($query) {
                 return $query->where('brand', 'LIKE', "%{$this->brand}%");
+            })
+            ->when($this->recentDiscountOnly, function ($query) {
+                return $query->withRecentPriceChange(3);
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);

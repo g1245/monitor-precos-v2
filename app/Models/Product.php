@@ -23,6 +23,7 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'old_price',
         'price_regular',
         'sku',
         'merchant_product_id',
@@ -43,6 +44,7 @@ class Product extends Model
     protected $casts = [
         'store_id' => 'integer',
         'price' => 'decimal:2',
+        'old_price' => 'decimal:2',
         'price_regular' => 'decimal:2',
         'is_active' => 'boolean',
         'is_parent' => 'integer',
@@ -140,6 +142,25 @@ class Product extends Model
     public function scopePriceBetween($query, float $min, float $max)
     {
         return $query->whereBetween('price', [$min, $max]);
+    }
+
+    /**
+     * Scope to get products with a real discount (old_price > price).
+     */
+    public function scopeWithDiscount($query)
+    {
+        return $query->whereNotNull('old_price')
+            ->whereColumn('old_price', '>', 'price');
+    }
+
+    /**
+     * Scope to get products with price changes in the given day window.
+     */
+    public function scopeWithRecentPriceChange($query, int $days = 3)
+    {
+        return $query->whereNotNull('old_price')
+            ->whereColumn('old_price', '<>', 'price')
+            ->where('updated_at', '>=', now()->subDays($days));
     }
 
     /**

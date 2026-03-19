@@ -42,7 +42,7 @@
         <div id="filters" class="mb-6 bg-white p-4 rounded-lg shadow-sm">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-800">Filtros</h3>
-                @if($minPrice || $maxPrice || $brand || $storeId)
+                @if($minPrice || $maxPrice || $brand || $storeId || $recentDiscountOnly)
                     <button wire:click="clearFilters" class="text-sm text-primary hover:underline">
                         Limpar filtros
                     </button>
@@ -75,6 +75,13 @@
                     <input type="number" wire:model.live.debounce.500ms="storeId" placeholder="ID da loja" 
                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                     <p class="text-xs text-gray-500 mt-1">Informe o ID da loja para filtrar</p>
+                </div>
+
+                <div class="md:col-span-2 lg:col-span-3">
+                    <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                        <input type="checkbox" wire:model.live="recentDiscountOnly" class="rounded border-gray-300 text-primary focus:ring-primary">
+                        Somente com alteração de preço recente
+                    </label>
                 </div>
             </div>
         </div>

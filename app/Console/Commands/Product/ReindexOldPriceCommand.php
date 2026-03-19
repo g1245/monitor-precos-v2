@@ -13,8 +13,8 @@ class ReindexOldPriceCommand extends Command
      * @var string
      */
     protected $signature = 'app:reindex-old-price
-                            {store_id? : Optional store ID to filter products}
-                            {product_id? : Optional product ID to reindex a single product}';
+                            {--store_id= : Optional store ID to filter products}
+                            {--product_id= : Optional product ID to reindex a single product}';
 
     /**
      * The console command description.
@@ -28,33 +28,33 @@ class ReindexOldPriceCommand extends Command
      */
     public function handle(): int
     {
-        $storeIdArgument = $this->argument('store_id');
-        $productIdArgument = $this->argument('product_id');
+        $storeIdOption = $this->option('store_id');
+        $productIdOption = $this->option('product_id');
         $productId = null;
         $storeId = null;
 
-        if ($storeIdArgument !== null) {
-            $storeId = (int) $storeIdArgument;
+        if ($storeIdOption !== null) {
+            $storeId = (int) $storeIdOption;
 
             if ($storeId <= 0) {
-                $this->error('The store_id argument must be a positive integer when provided.');
+                $this->error('The --store_id option must be a positive integer when provided.');
 
                 return Command::FAILURE;
             }
         }
 
-        if ($productIdArgument !== null) {
-            $productId = (int) $productIdArgument;
+        if ($productIdOption !== null) {
+            $productId = (int) $productIdOption;
 
             if ($productId <= 0) {
-                $this->error('The product_id argument must be a positive integer when provided.');
+                $this->error('The --product_id option must be a positive integer when provided.');
 
                 return Command::FAILURE;
             }
         }
 
         if ($storeId === null && $productId === null) {
-            $this->error('You must provide at least one argument: store_id or product_id.');
+            $this->error('You must provide at least one option: --store_id or --product_id.');
 
             return Command::FAILURE;
         }
@@ -71,7 +71,7 @@ class ReindexOldPriceCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->info("Starting old_price reindex for {$totalProducts} product(s)...");
+        $this->info("Starting old_price reindex for {$totalProducts} product(s) using last 3 days history...");
 
         $processed = 0;
         $updated = 0;
@@ -83,6 +83,7 @@ class ReindexOldPriceCommand extends Command
                     $processed++;
 
                     $reindexedOldPrice = $product->priceHistories()
+                        ->where('created_at', '>=', now()->subDays(3))
                         ->where('price', '<>', $product->price)
                         ->orderByDesc('created_at')
                         ->orderByDesc('id')
@@ -106,7 +107,7 @@ class ReindexOldPriceCommand extends Command
                 }
             });
 
-        $this->info("Reindex completed. Processed {$processed} product(s), updated {$updated} old_price value(s).");
+        $this->info("Reindex completed. Processed {$processed} product(s), updated {$updated} old_price value(s) from last 3 days history.");
 
         return Command::SUCCESS;
     }

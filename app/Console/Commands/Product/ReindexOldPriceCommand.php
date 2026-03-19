@@ -15,7 +15,8 @@ class ReindexOldPriceCommand extends Command
      */
     protected $signature = 'app:reindex-old-price
                             {--store_id= : Optional store ID to filter products}
-                            {--product_id= : Optional product ID to reindex a single product}';
+                            {--product_id= : Optional product ID to reindex a single product}
+                            {--days=3 : Days window to inspect price history (default: 3)}';
 
     /**
      * The console command description.
@@ -31,8 +32,16 @@ class ReindexOldPriceCommand extends Command
     {
         $storeIdOption = $this->option('store_id');
         $productIdOption = $this->option('product_id');
+        $daysOption = $this->option('days');
         $productId = null;
         $storeId = null;
+        $days = (int) $daysOption;
+
+        if ($days <= 0) {
+            $this->error('The --days option must be a positive integer.');
+
+            return Command::FAILURE;
+        }
 
         if ($storeIdOption !== null) {
             $storeId = (int) $storeIdOption;
@@ -78,19 +87,19 @@ class ReindexOldPriceCommand extends Command
 
         $this->info("Reset old_price for {$resetCount} product(s) before reindex.");
 
-        $this->info("Starting old_price reindex for {$totalProducts} product(s) using last 3 days history...");
+        $this->info("Starting old_price reindex for {$totalProducts} product(s) using last {$days} day(s) history...");
 
         $processed = 0;
         $updated = 0;
 
         $productsQuery
             ->orderBy('id')
-            ->chunkById(200, function ($products) use (&$processed, &$updated): void {
+            ->chunkById(200, function ($products) use (&$processed, &$updated, $days): void {
                 foreach ($products as $product) {
                     $processed++;
 
                     $reindexedOldPrice = $product->priceHistories()
-                        ->where('created_at', '>=', now()->subDays(3))
+                        ->where('created_at', '>=', now()->subDays($days))
                         ->where('price', '<>', $product->price)
                         ->orderByDesc('created_at')
                         ->orderByDesc('id')
@@ -112,7 +121,7 @@ class ReindexOldPriceCommand extends Command
                 }
             });
 
-        $this->info("Reindex completed. Processed {$processed} product(s), updated {$updated} old_price value(s) from last 3 days history.");
+        $this->info("Reindex completed. Processed {$processed} product(s), updated {$updated} old_price value(s) from last {$days} day(s) history.");
 
         return Command::SUCCESS;
     }

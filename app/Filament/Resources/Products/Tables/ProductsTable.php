@@ -10,7 +10,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 
 class ProductsTable
@@ -37,6 +37,10 @@ class ProductsTable
                     })
                     ->html()
                     ->sortable(),
+                TextColumn::make('old_price')
+                    ->label('Old Price')
+                    ->formatStateUsing(fn ($state) => $state ? 'R$ ' . number_format($state, 2, ',', '.') : '-')
+                    ->sortable(),
                 TextColumn::make('sku')
                     ->label('SKU')
                     ->searchable(),
@@ -54,6 +58,9 @@ class ProductsTable
                 SelectFilter::make('store')
                     ->relationship('store', 'name')
                     ->label('Store'),
+                Filter::make('recent_discount')
+                    ->label('Desconto recente (3 dias)')
+                    ->query(fn ($query) => $query->withRecentDiscount(3)),
             ])
             ->recordActions([
                 Action::make('view_product')

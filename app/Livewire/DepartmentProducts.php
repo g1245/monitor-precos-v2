@@ -7,7 +7,6 @@ use App\Models\Department;
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\On;
 
 class DepartmentProducts extends Component
 {
@@ -24,6 +23,7 @@ class DepartmentProducts extends Component
     public ?float $maxPrice = null;
     public ?string $brand = null;
     public ?int $storeId = null;
+    public bool $recentDiscountOnly = false;
 
     protected $queryString = [
         'sortField' => ['except' => 'discount_percentage'],
@@ -33,6 +33,7 @@ class DepartmentProducts extends Component
         'maxPrice' => ['except' => null],
         'brand' => ['except' => null],
         'storeId' => ['except' => null],
+        'recentDiscountOnly' => ['except' => false],
     ];
 
     public function mount(Department $department)
@@ -75,12 +76,18 @@ class DepartmentProducts extends Component
         $this->resetPage();
     }
 
+    public function updatingRecentDiscountOnly()
+    {
+        $this->resetPage();
+    }
+
     public function clearFilters()
     {
         $this->minPrice = null;
         $this->maxPrice = null;
         $this->brand = null;
         $this->storeId = null;
+        $this->recentDiscountOnly = false;
         $this->resetPage();
     }
 
@@ -108,6 +115,9 @@ class DepartmentProducts extends Component
             })
             ->when($this->storeId !== null, function ($query) {
                 return $query->where('store_id', $this->storeId);
+            })
+            ->when($this->recentDiscountOnly, function ($query) {
+                return $query->withRecentDiscount(3);
             })
             ->when($this->sortField, function ($query) {
                 return $query->orderBy($this->sortField, $this->sortDirection);

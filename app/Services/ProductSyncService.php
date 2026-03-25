@@ -20,9 +20,10 @@ class ProductSyncService
      * @param Store $store
      * @param int $page
      * @param int|null $totalPages
+     * @param string|null $updatedAtFrom
      * @return void
      */
-    public static function syncForStore(Store $store, int $page = 1, ?int $totalPages = null): void
+    public static function syncForStore(Store $store, int $page = 1, ?int $totalPages = null, ?string $updatedAtFrom = null): void
     {
         $startTime = now();
         $storeName = $store->metadata['SyncStoreName'];
@@ -31,10 +32,11 @@ class ProductSyncService
             'store_id' => $store->id,
             'store_name' => $store->name,
             'page' => $page,
+            'updated_at_from' => $updatedAtFrom,
             'started_at' => $startTime->format('Y-m-d H:i:s'),
         ]);
 
-        $products = self::fetchProducts($storeName, $page);
+        $products = self::fetchProducts($storeName, $page, 500, $updatedAtFrom);
 
         if (empty($products)) {
             Log::error("Failed to fetch products for store: {$store->name} on page: {$page}");
@@ -43,6 +45,7 @@ class ProductSyncService
                 'store_id' => $store->id,
                 'store_name' => $store->name,
                 'page' => $page,
+                'updated_at_from' => $updatedAtFrom,
             ]);
             
             return;
@@ -125,6 +128,7 @@ class ProductSyncService
             'store_name' => $store->name,
             'page' => $page,
             'total_pages' => $totalPages,
+            'updated_at_from' => $updatedAtFrom,
             'products_processed' => $productsProcessed,
             'started_at' => $startTime->format('Y-m-d H:i:s'),
             'finished_at' => $endTime->format('Y-m-d H:i:s'),
@@ -133,7 +137,7 @@ class ProductSyncService
 
         // If there are more pages, dispatch the next job
         if ($page < $totalPages) {
-            SyncProductsForStoreJob::dispatch($store, $page + 1, $totalPages);
+            SyncProductsForStoreJob::dispatch($store, $page + 1, $totalPages, $updatedAtFrom);
         } else {
             Log::info("Products synchronized for store: {$store->name}");
 
@@ -141,6 +145,7 @@ class ProductSyncService
                 'store_id' => $store->id,
                 'store_name' => $store->name,
                 'total_pages' => $totalPages,
+                'updated_at_from' => $updatedAtFrom,
                 'finished_at' => now()->format('Y-m-d H:i:s'),
             ]);
 
@@ -167,17 +172,24 @@ class ProductSyncService
      * @param string $storeName
      * @param int $page
      * @param int $limit
+     * @param string|null $updatedAtFrom
      * @return array
      */
-    private static function fetchProducts(string $storeName, int $page = 1, int $limit = 500): array
+    private static function fetchProducts(string $storeName, int $page = 1, int $limit = 500, ?string $updatedAtFrom = null): array
     {
-        $request = Http::withHeaders([
-            'x-api-key' => config('services.awin.token')
-        ])->get(config('services.awin.url') . '/products', [
+        $query = [
             'merchant_name' => $storeName,
             'page' => $page,
             'limit' => $limit,
-        ]);
+        ];
+
+        if ($updatedAtFrom !== null) {
+            $query['updated_at_from'] = $updatedAtFrom;
+        }
+
+        $request = Http::withHeaders([
+            'x-api-key' => config('services.awin.token')
+        ])->get(config('services.awin.url') . '/products', $query);
 
         if ($request->failed()) {
             return [];

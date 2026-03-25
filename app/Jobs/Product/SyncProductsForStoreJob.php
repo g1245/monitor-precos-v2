@@ -20,11 +20,13 @@ class SyncProductsForStoreJob implements ShouldQueue
      * @param Store $store
      * @param int $page
      * @param int|null $totalPages
+     * @param string|null $updatedAtFrom
      */
     public function __construct(
         public Store $store,
         public int $page = 1,
-        public ?int $totalPages = null
+        public ?int $totalPages = null,
+        public ?string $updatedAtFrom = null
     ) {
         $this->onQueue('imports');
     }
@@ -39,7 +41,8 @@ class SyncProductsForStoreJob implements ShouldQueue
         ProductSyncService::syncForStore(
             $this->store,
             $this->page,
-            $this->totalPages
+            $this->totalPages,
+            $this->updatedAtFrom
         );
     }
 }

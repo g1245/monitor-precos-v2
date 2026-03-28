@@ -68,13 +68,25 @@ class ProductSyncService
             ]);
 
             try {
+                $priceData = $product['price'] ?? [];
+
+                if (empty($priceData['search_price']) && empty($priceData['base_price'])) {
+                    Log::error("Missing price fields for product, skipping", [
+                        'store_name' => $store->name,
+                        'sku' => $product['merchant_product_id'] ?? 'N/A',
+                        'price' => $priceData,
+                    ]);
+
+                    continue;
+                }
+
                 $savedProduct = ProductService::createOrUpdate(
                     new ProductDto(
                         storeId: $store->id,
                         name: $product['product_name'],
                         description: $product['description'] ?? null,
-                        price: isset($product['search_price']) ? (float) $product['search_price'] : null,
-                        priceRegular: isset($product['product_price_old']) ? (float) $product['product_price_old'] : (isset($product['base_price']) ? (float) str_replace('R$ ', '', $product['base_price']) : null),
+                        price: isset($priceData['search_price']) ? (float) $priceData['search_price'] : null,
+                        priceRegular: isset($priceData['product_price_old']) ? (float) $priceData['product_price_old'] : (isset($priceData['base_price']) ? (float) $priceData['base_price'] : null),
                         sku: $product['merchant_product_id'],
                         brand: $product['brand_name'] ?? null,
                         imageUrl: $product['merchant_image_url'],

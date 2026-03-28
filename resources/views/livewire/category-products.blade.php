@@ -4,31 +4,21 @@
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center">
                 <h1 class="text-3xl font-bold text-gray-800">{{ ucfirst(str_replace('-', ' ', $category)) }}</h1>
-                <div class="ml-4 text-gray-600">{{ $products->total() }} produtos</div>
+                <div class="ml-4 text-gray-600">{{ $total }} produtos</div>
             </div>
         </div>
-        
-        <!-- Linha 2: Filtros e paginação -->
+
+        <!-- Linha 2: Ordenação -->
         <div class="flex flex-wrap justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
-            <!-- Filtros à esquerda -->
             <div class="flex flex-wrap items-center gap-2">
                 <div class="mb-2 md:mb-0">
-                    <select wire:model.live="perPage" class="bg-white border border-gray-300 rounded-md text-gray-700 h-10 pl-5 pr-10 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="30">30 por página</option>
-                        <option value="60">60 por página</option>
-                        <option value="120">120 por página</option>
-                        <option value="240">240 por página</option>
-                    </select>
-                </div>
-                
-                <div class="mb-2 md:mb-0">
                     <select wire:model.live="sortField" class="bg-white border border-gray-300 rounded-md text-gray-700 h-10 pl-5 pr-10 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="discount_percentage">Ordenar por: Desconto</option>
                         <option value="name">Ordenar por: Nome</option>
                         <option value="price">Ordenar por: Preço</option>
-                        <option value="discount_percentage">Ordenar por: Desconto</option>
                     </select>
                 </div>
-                
+
                 <div class="mb-2 md:mb-0">
                     <select wire:model.live="sortDirection" class="bg-white border border-gray-300 rounded-md text-gray-700 h-10 pl-5 pr-10 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="asc">Crescente</option>
@@ -87,7 +77,7 @@
         </div>
 
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($products as $product)
+            @forelse($products as $product)
             <div wire:key="category-product-{{ $product->id }}" class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                 {{-- Imagem --}}
                 <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4" x-data="{ loaded: false }" x-init="loaded = $refs.img.complete && $refs.img.naturalWidth > 0">
@@ -138,11 +128,34 @@
                 @endif
             </div>
             @endforeach
+            @empty
+                <p class="col-span-3 text-center text-gray-500 py-12">Nenhum produto encontrado.</p>
+            @endforelse
         </div>
-        
-        <!-- Paginação -->
-        <div class="mt-8 flex justify-center">
-            {{ $products->links() }}
+
+        {{-- Infinite Scroll Sentinel --}}
+        @if($hasMore)
+            <div
+                wire:key="sentinel-{{ $products->count() }}"
+                x-data="{}"
+                x-init="
+                    let observer = new IntersectionObserver((entries) => {
+                        if (entries[0].isIntersecting) {
+                            $wire.loadMore();
+                        }
+                    }, { rootMargin: '300px' });
+                    observer.observe($el);
+                "
+                class="h-4 mt-6">
+            </div>
+        @endif
+
+        {{-- Loading Spinner --}}
+        <div wire:loading class="flex justify-center py-8">
+            <svg class="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-label="Carregando">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
         </div>
     </div>
 </div>

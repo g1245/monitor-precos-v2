@@ -2,22 +2,18 @@
 
 namespace App\Livewire;
 
-use App\Livewire\Concerns\ScrollsToProductsOnPageChange;
 use App\Models\Product;
 use App\Models\Store;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class SearchProducts extends Component
 {
-    use WithPagination;
-    use ScrollsToProductsOnPageChange;
-
     public string $q = '';
 
     public string $sortField = 'discount_percentage';
     public string $sortDirection = 'desc';
-    public int $perPage = 30;
+    public int $page = 1;
+    public bool $hasMore = true;
 
     // Filter properties
     public ?float $minPrice = null;
@@ -27,64 +23,80 @@ class SearchProducts extends Component
     public bool $recentDiscountOnly = false;
 
     protected $queryString = [
-        'q' => ['except' => '', 'as' => 'q'],
-        'sortField' => ['except' => 'discount_percentage'],
-        'sortDirection' => ['except' => 'desc'],
-        'perPage' => ['except' => 30],
-        'minPrice' => ['except' => null],
-        'maxPrice' => ['except' => null],
-        'brand' => ['except' => null],
-        'storeId' => ['except' => null],
+        'q'                  => ['except' => '', 'as' => 'q'],
+        'sortField'          => ['except' => 'discount_percentage'],
+        'sortDirection'      => ['except' => 'desc'],
+        'page'               => ['except' => 1],
+        'minPrice'           => ['except' => null],
+        'maxPrice'           => ['except' => null],
+        'brand'              => ['except' => null],
+        'storeId'            => ['except' => null],
         'recentDiscountOnly' => ['except' => false],
     ];
 
-    public function mount(string $query = '')
+    public function mount(string $query = ''): void
     {
         $this->q = $query;
     }
 
-    public function updatingPerPage()
+    public function loadMore(): void
     {
-        $this->resetPage();
+        $this->page++;
     }
 
-    public function updatingMinPrice()
+    public function updatingQ(): void
     {
-        $this->resetPage();
+        $this->page = 1;
     }
 
-    public function updatingMaxPrice()
+    public function updatingSortField(): void
     {
-        $this->resetPage();
+        $this->page = 1;
     }
 
-    public function updatingBrand()
+    public function updatingSortDirection(): void
     {
-        $this->resetPage();
+        $this->page = 1;
     }
 
-    public function updatingStoreId()
+    public function updatingMinPrice(): void
     {
-        $this->resetPage();
+        $this->page = 1;
     }
 
-    public function updatingRecentDiscountOnly()
+    public function updatingMaxPrice(): void
     {
-        $this->resetPage();
+        $this->page = 1;
     }
 
-    public function clearFilters()
+    public function updatingBrand(): void
+    {
+        $this->page = 1;
+    }
+
+    public function updatingStoreId(): void
+    {
+        $this->page = 1;
+    }
+
+    public function updatingRecentDiscountOnly(): void
+    {
+        $this->page = 1;
+    }
+
+    public function clearFilters(): void
     {
         $this->minPrice = null;
         $this->maxPrice = null;
         $this->brand = null;
         $this->storeId = null;
         $this->recentDiscountOnly = false;
-        $this->resetPage();
+        $this->page = 1;
     }
 
     public function render()
     {
+        $limit = $this->page * 30;
         $parsed = $this->parseSearchQuery();
 
         $query = Product::search($this->q);
@@ -98,33 +110,27 @@ class SearchProducts extends Component
             $query->where('brand', $parsed['value']);
         }
 
-        $products = $query
-            ->when($this->minPrice !== null, function ($query) {
-                return $query->where('price', '>=', $this->minPrice);
-            })
-            ->when($this->maxPrice !== null, function ($query) {
-                return $query->where('price', '<=', $this->maxPrice);
-            })
-            ->when($this->brand !== null && $this->brand !== '', function ($query) {
-                return $query->where('brand', $this->brand);
-            })
-            ->when($this->storeId !== null, function ($query) {
-                return $query->where('store_id', $this->storeId);
-            })
-            ->when($this->recentDiscountOnly, function ($query) {
-                return $query->withRecentPriceChange(3);
-            })
-            ->when($this->sortField, function ($query) {
-                return $query->orderBy($this->sortField, $this->sortDirection);
-            })
-            ->paginate($this->perPage);
+        $query
+            ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))
+            ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))
+            ->when($this->brand !== null && $this->brand !== '', fn ($q) => $q->where('brand', $this->brand))
+            ->when($this->storeId !== null, fn ($q) => $q->where('store_id', $this->storeId))
+            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange(3))
+            ->when($this->sortField, fn ($q) => $q->orderBy($this->sortField, $this->sortDirection));
+
+        $total = $query->count();
+        $products = $query->take($limit + 1)->get();
+
+        $this->hasMore = $products->count() > $limit;
+        $products = $products->take($limit);
 
         $stores = Store::where('has_public', true)->orderBy('name')->get(['id', 'name']);
 
         return view('livewire.search-products', [
-            'products' => $products,
+            'products'    => $products,
+            'total'       => $total,
             'searchField' => $parsed['field'],
-            'stores' => $stores,
+            'stores'      => $stores,
         ]);
     }
 
@@ -150,13 +156,5 @@ class SearchProducts extends Component
         }
 
         return ['field' => null, 'value' => $this->q];
-    }
-
-    /**
-     * Custom pagination view
-     */
-    public function paginationView()
-    {
-        return 'vendor.livewire.tailwind';
     }
 }

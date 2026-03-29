@@ -119,7 +119,6 @@
                     </div>
                 @endif
             </div>
-            @endforeach
             @empty
                 <p class="col-span-3 text-center text-gray-500 py-12">Nenhum produto encontrado.</p>
             @endforelse

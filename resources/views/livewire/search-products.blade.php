@@ -104,55 +104,55 @@
             @if($products->count() > 0)
                 <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($products as $product)
-                    <div wire:key="search-product-{{ $product->id }}" class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-                        {{-- Imagem --}}
-                        <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4" x-data="{ loaded: false }" x-init="loaded = $refs.img.complete && $refs.img.naturalWidth > 0">
-                            <div class="aspect-square relative overflow-hidden rounded-lg bg-gray-50">
-                                <div x-show="!loaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded"></div>
-                                <img src="{{ $product->image_url ?? 'https://placehold.co/800x800' }}"
-                                     alt="{{ $product->name }}"
-                                     class="w-full h-full object-contain transition-opacity duration-300"
-                                     :class="loaded ? 'opacity-100' : 'opacity-0'"
-                                     x-ref="img"
-                                     x-on:load="loaded = true"
-                                     x-on:error="loaded = true">
-                            </div>
-                        </a>
-
-                        {{-- Informações --}}
-                        <div class="px-4 pb-3 flex-1 flex flex-col">
-                            <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block mb-2">
-                                <h2 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary transition-colors">
-                                    {{ $product->name }}
-                                </h2>
+                        <div wire:key="search-product-{{ $product->id }}" class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                            {{-- Imagem --}}
+                            <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block p-4" x-data="{ loaded: false }" x-init="loaded = $refs.img.complete && $refs.img.naturalWidth > 0">
+                                <div class="aspect-square relative overflow-hidden rounded-lg bg-gray-50">
+                                    <div x-show="!loaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded"></div>
+                                    <img src="{{ $product->image_url ?? 'https://placehold.co/800x800' }}"
+                                        alt="{{ $product->name }}"
+                                        class="w-full h-full object-contain transition-opacity duration-300"
+                                        :class="loaded ? 'opacity-100' : 'opacity-0'"
+                                        x-ref="img"
+                                        x-on:load="loaded = true"
+                                        x-on:error="loaded = true">
+                                </div>
                             </a>
 
-                            @if($product->price_regular && $product->price_regular > $product->price)
-                                <div class="text-xs text-gray-500 line-through">de R$ {{ number_format($product->price_regular, 2, ',', '.') }}</div>
-                                <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
-                                @php $discount = round((($product->price_regular - $product->price) / $product->price_regular) * 100); @endphp
-                                @if($discount > 1)
-                                    <div class="mt-2">
-                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">{{ $discount }}% OFF</span>
-                                    </div>
+                            {{-- Informações --}}
+                            <div class="px-4 pb-3 flex-1 flex flex-col">
+                                <a href="{{ route('product.show', ['slug' => $product->permalink, 'id' => $product->id]) }}" class="block mb-2">
+                                    <h2 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary transition-colors">
+                                        {{ $product->name }}
+                                    </h2>
+                                </a>
+
+                                @if($product->price_regular && $product->price_regular > $product->price)
+                                    <div class="text-xs text-gray-500 line-through">de R$ {{ number_format($product->price_regular, 2, ',', '.') }}</div>
+                                    <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
+                                    @php $discount = round((($product->price_regular - $product->price) / $product->price_regular) * 100); @endphp
+                                    @if($discount > 1)
+                                        <div class="mt-2">
+                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">{{ $discount }}% OFF</span>
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
                                 @endif
-                            @else
-                                <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
+                            </div>
+
+                            {{-- Footer: Loja --}}
+                            @if($product->store)
+                                <div class="px-4 py-2 border-t border-gray-100 flex items-center gap-1.5">
+                                    @if($product->store->logo)
+                                        <img src="{{ Storage::disk('public')->url($product->store->logo) }}"
+                                            alt="{{ $product->store->name }}"
+                                            class="w-4 h-4 object-contain">
+                                    @endif
+                                    <span class="text-xs text-gray-500 truncate">{{ $product->store->name }}</span>
+                                </div>
                             @endif
                         </div>
-
-                        {{-- Footer: Loja --}}
-                        @if($product->store)
-                            <div class="px-4 py-2 border-t border-gray-100 flex items-center gap-1.5">
-                                @if($product->store->logo)
-                                    <img src="{{ Storage::disk('public')->url($product->store->logo) }}"
-                                         alt="{{ $product->store->name }}"
-                                         class="w-4 h-4 object-contain">
-                                @endif
-                                <span class="text-xs text-gray-500 truncate">{{ $product->store->name }}</span>
-                            </div>
-                        @endif
-                    </div>
                     @endforeach
                 </div>
 

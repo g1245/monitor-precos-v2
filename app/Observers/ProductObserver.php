@@ -22,6 +22,14 @@ class ProductObserver
             $product->addPriceHistory($product->price);
         });
 
+        // Initialize highest and lowest price tracking based on price_regular
+        if ($product->price_regular !== null) {
+            $product->updateQuietly([
+                'highest_price' => $product->price_regular,
+                'lowest_price'  => $product->price_regular,
+            ]);
+        }
+
         // Record audit log for product creation
         $this->writeAuditLog($product, 'created');
     }
@@ -41,6 +49,23 @@ class ProductObserver
                 $product->updateQuietly([
                     'old_price' => $previousPrice,
                 ]);
+            }
+        }
+
+        // Update highest/lowest price tracking when price_regular changes
+        if ($product->wasChanged('price_regular') && $product->price_regular !== null) {
+            $updates = [];
+
+            if ($product->highest_price === null || $product->price_regular > $product->highest_price) {
+                $updates['highest_price'] = $product->price_regular;
+            }
+
+            if ($product->lowest_price === null || $product->price_regular < $product->lowest_price) {
+                $updates['lowest_price'] = $product->price_regular;
+            }
+
+            if (!empty($updates)) {
+                $product->updateQuietly($updates);
             }
         }
 

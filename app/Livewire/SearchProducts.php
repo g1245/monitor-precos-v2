@@ -118,11 +118,11 @@ class SearchProducts extends Component
             ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange(3))
             ->when($this->sortField, fn ($q) => $q->orderBy($this->sortField, $this->sortDirection));
 
-        $total = $query->count();
-        $products = $query->take($limit + 1)->get();
+        $paginator = $query->paginate($limit, 'page', 1);
+        $total = $paginator->total();
+        $products = $paginator->getCollection();
 
-        $this->hasMore = $products->count() > $limit;
-        $products = $products->take($limit);
+        $this->hasMore = $paginator->hasMorePages();
 
         $stores = Store::where('has_public', true)->orderBy('name')->get(['id', 'name']);
 

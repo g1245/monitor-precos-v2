@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->decimal('highest_price', 10, 2)->nullable()->after('price_regular');
-            $table->decimal('lowest_price', 10, 2)->nullable()->after('highest_price');
+            $table->decimal('highest_recorded_price', 10, 2)->nullable()->after('price_regular');
+            $table->decimal('lowest_recorded_price', 10, 2)->nullable()->after('highest_recorded_price');
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['highest_price', 'lowest_price']);
+            $table->dropColumn(['highest_recorded_price', 'lowest_recorded_price']);
         });
     }
 };

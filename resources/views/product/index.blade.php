@@ -49,12 +49,12 @@
                     <div class="space-y-6">
                         <!-- Price Section -->
                         <div class="space-y-2">
-                            @if($product->price_regular && $product->price_regular > $product->price)
+                            @if($product->highest_recorded_price && $product->highest_recorded_price > $product->price)
                                 <div class="text-lg price-original line-through text-gray-400">
-                                    de R$ {{ number_format($product->price_regular, 2, ',', '.') }}
+                                    de R$ {{ number_format($product->highest_recorded_price, 2, ',', '.') }}
                                 </div>
                                 <div class="inline-block px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-semibold mb-1">
-                                    {{ round((($product->price_regular - $product->price) / $product->price_regular) * 100) }}% OFF
+                                    {{ round((($product->highest_recorded_price - $product->price) / $product->highest_recorded_price) * 100) }}% OFF
                                 </div>
                             @endif
                             <div class="text-3xl lg:text-4xl font-bold price-current">

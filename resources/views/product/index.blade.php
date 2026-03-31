@@ -154,30 +154,85 @@
             <div id="price-history" class="space-y-6 mb-12">
                 <h2 class="text-xl font-semibold text-gray-900">Histórico de Preços</h2>
                 
-                <!-- Chart Container -->
-                <div class="relative bg-white border border-gray-200 rounded-lg p-6">
-                    <div class="h-80">
-                        <canvas id="priceChart"></canvas>
-                    </div>
-                    
-                    <!-- Info Card Overlay -->
-                    <div class="absolute top-4 right-4 bg-white border border-gray-200 rounded-lg p-4 shadow-lg max-w-xs">
-                        <div class="space-y-2">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
-                                <span class="text-sm font-medium text-gray-900">Menor preço histórico</span>
-                            </div>
-                            <div class="text-sm text-gray-600">
-                                Veja o preço histórico
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div class="text-xs text-gray-500">{{ count($priceHistory['data']) }} registros</div>
-                            </div>
+                <!-- Chart + Stats Layout -->
+                <div class="price-history-layout">
+
+                    <!-- Chart -->
+                    <div class="price-history-chart bg-white border border-gray-200 rounded-lg p-6">
+                        <div class="h-80">
+                            <canvas id="priceChart"></canvas>
                         </div>
                     </div>
+
+                    <!-- Stats Card -->
+                    <div class="price-history-stats bg-white border border-gray-200 rounded-lg p-5">
+                        <div class="flex items-center gap-1.5 mb-4">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Preços registrados</p>
+                            <!-- Tooltip trigger -->
+                            <div class="price-stats-tooltip-wrapper" aria-describedby="price-stats-tooltip">
+                                <svg class="w-3.5 h-3.5 text-gray-400 cursor-help shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                                <div id="price-stats-tooltip" role="tooltip" class="price-stats-tooltip">
+                                    <p class="font-semibold text-white mb-1">Sobre estes valores</p>
+                                    <p class="text-gray-300 leading-relaxed">Os preços registrados refletem apenas os <span class="text-white font-medium">preços regulares</span> do produto — sem considerar promoções temporárias.</p>
+                                    <p class="text-gray-300 leading-relaxed mt-2">Alguns vendedores inflam artificialmente o preço original antes de datas como Black Friday para exagerar o percentual de desconto. Aqui você vê o histórico real.</p>
+                                    <div class="price-stats-tooltip__arrow"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="price-history-stats__items">
+
+                            <!-- Menor preço registrado -->
+                            <div class="flex-1 flex flex-col gap-2 p-3 bg-teal-50 rounded-lg">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="flex items-center justify-center w-6 h-6 rounded-full bg-teal-100">
+                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0l-4-4m4 4l-4 4M6 10V3m0 0L2 7m4-4l4 4" />
+                                        </svg>
+                                    </span>
+                                    <span class="text-xs text-teal-700 font-medium leading-tight">Menor preço</span>
+                                </div>
+                                <span class="text-base font-bold text-teal-800">
+                                    @if($product->lowest_recorded_price)
+                                        R$ {{ number_format($product->lowest_recorded_price, 2, ',', '.') }}
+                                    @else
+                                        —
+                                    @endif
+                                </span>
+                            </div>
+
+                            <!-- Maior preço registrado -->
+                            <div class="flex-1 flex flex-col gap-2 p-3 bg-red-50 rounded-lg">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="flex items-center justify-center w-6 h-6 rounded-full bg-red-100">
+                                        <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 7H3m0 0l4 4M3 7l4-4m7 14h8m0 0l-4-4m4 4l-4 4" />
+                                        </svg>
+                                    </span>
+                                    <span class="text-xs text-red-600 font-medium leading-tight">Maior preço</span>
+                                </div>
+                                <span class="text-base font-bold text-red-700">
+                                    @if($product->highest_recorded_price)
+                                        R$ {{ number_format($product->highest_recorded_price, 2, ',', '.') }}
+                                    @else
+                                        —
+                                    @endif
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <!-- Quantidade de registros -->
+                        <div class="mt-4 pt-3 border-t border-gray-100 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-xs text-gray-500">{{ count($priceHistory['data']) }} {{ count($priceHistory['data']) === 1 ? 'registro' : 'registros' }}</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         @else

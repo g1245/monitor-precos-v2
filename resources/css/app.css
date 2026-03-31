@@ -245,6 +245,99 @@
     color: #2563eb;
 }
 
+/* Price history stats tooltip */
+.price-stats-tooltip-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.price-stats-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    background-color: #1e293b;
+    color: #f1f5f9;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 50;
+}
+
+.price-stats-tooltip__arrow {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1e293b;
+}
+
+.price-stats-tooltip-wrapper:hover .price-stats-tooltip,
+.price-stats-tooltip-wrapper:focus-within .price-stats-tooltip {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Adjust tooltip position when near left edge */
+@media (max-width: 639px) {
+    .price-stats-tooltip {
+        left: 0;
+        transform: translateX(-10%);
+        width: 240px;
+    }
+
+    .price-stats-tooltip__arrow {
+        left: 16%;
+    }
+}
+
+/* Price history layout */
+.price-history-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.price-history-chart {
+    flex: 1;
+    min-width: 0;
+}
+
+.price-history-stats {
+    flex-shrink: 0;
+}
+
+.price-history-stats__items {
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .price-history-layout {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .price-history-stats {
+        width: 13rem;
+    }
+
+    .price-history-stats__items {
+        flex-direction: column;
+    }
+}
+
 /* Chart container responsive */
 .chart-container {
     position: relative;

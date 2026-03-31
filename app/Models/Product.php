@@ -163,7 +163,7 @@ class Product extends Model
     public function scopeWithRecentPriceChange($query, int $days = 3)
     {
         return $query->whereNotNull('old_price')
-            ->whereColumn('old_price', '<>', 'price')
+            ->whereColumn('old_price', '>', 'price')
             ->where('updated_at', '>=', now()->subDays($days));
     }
 

@@ -112,6 +112,7 @@ class ReindexRecordedPricesCommand extends Command
             });
 
         $progressBar->finish();
+        
         $this->newLine(2);
 
         $this->info("Reindex completed. Processed: {$processed} | Updated: {$updated} | Skipped (no history): " . ($processed - $updated));

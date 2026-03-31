@@ -104,7 +104,7 @@ class SyncProductByStoreCommand extends Command
         $updatedAtFrom = $this->option('updated-at-from');
 
         if (empty($updatedAtFrom)) {
-            return now()->startOfDay()->toIso8601String();
+            return now()->subHours(24)->toIso8601String();
         }
 
         return Carbon::parse($updatedAtFrom)->toIso8601String();

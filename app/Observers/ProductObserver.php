@@ -22,11 +22,17 @@ class ProductObserver
             $product->addPriceHistory($product->price);
         });
 
-        // Initialize highest and lowest recorded price tracking based on price_regular
+        // Initialize lowest recorded price tracking based on price
+        if ($product->price !== null) {
+            $product->updateQuietly([
+                'lowest_recorded_price'  => $product->price,
+            ]);
+        }
+
+        // Initialize highest recorded price tracking based on price_regular
         if ($product->price_regular !== null) {
             $product->updateQuietly([
                 'highest_recorded_price' => $product->price_regular,
-                'lowest_recorded_price'  => $product->price_regular,
             ]);
         }
 
@@ -52,25 +58,22 @@ class ProductObserver
             }
         }
 
-        // Update highest/lowest recorded price tracking when price_regular changes
-        if ($product->wasChanged('price_regular') && $product->price_regular !== null) {
+        // Check if price was changed and should be recorded in history
+        if ($product->wasChanged('price') && $product->shouldRecordPriceHistory()) {
             $updates = [];
 
-            if ($product->highest_recorded_price === null || $product->price_regular > $product->highest_recorded_price) {
-                $updates['highest_recorded_price'] = $product->price_regular;
+            if ($product->highest_recorded_price === null || $product->price > $product->highest_recorded_price) {
+                $updates['highest_recorded_price'] = $product->price;
             }
 
-            if ($product->lowest_recorded_price === null || $product->price_regular < $product->lowest_recorded_price) {
-                $updates['lowest_recorded_price'] = $product->price_regular;
+            if ($product->lowest_recorded_price === null || $product->price < $product->lowest_recorded_price) {
+                $updates['lowest_recorded_price'] = $product->price;
             }
 
             if (!empty($updates)) {
                 $product->updateQuietly($updates);
             }
-        }
 
-        // Check if price was changed and should be recorded in history
-        if ($product->wasChanged('price') && $product->shouldRecordPriceHistory()) {
             dispatch(function () use ($product): void {
                 $product->addPriceHistory($product->price);
             });

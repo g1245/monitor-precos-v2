@@ -199,6 +199,11 @@ class ProductSyncService
             $query['updated_at_from'] = $updatedAtFrom;
         }
 
+        Log::info("Fetching products from API for store: {$storeName}", [
+            'query' => $query,
+            'endpoint' => config('services.awin.url') . '/products',
+        ]);
+
         $request = Http::withHeaders([
             'x-api-key' => config('services.awin.token')
         ])->get(config('services.awin.url') . '/products', $query);

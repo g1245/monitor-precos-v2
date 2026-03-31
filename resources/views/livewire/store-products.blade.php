@@ -139,10 +139,10 @@
                                 </h2>
                             </a>
 
-                            @if($product->price_regular && $product->price_regular > $product->price)
-                                <div class="text-xs text-gray-500 line-through">de R$ {{ number_format($product->price_regular, 2, ',', '.') }}</div>
+                            @if($product->highest_recorded_price && $product->highest_recorded_price > $product->price)
+                                <div class="text-xs text-gray-500 line-through">de R$ {{ number_format($product->highest_recorded_price, 2, ',', '.') }}</div>
                                 <div class="text-xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
-                                @php $discount = round((($product->price_regular - $product->price) / $product->price_regular) * 100); @endphp
+                                @php $discount = round((($product->highest_recorded_price - $product->price) / $product->highest_recorded_price) * 100); @endphp
                                 @if($discount > 1)
                                     <div class="mt-2">
                                         <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">{{ $discount }}% OFF</span>

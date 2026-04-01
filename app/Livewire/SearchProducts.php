@@ -99,7 +99,8 @@ class SearchProducts extends Component
         $limit = $this->page * 30;
         $parsed = $this->parseSearchQuery();
 
-        $query = Product::search($this->q);
+        $query = Product::search($this->q)
+            ->where('is_parent', 0);
 
         // Apply parsed query filters
         if ($parsed['field'] === 'sku') {

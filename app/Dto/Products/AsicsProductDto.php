@@ -5,20 +5,20 @@ namespace App\Dto\Products;
 use App\Dto\ProductDto;
 
 /**
- * DTO for Kabum store products.
+ * DTO for Asics store products.
  *
- * Kabum does not use `base_price`, `product_price_old` or `rrp_price`. Prices are mapped as:
+ * Asics does not use `base_price`, `product_price_old` or `rrp_price`. Prices are mapped as:
  * - `search_price` → price (actual selling price)
  * - `display_price` → priceRegular (fallback when no historical price is available)
  */
-class KabumProductDto extends ProductDto
+class AsicsProductDto extends ProductDto
 {
     /**
      * {@inheritdoc}
      *
      * Overrides price mapping to use `search_price` as the selling price and
      * `display_price` as the regular price, since `base_price` and `product_price_old`
-     * are not provided by the Kabum feed.
+     * are not provided by the Asics feed.
      */
     public static function fromApiData(int $storeId, array $product): static
     {
@@ -42,7 +42,7 @@ class KabumProductDto extends ProductDto
     /**
      * {@inheritdoc}
      *
-     * Kabum requires either `search_price` or `display_price` to be present.
+     * Asics requires either `search_price` or `display_price` to be present.
      */
     public static function hasValidPrices(array $priceData): bool
     {

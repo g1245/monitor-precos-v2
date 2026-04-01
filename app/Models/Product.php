@@ -301,6 +301,7 @@ class Product extends Model
             'sku' => $this->sku,
             'brand' => $this->brand,
             'store_id' => (int) $this->store_id,
+            'is_parent' => (int) $this->is_parent,
         ];
     }
 }

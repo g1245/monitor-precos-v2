@@ -54,7 +54,6 @@
     cd /var/www/monitor-precos-v2
 
     php8.4 artisan optimize:clear
-    php8.4 artisan app:cache-top-discounted-products
 @endtask
 
 @task('restart-services', ['on' => ['web']])

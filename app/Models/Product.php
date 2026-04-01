@@ -143,6 +143,7 @@ class Product extends Model
                 $join->on('products.store_id', '=', 'public_stores.id')
                      ->where('public_stores.has_public', true);
             })
+            ->where('public_stores.id', '!=', null)
             ->select('products.*');
     }
 

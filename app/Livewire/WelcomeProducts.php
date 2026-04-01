@@ -26,12 +26,12 @@ class WelcomeProducts extends Component
         $limit = $this->page * 16;
 
         // Only cache the first page (highest traffic); subsequent pages (loadMore) bypass cache.
-        if ($this->page === 1) {
-            $cacheKey = "welcome_products:{$this->tab}";
-            $products = Cache::remember($cacheKey, now()->addMinutes(10), fn () => $this->queryProducts(17));
-        } else {
-            $products = $this->queryProducts($limit + 1);
-        }
+        // if ($this->page === 1) {
+        //     $cacheKey = "welcome_products:{$this->tab}";
+        //     $products = Cache::remember($cacheKey, now()->addMinutes(10), fn () => $this->queryProducts(17));
+        // } else {
+            $products = $this->queryProducts($limit);
+        // }
 
         $this->hasMore = $products->count() > $limit;
         $products = $products->take($limit);

@@ -15,20 +15,16 @@ class ProductController extends Controller
     {
         $product = Product::query()
             ->with(['departments', 'attributes'])
-            ->where('id', $id)
+            ->where('products.id', $id)
             ->active()
             ->fromPublicStore()
             ->firstOrFail();
-
-        // Mock data for stores comparison - in real implementation, this would come from external APIs or database
-        $storeOffers = $this->getMockStoreOffers($product);
 
         // Get real price history data
         $priceHistory = $this->getPriceHistory($product);
 
         return view('product.index', [
             'product' => $product,
-            'storeOffers' => $storeOffers,
             'priceHistory' => $priceHistory,
             'slug' => $slug,
         ]);
@@ -58,28 +54,6 @@ class ProductController extends Controller
         // TODO: Add tracking logic here (e.g., log click event, update analytics)
         
         return redirect($product->deep_link)->header('X-Robots-Tag', 'noindex, nofollow');
-    }
-
-    /**
-     * Generate mock store offers for demonstration.
-     */
-    private function getMockStoreOffers(Product $product): array
-    {
-        return [
-            [
-                'id' => 1,
-                'store_name' => $product->store->name,
-                'store_logo' => $product->store->logo_url,
-                'price' => $product->price,
-                'installment_price' => 'ou 10x de R$ ' . number_format($product->price / 10, 2, ',', '.'),
-                // 'discount_percentage' => 10,
-                // 'cashback' => 'R$ 25,00',
-                // 'coupon' => 'PRECOEXCLUSIVO',
-                // 'is_best_price' => true,
-                'store_rating' => 4.8,
-                'link' => $product->deep_link
-            ],
-        ];
     }
 
     /**

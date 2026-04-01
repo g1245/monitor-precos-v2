@@ -278,7 +278,7 @@ class Product extends Model
             return null;
         }
 
-        return Product::find($this->is_parent);
+        return Product::fromPublicStore()->find($this->is_parent);
     }
 
     /**
@@ -290,7 +290,7 @@ class Product extends Model
             return collect([]);
         }
 
-        return Product::where('is_parent', $this->id)->get();
+        return Product::where('is_parent', $this->id)->fromPublicStore()->get();
     }
 
     /**

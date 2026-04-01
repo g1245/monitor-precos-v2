@@ -17,161 +17,183 @@
     @livewireStyles
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
-    
+
+    @php
+        $isMobile = (bool) preg_match(
+            '/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i',
+            request()->userAgent() ?? ''
+        );
+    @endphp
+
     <!-- Header -->
     <header class="bg-primary shadow-md">
         <div class="container mx-auto px-4">
-            <!-- Mobile Layout -->
-            <div class="md:hidden">
-                <!-- Top Row: Logo + Account -->
+            @if($isMobile)
+                <!-- Mobile Layout -->
+                <div class="py-3">
+                    <!-- Top Row: Logo + Account -->
+                    <div class="flex items-center justify-between mb-3">
+                        <!-- Logo -->
+                        <div class="flex items-center">
+                            <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-8">
+                        </div>
+
+                        <!-- Account Icon -->
+                        <div class="text-white">
+                            @auth
+                                <a href="{{ route('account.dashboard') }}" class="cursor-pointer hover:text-yellow-300 transition-colors">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </a>
+                            @else
+                                <a href="{{ route('auth.login') }}" class="cursor-pointer hover:text-yellow-300 transition-colors">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </a>
+                            @endauth
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row: Search -->
+                    <div>
+                        <form action="{{ route('search.index') }}" method="GET" class="relative">
+                            <input type="search" 
+                                   name="q"
+                                   value="{{ request('q') }}"
+                                   placeholder="Buscar produtos ou departamentos" 
+                                   class="w-full px-4 py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                   required>
+                            <button type="submit" class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 hover:text-blue-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @else
+                <!-- Desktop Layout -->
                 <div class="flex items-center justify-between py-3">
                     <!-- Logo -->
                     <div class="flex items-center">
-                        <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-8">
+                        <a href="/">
+                            <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-10">
+                        </a>
                     </div>
 
-                    <!-- Account Icon -->
-                    <div class="text-white">
-                        @auth
-                            <a href="{{ route('account.dashboard') }}" class="cursor-pointer hover:text-yellow-300 transition-colors">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </a>
-                        @else
-                            <a href="{{ route('auth.login') }}" class="cursor-pointer hover:text-yellow-300 transition-colors">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </a>
-                        @endauth
-                    </div>
-                </div>
-
-                <!-- Bottom Row: Search -->
-                <div class="pb-3">
-                    <form action="{{ route('search.index') }}" method="GET" class="relative">
-                        <input type="search" 
-                               name="q"
-                               value="{{ request('q') }}"
-                               placeholder="Buscar produtos ou departamentos" 
-                               class="w-full px-4 py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                               required>
-                        <button type="submit" class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 hover:text-blue-600 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Desktop Layout -->
-            <div class="hidden md:flex items-center justify-between py-3">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/">
-                        <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-10">
-                    </a>
-                </div>
-
-                <!-- Search Bar -->
-                <div class="flex-1 max-w-2xl mx-8">
-                    <form action="{{ route('search.index') }}" method="GET" class="relative">
-                        <input type="search" 
-                               name="q"
-                               value="{{ request('q') }}"
-                               placeholder="Buscar produtos ou departamentos" 
-                               class="w-full px-4 py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                               required>
-                        <button type="submit" class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 hover:text-blue-600 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- User Actions -->
-                <div class="flex items-center space-x-4">
-                    <!-- Login/Account -->
-                    <div class="text-white text-sm">
-                        @auth
-                            <a href="{{ route('account.dashboard') }}" class="flex items-center space-x-1 cursor-pointer hover:text-blue-200 transition-colors">
+                    <!-- Search Bar -->
+                    <div class="flex-1 max-w-2xl mx-8">
+                        <form action="{{ route('search.index') }}" method="GET" class="relative">
+                            <input type="search" 
+                                   name="q"
+                                   value="{{ request('q') }}"
+                                   placeholder="Buscar produtos ou departamentos" 
+                                   class="w-full px-4 py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                   required>
+                            <button type="submit" class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 hover:text-blue-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
-                                <div>
-                                    <div class="font-medium">Olá, {{ Auth::user()->name }}</div>
-                                    <div class="text-xs">Minha conta</div>
-                                </div>
-                            </a>
-                        @else
-                            <a href="{{ route('auth.login') }}" class="flex items-center space-x-1 cursor-pointer hover:text-blue-200 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <div>
-                                    <div class="font-medium">Olá, faça seu login</div>
-                                    <div class="text-xs">ou cadastre-se</div>
-                                </div>
-                            </a>
-                        @endauth
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- User Actions -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Login/Account -->
+                        <div class="text-white text-sm">
+                            @auth
+                                <a href="{{ route('account.dashboard') }}" class="flex items-center space-x-1 cursor-pointer hover:text-blue-200 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="font-medium">Olá, {{ Auth::user()->name }}</div>
+                                        <div class="text-xs">Minha conta</div>
+                                    </div>
+                                </a>
+                            @else
+                                <a href="{{ route('auth.login') }}" class="flex items-center space-x-1 cursor-pointer hover:text-blue-200 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="font-medium">Olá, faça seu login</div>
+                                        <div class="text-xs">ou cadastre-se</div>
+                                    </div>
+                                </a>
+                            @endauth
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </header>
 
     <!-- Navigation Menu -->
     <nav class="bg-blue-800 text-white shadow-lg relative">
         <div class="container mx-auto px-4">
-            <!-- Mobile Layout -->
-            <div class="md:hidden py-3">
-                <button id="departmentsBtn" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 rounded hover:bg-blue-700 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                    <span class="font-medium">Navegue por departamentos</span>
-                    <svg id="chevronIcon" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-            </div>
+            @if($isMobile)
+                <!-- Mobile Layout -->
+                <div class="py-3 flex items-center space-x-4">
+                    <button id="departmentsBtn" class="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <span class="font-medium">Navegue por departamentos</span>
+                        <svg id="chevronIcon" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
 
-            <!-- Desktop Layout -->
-            <div class="hidden md:flex items-center justify-between py-3">
-                <!-- Departments Menu -->
-                <div class="flex items-center space-x-8">
-                    <div class="relative">
-                        <button id="departmentsBtnDesktop" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                            </svg>
-                            <span class="font-medium">Navegue por departamentos</span>
-                            <svg id="chevronIconDesktop" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                    </div>
+                    <a href="{{ route('stores.index') }}" class="flex items-center space-x-1 text-white hover:text-blue-400 transition-colors whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                        </svg>
+                        <span>Lojas</span>
+                    </a>
+                </div>
+            @else
+                <!-- Desktop Layout -->
+                <div class="flex items-center justify-between py-3">
+                    <!-- Departments Menu -->
+                    <div class="flex items-center space-x-8">
+                        <div class="relative">
+                            <button id="departmentsBtnDesktop" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                                <span class="font-medium">Navegue por departamentos</span>
+                                <svg id="chevronIconDesktop" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
 
-                    <!-- Menu Items -->
-                    <div class="flex items-center space-x-6">
-                        <a href="{{ route('stores.index') }}" class="flex items-center space-x-1 hover:text-blue-400 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                            </svg>
-                            <span>Lojas</span>
-                        </a>
+                        <!-- Menu Items -->
+                        <div class="flex items-center space-x-6">
+                            <a href="{{ route('stores.index') }}" class="flex items-center space-x-1 hover:text-blue-400 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                </svg>
+                                <span>Lojas</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
 
-        @include('partials.departments-menu-desktop')
+        @if(!$isMobile)
+            @include('partials.departments-menu-desktop')
+        @endif
     </nav>
 
-    @include('partials.departments-menu-mobile')
+    @if($isMobile)
+        @include('partials.departments-menu-mobile')
+    @endif
 
     <!-- Promo Banner -->
     <div class="bg-blue-900 text-white py-2">
@@ -247,101 +269,74 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const departmentsBtnMobile = document.getElementById('departmentsBtn');
-            const departmentsBtnDesktop = document.getElementById('departmentsBtnDesktop');
-            const departmentsMenu = document.getElementById('departmentsMenu');
-            const mobileDepartmentsMenu = document.getElementById('mobileDepartmentsMenu');
-            const closeMobileMenu = document.getElementById('closeMobileMenu');
-            const chevronIcon = document.getElementById('chevronIcon');
-            const chevronIconDesktop = document.getElementById('chevronIconDesktop');
-            
-            let isMenuOpen = false;
+            @if($isMobile)
+                const departmentsBtn = document.getElementById('departmentsBtn');
+                const mobileDepartmentsMenu = document.getElementById('mobileDepartmentsMenu');
+                const closeMobileMenu = document.getElementById('closeMobileMenu');
+                const chevronIcon = document.getElementById('chevronIcon');
+                let isMenuOpen = false;
 
-            // Mobile departments menu toggle
-            if (departmentsBtnMobile) {
-                departmentsBtnMobile.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    isMenuOpen = !isMenuOpen;
-                    
-                    if (isMenuOpen) {
-                        mobileDepartmentsMenu.classList.remove('hidden');
-                        document.body.style.overflow = 'hidden';
-                        chevronIcon.style.transform = 'rotate(180deg)';
-                    } else {
+                if (departmentsBtn) {
+                    departmentsBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        isMenuOpen = !isMenuOpen;
+                        mobileDepartmentsMenu.classList.toggle('hidden', !isMenuOpen);
+                        document.body.style.overflow = isMenuOpen ? 'hidden' : 'auto';
+                        chevronIcon.style.transform = isMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+                    });
+                }
+
+                if (closeMobileMenu) {
+                    closeMobileMenu.addEventListener('click', function() {
                         mobileDepartmentsMenu.classList.add('hidden');
                         document.body.style.overflow = 'auto';
                         chevronIcon.style.transform = 'rotate(0deg)';
-                    }
-                });
-            }
+                        isMenuOpen = false;
+                    });
+                }
 
-            // Desktop departments menu toggle
-            if (departmentsBtnDesktop) {
-                departmentsBtnDesktop.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    isMenuOpen = !isMenuOpen;
-                    
-                    if (isMenuOpen) {
-                        departmentsMenu.classList.remove('hidden');
-                        chevronIconDesktop.style.transform = 'rotate(180deg)';
-                    } else {
-                        departmentsMenu.classList.add('hidden');
-                        chevronIconDesktop.style.transform = 'rotate(0deg)';
-                    }
-                });
-            }
-
-            // Close mobile menu
-            if (closeMobileMenu) {
-                closeMobileMenu.addEventListener('click', function() {
-                    mobileDepartmentsMenu.classList.add('hidden');
-                    document.body.style.overflow = 'auto';
-                    chevronIcon.style.transform = 'rotate(0deg)';
-                    isMenuOpen = false;
-                });
-            }
-
-            // Close menu when clicking outside
-            document.addEventListener('click', function(e) {
-                if (isMenuOpen) {
-                    const clickedInsideDesktopBtn = departmentsBtnDesktop && departmentsBtnDesktop.contains(e.target);
-                    const clickedInsideMobileBtn = departmentsBtnMobile && departmentsBtnMobile.contains(e.target);
-                    const clickedInsideDesktopMenu = departmentsMenu && departmentsMenu.contains(e.target);
-                    const clickedInsideMobileMenu = mobileDepartmentsMenu && mobileDepartmentsMenu.contains(e.target);
-                    
-                    if (!clickedInsideDesktopBtn && !clickedInsideMobileBtn && !clickedInsideDesktopMenu && !clickedInsideMobileMenu) {
-                        departmentsMenu.classList.add('hidden');
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && isMenuOpen) {
                         mobileDepartmentsMenu.classList.add('hidden');
-                        if (chevronIcon) chevronIcon.style.transform = 'rotate(0deg)';
-                        if (chevronIconDesktop) chevronIconDesktop.style.transform = 'rotate(0deg)';
                         document.body.style.overflow = 'auto';
+                        chevronIcon.style.transform = 'rotate(0deg)';
                         isMenuOpen = false;
                     }
-                }
-            });
+                });
+            @else
+                const departmentsBtnDesktop = document.getElementById('departmentsBtnDesktop');
+                const departmentsMenu = document.getElementById('departmentsMenu');
+                const chevronIconDesktop = document.getElementById('chevronIconDesktop');
+                let isMenuOpen = false;
 
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                // Close all menus on resize
-                departmentsMenu.classList.add('hidden');
-                mobileDepartmentsMenu.classList.add('hidden');
-                if (chevronIcon) chevronIcon.style.transform = 'rotate(0deg)';
-                if (chevronIconDesktop) chevronIconDesktop.style.transform = 'rotate(0deg)';
-                document.body.style.overflow = 'auto';
-                isMenuOpen = false;
-            });
-
-            // Close menu on escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && isMenuOpen) {
-                    departmentsMenu.classList.add('hidden');
-                    mobileDepartmentsMenu.classList.add('hidden');
-                    if (chevronIcon) chevronIcon.style.transform = 'rotate(0deg)';
-                    if (chevronIconDesktop) chevronIconDesktop.style.transform = 'rotate(0deg)';
-                    document.body.style.overflow = 'auto';
-                    isMenuOpen = false;
+                if (departmentsBtnDesktop) {
+                    departmentsBtnDesktop.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        isMenuOpen = !isMenuOpen;
+                        departmentsMenu.classList.toggle('hidden', !isMenuOpen);
+                        chevronIconDesktop.style.transform = isMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+                    });
                 }
-            });
+
+                document.addEventListener('click', function(e) {
+                    if (isMenuOpen &&
+                        !departmentsBtnDesktop.contains(e.target) &&
+                        !departmentsMenu.contains(e.target)
+                    ) {
+                        departmentsMenu.classList.add('hidden');
+                        chevronIconDesktop.style.transform = 'rotate(0deg)';
+                        isMenuOpen = false;
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && isMenuOpen) {
+                        departmentsMenu.classList.add('hidden');
+                        chevronIconDesktop.style.transform = 'rotate(0deg)';
+                        isMenuOpen = false;
+                    }
+                });
+            @endif
         });
     </script>
     

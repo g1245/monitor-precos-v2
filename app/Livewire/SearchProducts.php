@@ -99,8 +99,9 @@ class SearchProducts extends Component
         $limit = $this->page * 30;
         $parsed = $this->parseSearchQuery();
 
-        $query = Product::search($this->q)
-            ->where('is_parent', 0);
+        $query = Product::query()
+            ->where('is_parent', 0)
+            ->search($this->q);
 
         // Apply parsed query filters
         if ($parsed['field'] === 'sku') {
@@ -112,12 +113,12 @@ class SearchProducts extends Component
         }
 
         $query
-            ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))
-            ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))
-            ->when($this->brand !== null && $this->brand !== '', fn ($q) => $q->where('brand', $this->brand))
-            ->when($this->storeId !== null, fn ($q) => $q->where('store_id', $this->storeId))
-            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange(3))
-            ->when($this->sortField, fn ($q) => $q->orderBy($this->sortField, $this->sortDirection));
+            ->when($this->minPrice !== null, fn($q) => $q->where('price', '>=', $this->minPrice))
+            ->when($this->maxPrice !== null, fn($q) => $q->where('price', '<=', $this->maxPrice))
+            ->when($this->brand !== null && $this->brand !== '', fn($q) => $q->where('brand', $this->brand))
+            ->when($this->storeId !== null, fn($q) => $q->where('store_id', $this->storeId))
+            ->when($this->recentDiscountOnly, fn($q) => $q->withRecentPriceChange(3))
+            ->when($this->sortField, fn($q) => $q->orderBy($this->sortField, $this->sortDirection));
 
         $paginator = $query->paginate($limit, 'page', 1);
         $total = $paginator->total();

@@ -20,7 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**
@@ -34,13 +37,13 @@ class AppServiceProvider extends ServiceProvider
 
         // Register model observers
         Product::observe(ProductObserver::class);
-        
+
         // Share department menu data with all views
         View::share('departmentMenu', $this->getDepartmentMenuData());
-        
+
         // Registrar componentes Livewire manualmente
         Livewire::component('department-products', \App\Livewire\DepartmentProducts::class);
-        
+
         // Use Tailwind para paginação
         Paginator::defaultView('pagination::tailwind');
     }
@@ -57,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
             return Cache::remember('department_menu', 300, function () {
                 // Get all parent departments with their children
                 return Department::whereNull('parent_id')
-                    ->with(['children' => function($query) {
+                    ->with(['children' => function ($query) {
                         $query->orderBy('name', 'asc');
                     }])
                     ->orderBy('name', 'asc')

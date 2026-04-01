@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Dto\ProductAttributeDto;
-use App\Dto\ProductDto;
 use App\Jobs\Product\SyncProductsForStoreJob;
 use App\Models\Store;
 use App\Services\ProductAttributeService;
+use App\Services\ProductDtoResolver;
 use App\Services\ProductService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -59,6 +59,7 @@ class ProductSyncService
         Log::info("Total Pages: {$totalPages}");
 
         $productsProcessed = 0;
+        $dtoClass = ProductDtoResolver::resolve($store);
 
         foreach ($products['data'] as $product) {
             Log::info("Processing product ID", [
@@ -70,7 +71,7 @@ class ProductSyncService
             try {
                 $priceData = $product['price'] ?? [];
 
-                if (empty($priceData['search_price']) && empty($priceData['base_price'])) {
+                if (!$dtoClass::hasValidPrices($priceData)) {
                     Log::error("Missing price fields for product, skipping", [
                         'store_name' => $store->name,
                         'sku' => $product['merchant_product_id'] ?? 'N/A',
@@ -81,19 +82,7 @@ class ProductSyncService
                 }
 
                 $savedProduct = ProductService::createOrUpdate(
-                    new ProductDto(
-                        storeId: $store->id,
-                        name: $product['product_name'],
-                        description: $product['description'] ?? null,
-                        price: isset($priceData['search_price']) ? (float) $priceData['search_price'] : null,
-                        priceRegular: isset($priceData['product_price_old']) ? (float) $priceData['product_price_old'] : (isset($priceData['base_price']) ? (float) $priceData['base_price'] : null),
-                        sku: $product['merchant_product_id'],
-                        brand: $product['brand_name'] ?? null,
-                        imageUrl: $product['merchant_image_url'],
-                        deepLink: $product['aw_deep_link'] ?? null,
-                        externalLink: $product['merchant_deep_link'] ?? null,
-                        merchantProductId: $product['merchant_product_id'] ?? null,
-                    )
+                    $dtoClass::fromApiData($store->id, $product)
                 );
             } catch (\Throwable $e) {
                 Log::error("Failed to create or update product", [

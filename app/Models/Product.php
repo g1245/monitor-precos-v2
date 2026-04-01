@@ -136,6 +136,14 @@ class Product extends Model
     }
 
     /**
+     * Scope to get only parent (listable) products, excluding child variants.
+     */
+    public function scopeParentProducts($query)
+    {
+        return $query->where('is_parent', 0);
+    }
+
+    /**
      * Scope to search products by name, description, brand or exact SKU match.
      */
     public function scopeSearch($query, string $search)

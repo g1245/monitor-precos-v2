@@ -33,7 +33,7 @@ class CacheTopDiscountedProductsCommand extends Command
         // Only active products with valid discount_percentage
         $products = Product::query()
             ->active()
-            ->where('is_parent', 0)
+            ->parentProducts()
             ->whereNotNull('discount_percentage')
             ->where('discount_percentage', '>', 0)
             ->with('store:id,name,logo')

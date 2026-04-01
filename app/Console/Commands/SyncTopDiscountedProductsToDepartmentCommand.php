@@ -116,7 +116,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
                 DB::raw('((SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) - products.price) as price_reduction_value'),
             ])
             ->active()
-            ->where('is_parent', 0)
+            ->parentProducts()
             ->whereRaw('products.price = (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
             ->whereRaw('(SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) <> (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
             ->orderByDesc('price_reduction_percentage')

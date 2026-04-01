@@ -49,7 +49,7 @@ class WelcomeProducts extends Component
         $query = Product::query()
             ->active()
             ->fromPublicStore()
-            ->where('is_parent', 0)
+            ->parentProducts()
             ->with('store');
 
         $query = match ($this->tab) {

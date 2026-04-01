@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->timestamp('old_price_at')
+            $table->datetime('old_price_at')
                 ->nullable()
                 ->after('old_price')
                 ->comment('Timestamp of the last old_price update, used to track how long ago the price changed.');

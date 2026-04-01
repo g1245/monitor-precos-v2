@@ -24,6 +24,7 @@ class Product extends Model
         'description',
         'price',
         'old_price',
+        'old_price_at',
         'price_regular',
         'highest_recorded_price',
         'lowest_recorded_price',
@@ -47,6 +48,7 @@ class Product extends Model
         'store_id' => 'integer',
         'price' => 'decimal:2',
         'old_price' => 'decimal:2',
+        'old_price_at' => 'datetime',
         'price_regular' => 'decimal:2',
         'highest_recorded_price' => 'decimal:2',
         'lowest_recorded_price' => 'decimal:2',
@@ -187,12 +189,13 @@ class Product extends Model
 
     /**
      * Scope to get products with price changes in the given day window.
+     * Uses old_price_at for precision — tracks exactly when old_price was last set.
      */
     public function scopeWithRecentPriceChange($query, int $days = 3)
     {
         return $query->whereNotNull('old_price')
             ->whereColumn('old_price', '>', 'price')
-            ->where('updated_at', '>=', now()->subDays($days));
+            ->where('old_price_at', '>=', now()->subDays($days));
     }
 
     /**

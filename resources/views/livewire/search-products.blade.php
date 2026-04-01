@@ -66,10 +66,10 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Preço</label>
                         <div class="flex items-center gap-2">
-                            <input type="number" wire:model.live.debounce.500ms="minPrice" placeholder="Mín." 
+                            <input type="number" wire:model="minPrice" placeholder="Mín." 
                                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                             <span class="text-gray-500">-</span>
-                            <input type="number" wire:model.live.debounce.500ms="maxPrice" placeholder="Máx." 
+                            <input type="number" wire:model="maxPrice" placeholder="Máx." 
                                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                         </div>
                     </div>
@@ -77,14 +77,14 @@
                     <!-- Filtro de marca -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Marca</label>
-                        <input type="text" wire:model.live.debounce.500ms="brand" placeholder="Digite a marca" 
+                        <input type="text" wire:model="brand" placeholder="Digite a marca" 
                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
 
                     <!-- Filtro de loja -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Loja</label>
-                        <select wire:model.live="storeId" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white">
+                        <select wire:model="storeId" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white">
                             <option value="">Todas as lojas</option>
                             @foreach($stores as $store)
                                 <option value="{{ $store->id }}">{{ $store->name }}</option>
@@ -94,14 +94,34 @@
 
                     <div class="md:col-span-2 lg:col-span-3">
                         <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
-                            <input type="checkbox" wire:model.live="recentDiscountOnly" class="rounded border-gray-300 text-primary focus:ring-primary">
-                            Somente com alteração de preço recente
+                            <input type="checkbox" wire:model="recentDiscountOnly" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            Somente com descontos recentes
                         </label>
                     </div>
+                </div>
+
+                <div class="mt-4 flex justify-end">
+                    <button wire:click="applyFilters" type="button"
+                            wire:loading.attr="disabled" wire:target="applyFilters"
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60 transition-opacity cursor-pointer">
+                        <svg wire:loading wire:target="applyFilters" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        <span>Filtrar</span>
+                    </button>
                 </div>
             </div>
 
             @if($products->count() > 0)
+                <div class="relative">
+                <div wire:loading wire:target="applyFilters,sortField,sortDirection"
+                     class="absolute inset-0 bg-white/60 z-10 flex items-center justify-center rounded-lg">
+                    <svg class="animate-spin h-10 w-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-label="Carregando">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                </div>
                 <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($products as $product)
                         <div wire:key="search-product-{{ $product->id }}" class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
@@ -154,6 +174,7 @@
                             @endif
                         </div>
                     @endforeach
+                </div>
                 </div>
 
                 {{-- Infinite Scroll Sentinel --}}

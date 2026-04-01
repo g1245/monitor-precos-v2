@@ -89,6 +89,11 @@ class DepartmentProducts extends Component
         $this->page = 1;
     }
 
+    public function applyFilters(): void
+    {
+        $this->page = 1;
+    }
+
     public function clearFilters(): void
     {
         $this->minPrice = null;

@@ -129,10 +129,22 @@ class Product extends Model
 
     /**
      * Scope to get only products from stores with public visibility.
+     *
+     * Uses LEFT JOIN with the has_public condition in the ON clause so the
+     * query planner can prune non-public stores early, avoiding a correlated
+     * subquery (EXISTS) that degrades performance at scale.
+     * The alias `public_stores` prevents conflicts with any eager-loaded
+     * `store` relationship or other joins on the same query.
      */
     public function scopeFromPublicStore($query)
     {
-        return $query->whereHas('store', fn ($q) => $q->where('has_public', true));
+        return $query
+            ->leftJoin('stores as public_stores', function ($join) {
+                $join->on('products.store_id', '=', 'public_stores.id')
+                     ->where('public_stores.has_public', true);
+            })
+            ->whereNotNull('public_stores.id')
+            ->select('products.*');
     }
 
     /**

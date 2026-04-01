@@ -128,6 +128,14 @@ class Product extends Model
     }
 
     /**
+     * Scope to get only products from stores with public visibility.
+     */
+    public function scopeFromPublicStore($query)
+    {
+        return $query->whereHas('store', fn ($q) => $q->where('has_public', true));
+    }
+
+    /**
      * Scope to search products by name, description, brand or exact SKU match.
      */
     public function scopeSearch($query, string $search)
@@ -302,6 +310,7 @@ class Product extends Model
             'brand' => $this->brand,
             'store_id' => (int) $this->store_id,
             'is_parent' => (int) $this->is_parent,
+            'store_has_public' => (bool) $this->store?->has_public,
         ];
     }
 }

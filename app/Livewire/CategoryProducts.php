@@ -103,6 +103,7 @@ class CategoryProducts extends Component
         $limit = $this->page * 30;
 
         $query = Product::query()
+            ->fromPublicStore()
             ->where('is_parent', 0)
             ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))
             ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))

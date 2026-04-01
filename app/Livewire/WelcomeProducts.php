@@ -48,6 +48,7 @@ class WelcomeProducts extends Component
     {
         $query = Product::query()
             ->active()
+            ->fromPublicStore()
             ->where('is_parent', 0)
             ->with('store');
 

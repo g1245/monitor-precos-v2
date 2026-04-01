@@ -96,6 +96,7 @@ class StoreProducts extends Component
         $limit = $this->page * 30;
 
         $query = Product::query()
+            ->fromPublicStore()
             ->where('store_id', $this->store->id)
             ->where('is_parent', 0)
             ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))

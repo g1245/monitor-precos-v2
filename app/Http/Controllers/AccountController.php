@@ -36,6 +36,7 @@ class AccountController extends Controller
         $user = Auth::user();
         $userWishes = $user->userWishProducts()
             ->with('product.store')
+            ->whereHas('product', fn ($q) => $q->fromPublicStore())
             ->latest()
             ->paginate(20);
 
@@ -52,6 +53,7 @@ class AccountController extends Controller
         $user = Auth::user();
         $priceAlerts = $user->userWishProducts()
             ->with('product.store')
+            ->whereHas('product', fn ($q) => $q->fromPublicStore())
             ->whereNotNull('target_price')
             ->where('is_active', true)
             ->latest()
@@ -70,6 +72,7 @@ class AccountController extends Controller
         $user = Auth::user();
         $history = $user->browsingHistory()
             ->with(['product', 'department', 'store'])
+            ->whereHas('product', fn ($q) => $q->fromPublicStore())
             ->latest('visited_at')
             ->paginate(50);
 

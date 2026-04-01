@@ -17,6 +17,7 @@ class ProductController extends Controller
             ->with(['departments', 'attributes'])
             ->where('id', $id)
             ->active()
+            ->fromPublicStore()
             ->firstOrFail();
 
         // Mock data for stores comparison - in real implementation, this would come from external APIs or database

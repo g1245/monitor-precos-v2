@@ -100,7 +100,8 @@ class SearchProducts extends Component
         $parsed = $this->parseSearchQuery();
 
         $query = Product::search($this->q)
-            ->where('is_parent', 0);
+            ->where('is_parent', 0)
+            ->where('store_has_public', true);
 
         // Apply parsed query filters
         if ($parsed['field'] === 'sku') {

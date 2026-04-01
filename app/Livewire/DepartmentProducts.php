@@ -110,6 +110,7 @@ class DepartmentProducts extends Component
         }
 
         $query = Product::query()
+            ->fromPublicStore()
             ->where('is_parent', 0)
             ->whereHas('departments', fn ($q) => $q->whereIn('departments.id', $departmentIds))
             ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))

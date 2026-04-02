@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Dto\ProductAttributeDto;
 use App\Jobs\Product\SyncProductsForStoreJob;
+use App\Models\Product;
 use App\Models\Store;
 use App\Services\ProductAttributeService;
 use App\Services\ProductDtoResolver;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 class ProductSyncService
 {
     /**
-     * Sync products for a given store.
+     * Sync all products for a given store, paginating through the API.
      *
      * @param Store $store
      * @param int $page
@@ -36,9 +37,9 @@ class ProductSyncService
             'started_at' => $startTime->format('Y-m-d H:i:s'),
         ]);
 
-        $products = self::fetchProducts($storeName, $page, 500, $updatedAtFrom);
+        $response = self::fetchProducts($storeName, $page, 500, $updatedAtFrom);
 
-        if (empty($products)) {
+        if (empty($response)) {
             Log::error("Failed to fetch products for store: {$store->name} on page: {$page}");
 
             Log::channel('sync-store')->error("Failed to fetch products", [
@@ -47,12 +48,12 @@ class ProductSyncService
                 'page' => $page,
                 'updated_at_from' => $updatedAtFrom,
             ]);
-            
+
             return;
         }
 
         if ($totalPages === null) {
-            $totalPages = $products['totalPages'];
+            $totalPages = $response['totalPages'];
         }
 
         Log::info("Fetched page {$page} of products for store: {$store->name}");
@@ -61,65 +62,10 @@ class ProductSyncService
         $productsProcessed = 0;
         $dtoClass = ProductDtoResolver::resolve($store);
 
-        foreach ($products['data'] as $product) {
-            Log::info("Processing product ID", [
-                'merchant_product_id' => $product['merchant_product_id'] ?? 'N/A',
-                'aw_product_id' => $product['aw_product_id'] ?? 'N/A',
-                'store_name' => $store->name,
-            ]);
-
-            try {
-                $priceData = $product['price'] ?? [];
-
-                if (!$dtoClass::hasValidPrices($priceData)) {
-                    Log::error("Missing price fields for product, skipping", [
-                        'store_name' => $store->name,
-                        'sku' => $product['merchant_product_id'] ?? 'N/A',
-                        'price' => $priceData,
-                    ]);
-
-                    continue;
-                }
-
-                $savedProduct = ProductService::createOrUpdate(
-                    $dtoClass::fromApiData($store->id, $product)
-                );
-            } catch (\Throwable $e) {
-                Log::error("Failed to create or update product", [
-                    'merchant_product_id' => $product['merchant_product_id'] ?? 'N/A',
-                    'aw_product_id' => $product['aw_product_id'] ?? 'N/A',
-                    'store_name' => $store->name,
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-
-                continue;
+        foreach ($response['data'] as $product) {
+            if (self::processProductData($store, $product, $dtoClass)) {
+                $productsProcessed++;
             }
-
-            // Record price history if price has changed
-            if ($savedProduct->shouldRecordPriceHistory()) {
-                $savedProduct->addPriceHistory($savedProduct->price);
-            }
-
-            // Sync product attributes after saving the product
-            ProductAttributeService::sync(
-                ProductAttributeDto::fromApiData($savedProduct->id, $product)
-            );
-
-            // Sync product departments from category path
-            $categoryPath = $product['merchant_category'] ?? $product['merchant_product_category_path'] ?? null;
-
-            if ($categoryPath) {
-                Log::info("Syncing departments for product ID: " . $savedProduct->id);
-                Log::info("Department Path: " . $categoryPath);
-
-                ProductService::syncDepartmentsFromPath(
-                    $savedProduct->id,
-                    $categoryPath
-                );
-            }
-
-            $productsProcessed++;
         }
 
         $endTime = now();
@@ -136,7 +82,6 @@ class ProductSyncService
             'duration_seconds' => $endTime->diffInSeconds($startTime),
         ]);
 
-        // If there are more pages, dispatch the next job
         if ($page < $totalPages) {
             SyncProductsForStoreJob::dispatch($store, $page + 1, $totalPages, $updatedAtFrom);
         } else {
@@ -150,10 +95,112 @@ class ProductSyncService
                 'finished_at' => now()->format('Y-m-d H:i:s'),
             ]);
 
-            // Flush welcome page cache once after the entire sync completes,
-            // instead of flushing on every individual product save.
             self::flushWelcomeCache();
         }
+    }
+
+    /**
+     * Sync a single product by its AW product ID.
+     * Fetches the product directly from the API and persists it using the store's DTO.
+     *
+     * @param Store $store
+     * @param string $awProductId
+     * @return Product|null Returns the saved product, or null on failure.
+     */
+    public static function syncById(Store $store, string $awProductId): ?Product
+    {
+        Log::info("Syncing individual product", [
+            'store_id' => $store->id,
+            'store_name' => $store->name,
+            'aw_product_id' => $awProductId,
+        ]);
+
+        $product = self::fetchProductById($awProductId);
+
+        if (empty($product)) {
+            Log::error("Failed to fetch product by ID", [
+                'store_id' => $store->id,
+                'store_name' => $store->name,
+                'aw_product_id' => $awProductId,
+            ]);
+
+            return null;
+        }
+
+        $dtoClass = ProductDtoResolver::resolve($store);
+
+        return self::processProductData($store, $product, $dtoClass)
+            ? Product::where('store_id', $store->id)
+                ->where('sku', $product['merchant_product_id'] ?? null)
+                ->first()
+            : null;
+    }
+
+    /**
+     * Process and persist a single raw product array from the API.
+     * Handles price validation, upsert, price history, attributes and departments.
+     * Used by both batch (syncForStore) and individual (syncById) flows.
+     *
+     * @param Store $store
+     * @param array $product Raw product data from the API.
+     * @param class-string $dtoClass Resolved DTO class for this store.
+     * @return bool True if the product was processed successfully, false otherwise.
+     */
+    public static function processProductData(Store $store, array $product, string $dtoClass): bool
+    {
+        Log::info("Processing product", [
+            'merchant_product_id' => $product['merchant_product_id'] ?? 'N/A',
+            'aw_product_id' => $product['aw_product_id'] ?? 'N/A',
+            'store_name' => $store->name,
+        ]);
+
+        $priceData = $product['price'] ?? [];
+
+        if (!$dtoClass::hasValidPrices($priceData)) {
+            Log::error("Missing price fields for product, skipping", [
+                'store_name' => $store->name,
+                'sku' => $product['merchant_product_id'] ?? 'N/A',
+                'price' => $priceData,
+            ]);
+
+            return false;
+        }
+
+        try {
+            $savedProduct = ProductService::createOrUpdate(
+                $dtoClass::fromApiData($store->id, $product)
+            );
+        } catch (\Throwable $e) {
+            Log::error("Failed to create or update product", [
+                'merchant_product_id' => $product['merchant_product_id'] ?? 'N/A',
+                'aw_product_id' => $product['aw_product_id'] ?? 'N/A',
+                'store_name' => $store->name,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return false;
+        }
+
+        if ($savedProduct->shouldRecordPriceHistory()) {
+            $savedProduct->addPriceHistory($savedProduct->price);
+        }
+
+        ProductAttributeService::sync(
+            ProductAttributeDto::fromApiData($savedProduct->id, $product)
+        );
+
+        $categoryPath = $product['merchant_category'] ?? $product['merchant_product_category_path'] ?? null;
+
+        if ($categoryPath) {
+            Log::info("Syncing departments for product ID: {$savedProduct->id}", [
+                'department_path' => $categoryPath,
+            ]);
+
+            ProductService::syncDepartmentsFromPath($savedProduct->id, $categoryPath);
+        }
+
+        return true;
     }
 
     /**
@@ -168,7 +215,7 @@ class ProductSyncService
     }
 
     /**
-     * Fetch products from the API.
+     * Fetch a paginated list of products from the API for a given store.
      *
      * @param string $storeName
      * @param int $page
@@ -193,14 +240,44 @@ class ProductSyncService
             'endpoint' => config('services.awin.url') . '/products',
         ]);
 
-        $request = Http::withHeaders([
-            'x-api-key' => config('services.awin.token')
+        $response = Http::withHeaders([
+            'x-api-key' => config('services.awin.token'),
         ])->get(config('services.awin.url') . '/products', $query);
 
-        if ($request->failed()) {
+        if ($response->failed()) {
             return [];
         }
 
-        return $request->json();
+        return $response->json();
+    }
+
+    /**
+     * Fetch a single product by its AW product ID from the API.
+     *
+     * @param string $awProductId
+     * @return array
+     */
+    private static function fetchProductById(string $awProductId): array
+    {
+        $endpoint = config('services.awin.url') . '/products/' . $awProductId;
+
+        Log::info("Fetching product by ID from API", [
+            'aw_product_id' => $awProductId,
+            'endpoint' => $endpoint,
+        ]);
+
+        $response = Http::withHeaders([
+            'x-api-key' => config('services.awin.token'),
+        ])->get($endpoint);
+
+        if ($response->failed()) {
+            Log::error("API request failed for product ID: {$awProductId}", [
+                'status' => $response->status(),
+            ]);
+
+            return [];
+        }
+
+        return $response->json() ?? [];
     }
 }

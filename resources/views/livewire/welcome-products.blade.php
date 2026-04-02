@@ -4,11 +4,11 @@
         <nav class="-mb-px flex gap-6" aria-label="Tabs">
             <a href="{{ route('welcome') }}"
                class="{{ $tab === 'destaques' ? 'border-primary text-primary font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap border-b-2 py-3 text-sm transition-colors">
-                Maiores Descontos
+                Novos Descontos
             </a>
             <a href="{{ route('welcome.recentes') }}"
                class="{{ $tab === 'recentes' ? 'border-primary text-primary font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap border-b-2 py-3 text-sm transition-colors">
-                Recentes
+                Produtos Recentes
             </a>
             <a href="{{ route('welcome.mais-acessados') }}"
                class="{{ $tab === 'mais-acessados' ? 'border-primary text-primary font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap border-b-2 py-3 text-sm transition-colors">

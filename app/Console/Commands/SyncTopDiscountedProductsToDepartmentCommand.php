@@ -78,14 +78,14 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
         // Display summary
         $this->newLine();
         $this->table(
-            ['Product ID', 'Name', 'Current Price', 'Previous Price', 'Reduction %'],
+            ['Product ID', 'Name', 'Current Price', 'Old Price', 'Discount %'],
             $topDiscountedProducts->take(10)->map(function ($product) {
                 return [
                     $product->id,
                     substr($product->name, 0, 40) . '...',
                     'R$ ' . number_format($product->price, 2, ',', '.'),
-                    'R$ ' . number_format($product->previous_price, 2, ',', '.'),
-                    number_format($product->price_reduction_percentage, 2) . '%',
+                    'R$ ' . number_format($product->old_price, 2, ',', '.'),
+                    number_format($product->discount_percentage, 2) . '%',
                 ];
             })->toArray()
         );
@@ -96,33 +96,20 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
     }
 
     /**
-     * Get products with biggest price reductions based on price history.
+     * Get products with biggest price reductions based on old_price vs price fields.
      *
-     * @param int $limit
+     * @param int|null $limit
      * @return \Illuminate\Support\Collection
      */
     private function getTopDiscountedProducts(?int $limit)
     {
-        // Query to get products with the biggest discounts using subqueries to avoid GROUP BY issues
-        $products = Product::query()
-            ->select([
-                'products.id',
-                'products.name',
-                'products.price',
-                'products.price_regular',
-                'products.discount_percentage',
-                DB::raw('(SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) as previous_price'),
-                DB::raw('ROUND((1 - products.price / (SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id)) * 100, 2) as price_reduction_percentage'),
-                DB::raw('((SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) - products.price) as price_reduction_value'),
-            ])
+        return Product::query()
             ->active()
-            ->where('is_parent', 0)
-            ->whereRaw('products.price = (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
-            ->whereRaw('(SELECT MAX(price) FROM products_prices_histories WHERE product_id = products.id) <> (SELECT MIN(price) FROM products_prices_histories WHERE product_id = products.id)')
-            ->orderByDesc('price_reduction_percentage')
+            ->fromPublicStore()
+            ->parentProducts()
+            ->whereColumn('price', '<', 'old_price')
+            ->orderByDesc('discount_percentage')
             ->when($limit !== null, fn ($q) => $q->limit($limit))
             ->get();
-
-        return $products;
     }
 }

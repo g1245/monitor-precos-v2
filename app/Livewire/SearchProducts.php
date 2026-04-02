@@ -84,6 +84,11 @@ class SearchProducts extends Component
         $this->page = 1;
     }
 
+    public function applyFilters(): void
+    {
+        $this->page = 1;
+    }
+
     public function clearFilters(): void
     {
         $this->minPrice = null;
@@ -100,7 +105,8 @@ class SearchProducts extends Component
         $parsed = $this->parseSearchQuery();
 
         $query = Product::search($this->q)
-            ->where('is_parent', 0);
+            ->where('is_parent', 0)
+            ->where('store_has_public', true);
 
         // Apply parsed query filters
         if ($parsed['field'] === 'sku') {

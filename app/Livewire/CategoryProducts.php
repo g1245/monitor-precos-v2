@@ -88,6 +88,11 @@ class CategoryProducts extends Component
         $this->page = 1;
     }
 
+    public function applyFilters(): void
+    {
+        $this->page = 1;
+    }
+
     public function clearFilters(): void
     {
         $this->minPrice = null;
@@ -103,12 +108,13 @@ class CategoryProducts extends Component
         $limit = $this->page * 30;
 
         $query = Product::query()
-            ->where('is_parent', 0)
+            ->fromPublicStore()
+            ->parentProducts()
             ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))
             ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->brand !== null && $this->brand !== '', fn ($q) => $q->where('brand', 'LIKE', "%{$this->brand}%"))
             ->when($this->storeId !== null, fn ($q) => $q->where('store_id', $this->storeId))
-            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange(3))
+            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange())
             ->orderBy($this->sortField, $this->sortDirection);
 
         $total = (clone $query)->count();

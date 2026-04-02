@@ -48,14 +48,15 @@ class WelcomeProducts extends Component
     {
         $query = Product::query()
             ->active()
-            ->where('is_parent', 0)
+            ->fromPublicStore()
+            ->parentProducts()
             ->with('store');
 
         $query = match ($this->tab) {
             'recentes'        => $query->orderByDesc('created_at'),
             'mais-acessados'  => $query->orderByDesc('views_count'),
-            default           => $query->whereColumn('price', '<', 'price_regular')
-                                       ->orderByDesc('discount_percentage'),
+            default           => $query->whereColumn('price', '<', 'old_price')
+                                        ->orderByDesc('discount_percentage'),
         };
 
         return $query->limit($fetchLimit)->get();

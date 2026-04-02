@@ -53,7 +53,8 @@ class ProductObserver
 
             if ($previousPrice !== null) {
                 $product->updateQuietly([
-                    'old_price' => $previousPrice,
+                    'old_price'    => $previousPrice,
+                    'old_price_at' => now(),
                 ]);
             }
         }

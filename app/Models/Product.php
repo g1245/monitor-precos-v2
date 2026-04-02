@@ -24,6 +24,7 @@ class Product extends Model
         'description',
         'price',
         'old_price',
+        'old_price_at',
         'price_regular',
         'highest_recorded_price',
         'lowest_recorded_price',
@@ -47,6 +48,7 @@ class Product extends Model
         'store_id' => 'integer',
         'price' => 'decimal:2',
         'old_price' => 'decimal:2',
+        'old_price_at' => 'datetime',
         'price_regular' => 'decimal:2',
         'highest_recorded_price' => 'decimal:2',
         'lowest_recorded_price' => 'decimal:2',
@@ -128,6 +130,34 @@ class Product extends Model
     }
 
     /**
+     * Scope to get only products from stores with public visibility.
+     *
+     * Uses LEFT JOIN with the has_public condition in the ON clause so the
+     * query planner can prune non-public stores early, avoiding a correlated
+     * subquery (EXISTS) that degrades performance at scale.
+     * The alias `public_stores` prevents conflicts with any eager-loaded
+     * `store` relationship or other joins on the same query.
+     */
+    public function scopeFromPublicStore($query)
+    {
+        return $query
+            ->leftJoin('stores as public_stores', function ($join) {
+                $join->on('products.store_id', '=', 'public_stores.id')
+                     ->where('public_stores.has_public', true);
+            })
+            ->where('public_stores.id', '!=', null)
+            ->select('products.*');
+    }
+
+    /**
+     * Scope to get only parent (listable) products, excluding child variants.
+     */
+    public function scopeParentProducts($query)
+    {
+        return $query->where('is_parent', 0);
+    }
+
+    /**
      * Scope to search products by name, description, brand or exact SKU match.
      */
     public function scopeSearch($query, string $search)
@@ -159,12 +189,13 @@ class Product extends Model
 
     /**
      * Scope to get products with price changes in the given day window.
+     * Uses old_price_at for precision — tracks exactly when old_price was last set.
      */
-    public function scopeWithRecentPriceChange($query, int $days = 3)
+    public function scopeWithRecentPriceChange($query, int $days = 2)
     {
         return $query->whereNotNull('old_price')
             ->whereColumn('old_price', '>', 'price')
-            ->where('updated_at', '>=', now()->subDays($days));
+            ->where('old_price_at', '>=', now()->subDays($days));
     }
 
     /**
@@ -270,7 +301,7 @@ class Product extends Model
             return null;
         }
 
-        return Product::find($this->is_parent);
+        return Product::fromPublicStore()->find($this->is_parent);
     }
 
     /**
@@ -282,7 +313,7 @@ class Product extends Model
             return collect([]);
         }
 
-        return Product::where('is_parent', $this->id)->get();
+        return Product::where('is_parent', $this->id)->fromPublicStore()->get();
     }
 
     /**
@@ -302,6 +333,7 @@ class Product extends Model
             'brand' => $this->brand,
             'store_id' => (int) $this->store_id,
             'is_parent' => (int) $this->is_parent,
+            'store_has_public' => (bool) $this->store?->has_public,
         ];
     }
 }

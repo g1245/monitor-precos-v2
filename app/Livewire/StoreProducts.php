@@ -82,6 +82,11 @@ class StoreProducts extends Component
         $this->page = 1;
     }
 
+    public function applyFilters(): void
+    {
+        $this->page = 1;
+    }
+
     public function clearFilters(): void
     {
         $this->minPrice = null;
@@ -96,8 +101,9 @@ class StoreProducts extends Component
         $limit = $this->page * 30;
 
         $query = Product::query()
+            ->fromPublicStore()
             ->where('store_id', $this->store->id)
-            ->where('is_parent', 0)
+            ->parentProducts()
             ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))
             ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->brand !== null && $this->brand !== '', fn ($q) => $q->where('brand', 'LIKE', "%{$this->brand}%"))

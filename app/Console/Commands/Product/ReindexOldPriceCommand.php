@@ -98,26 +98,27 @@ class ReindexOldPriceCommand extends Command
                 foreach ($products as $product) {
                     $processed++;
 
-                    $reindexedOldPrice = $product->priceHistories()
+                    $historyRecord = $product->priceHistories()
                         ->where('created_at', '>=', now()->subDays($days))
                         ->where('price', '>', $product->price)
                         ->orderByDesc('created_at')
                         ->orderByDesc('id')
-                        ->value('price');
+                        ->first(['price', 'created_at']);
 
-                    $newOldPrice = $reindexedOldPrice !== null
-                        ? number_format((float) $reindexedOldPrice, 4, '.', '')
-                        : null;
-
-                    if ($newOldPrice !== null) {
-                        DB::table('products')
-                            ->where('id', $product->id)
-                            ->update([
-                                'old_price' => $reindexedOldPrice,
-                            ]);
-
-                        $updated++;
+                    if ($historyRecord === null) {
+                        continue;
                     }
+
+                    $newOldPrice = number_format((float) $historyRecord->price, 4, '.', '');
+
+                    DB::table('products')
+                        ->where('id', $product->id)
+                        ->update([
+                            'old_price'    => $newOldPrice,
+                            'old_price_at' => $historyRecord->created_at,
+                        ]);
+
+                    $updated++;
                 }
             });
 

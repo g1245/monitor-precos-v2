@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Schedule;
 
-// Schedule command to cache top discounted products every fifteen minutes
-Schedule::command('app:cache-top-discounted-products')->everyFifteenMinutes();
-
 // Schedule command to sync product views_count from browsing history every fifteen minutes
 Schedule::command('app:sync-product-views')->everyFifteenMinutes();
 
@@ -12,7 +9,7 @@ Schedule::command('app:sync-product-views')->everyFifteenMinutes();
 Schedule::command('app:create-today-price')->dailyAt('00:01');
 
 // Schedule command to sync product data by store every three hours
-Schedule::command('app:sync-product-by-store')->everyThreeHours();
+Schedule::command('app:sync-product-by-store')->hourly();
 
 // Schedule command to sync top discounted products to Department 1 every hour
 Schedule::command('app:sync-top-discounted-products-to-department')->hourly();

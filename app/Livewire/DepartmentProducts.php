@@ -89,6 +89,11 @@ class DepartmentProducts extends Component
         $this->page = 1;
     }
 
+    public function applyFilters(): void
+    {
+        $this->page = 1;
+    }
+
     public function clearFilters(): void
     {
         $this->minPrice = null;
@@ -110,7 +115,8 @@ class DepartmentProducts extends Component
         }
 
         $query = Product::query()
-            ->where('is_parent', 0)
+            ->fromPublicStore()
+            ->parentProducts()
             ->whereHas('departments', fn ($q) => $q->whereIn('departments.id', $departmentIds))
             ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))
             ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))

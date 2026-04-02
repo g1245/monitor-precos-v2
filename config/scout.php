@@ -143,7 +143,7 @@ return [
             \App\Models\Product::class => [
                 'searchableAttributes' => ['name', 'sku', 'brand'],
                 'filterableAttributes' => ['price', 'price_regular', 'discount_percentage', 'store_id', 'brand', 'is_parent', 'store_has_public'],
-                'sortableAttributes' => ['price', 'price_regular', 'discount_percentage', 'store_id'],
+                'sortableAttributes' => ['price', 'price_regular', 'discount_percentage', 'store_id', 'store_has_public'],
             ],
         ],
     ],

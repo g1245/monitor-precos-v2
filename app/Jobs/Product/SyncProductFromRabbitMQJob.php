@@ -34,7 +34,9 @@ class SyncProductFromRabbitMQJob implements ShouldQueue
     public function __construct(
         public readonly string $awProductId,
         public readonly string $storeName,
-    ) {}
+    ) {
+        $this->onQueue('product-sync');
+    }
 
     /**
      * Execute the job.

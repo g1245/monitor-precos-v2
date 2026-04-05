@@ -108,7 +108,8 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
             ->fromPublicStore()
             ->parentProducts()
             ->whereColumn('price', '<', 'old_price')
-            ->orderByDesc('discount_percentage')
+            ->where('old_price_at', '>=', now()->subDays(2)->startOfDay())
+            ->orderByRaw('(old_price - price) desc')
             ->when($limit !== null, fn ($q) => $q->limit($limit))
             ->get();
     }

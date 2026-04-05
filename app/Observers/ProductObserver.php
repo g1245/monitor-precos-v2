@@ -51,7 +51,7 @@ class ProductObserver
         if ($product->wasChanged('price')) {
             $previousPrice = $product->getOriginal('price');
 
-            if ($previousPrice !== null) {
+            if ($previousPrice != $product->price) {
                 $product->updateQuietly([
                     'old_price'    => $previousPrice,
                     'old_price_at' => now(),

@@ -55,8 +55,8 @@ class WelcomeProducts extends Component
         $query = match ($this->tab) {
             'recentes'        => $query->orderByDesc('created_at'),
             'mais-acessados'  => $query->orderByDesc('views_count'),
-            default           => $query->whereColumn('price', '<', 'old_price')
-                                        ->orderByRaw('(old_price - price) desc'),
+            default           => $query->whereColumn('price', '<', 'highest_recorded_price')
+                                        ->orderByRaw('(highest_recorded_price - price) desc'),
         };
 
         return $query->limit($fetchLimit)->get();

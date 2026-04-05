@@ -195,7 +195,7 @@ class Product extends Model
     {
         return $query->whereNotNull('old_price')
             ->whereColumn('old_price', '>', 'price')
-            ->where('old_price_at', '>=', now()->subDays($days));
+            ->where('old_price_at', '>=', now()->subDays($days)->startOfDay());
     }
 
     /**

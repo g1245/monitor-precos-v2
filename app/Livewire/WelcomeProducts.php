@@ -56,7 +56,7 @@ class WelcomeProducts extends Component
             'recentes'        => $query->orderByDesc('created_at'),
             'mais-acessados'  => $query->orderByDesc('views_count'),
             default           => $query->whereColumn('price', '<', 'old_price')
-                                        ->orderByDesc('discount_percentage'),
+                                        ->orderByRaw('(old_price - price) desc'),
         };
 
         return $query->limit($fetchLimit)->get();

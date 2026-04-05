@@ -122,7 +122,7 @@ class SearchProducts extends Component
             ->when($this->maxPrice !== null, fn($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->brand !== null && $this->brand !== '', fn($q) => $q->where('brand', $this->brand))
             ->when($this->storeId !== null, fn($q) => $q->where('store_id', $this->storeId))
-            ->when($this->recentDiscountOnly, fn($q) => $q->withRecentPriceChange(3))
+            ->when($this->recentDiscountOnly, fn($q) => $q->withRecentPriceChange(2))
             ->when($this->sortField, fn($q) => $q->orderBy($this->sortField, $this->sortDirection));
 
         $paginator = $query->paginate($limit, 'page', 1);

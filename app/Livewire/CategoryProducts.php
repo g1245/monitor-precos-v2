@@ -114,8 +114,12 @@ class CategoryProducts extends Component
             ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->brand !== null && $this->brand !== '', fn ($q) => $q->where('brand', 'LIKE', "%{$this->brand}%"))
             ->when($this->storeId !== null, fn ($q) => $q->where('store_id', $this->storeId))
-            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange())
-            ->orderBy($this->sortField, $this->sortDirection);
+            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange(2))
+            ->when(
+                $this->sortField === 'discount_percentage',
+                fn ($q) => $q->orderByRaw('(old_price - price) ' . ($this->sortDirection === 'asc' ? 'asc' : 'desc')),
+                fn ($q) => $q->orderBy($this->sortField, $this->sortDirection)
+            );
 
         $total = (clone $query)->count();
         $products = $query->limit($limit + 1)->get();

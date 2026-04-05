@@ -125,7 +125,7 @@ class DepartmentProducts extends Component
             ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange(2))
             ->when(
                 $this->sortField === 'discount_percentage',
-                fn ($q) => $q->orderByRaw('(highest_recorded_price - price) ' . ($this->sortDirection === 'asc' ? 'asc' : 'desc')),
+                fn ($q) => $q->orderByRaw('(highest_recorded_price / price) ' . ($this->sortDirection === 'asc' ? 'asc' : 'desc')),
                 fn ($q) => $q->orderBy($this->sortField, $this->sortDirection)
             );
 

@@ -70,8 +70,8 @@
                             <div class="mb-3">
                                 <div class="flex items-baseline justify-between">
                                     <p class="text-2xl font-bold text-primary">R$ {{ number_format($product->price, 2, ',', '.') }}</p>
-                                    @if($product->price_regular && $product->price_regular > $product->price)
-                                        <p class="text-xs text-gray-500 line-through">R$ {{ number_format($product->price_regular, 2, ',', '.') }}</p>
+                                    @if($product->highest_recorded_price && $product->highest_recorded_price > $product->price)
+                                        <p class="text-xs text-gray-500 line-through">R$ {{ number_format($product->highest_recorded_price, 2, ',', '.') }}</p>
                                     @endif
                                 </div>
                                 

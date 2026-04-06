@@ -35,9 +35,7 @@ class ProductDto
             name: $product['product_name'],
             description: $product['description'] ?? null,
             price: isset($priceData['search_price']) ? (float) $priceData['search_price'] : null,
-            priceRegular: isset($priceData['product_price_old'])
-                ? (float) $priceData['product_price_old']
-                : (isset($priceData['base_price']) ? (float) $priceData['base_price'] : null),
+            priceRegular: null,
             sku: $product['merchant_product_id'],
             brand: $product['brand_name'] ?? null,
             imageUrl: $product['merchant_image_url'],

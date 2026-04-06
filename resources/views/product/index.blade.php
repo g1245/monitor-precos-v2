@@ -2,6 +2,83 @@
 @section('title', $product->name . ' - Monitor de Preços')
 @section('description', 'Compare preços do ' . $product->name . ' em diversas lojas. Encontre a melhor oferta e economize!')
 
+@push('meta')
+@php
+    $productUrl = route('product.show', ['id' => $product->id, 'slug' => $product->permalink]);
+    $productTitle = $product->name . ' - Monitor de Preços';
+    $productDescription = 'Compare preços do ' . $product->name . ' em diversas lojas. Encontre a melhor oferta e economize!';
+    if ($product->brand) {
+        $productDescription = $product->brand . ' - ' . $productDescription;
+    }
+    $formattedPrice = number_format($product->price, 2, ',', '.');
+    $productImage = $product->image_url ?? '';
+    $keywords = collect($product->departments)->pluck('name')->push($product->brand)->filter()->implode(', ');
+@endphp
+
+{{-- Canonical URL --}}
+<link rel="canonical" href="{{ $productUrl }}">
+
+{{-- Open Graph / Facebook / WhatsApp --}}
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="Monitor de Preços">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="{{ $productUrl }}">
+<meta property="og:title" content="{{ $productTitle }}">
+<meta property="og:description" content="{{ $productDescription }}">
+@if($productImage)
+<meta property="og:image" content="{{ $productImage }}">
+<meta property="og:image:alt" content="{{ $product->name }}">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+@endif
+
+{{-- Open Graph Product pricing --}}
+<meta property="product:price:amount" content="{{ $product->price }}">
+<meta property="product:price:currency" content="BRL">
+@if($product->brand)
+<meta property="product:brand" content="{{ $product->brand }}">
+@endif
+
+{{-- Schema.org JSON-LD Structured Data --}}
+@php
+    $schemaOffer = [
+        '@type'         => 'Offer',
+        'url'           => $productUrl,
+        'priceCurrency' => 'BRL',
+        'price'         => number_format($product->price, 2, '.', ''),
+        'availability'  => 'https://schema.org/InStock',
+        'itemCondition' => 'https://schema.org/NewCondition',
+    ];
+    if ($product->lowest_recorded_price) {
+        $schemaOffer['priceValidUntil'] = now()->addDays(30)->toDateString();
+    }
+
+    $schemaProduct = [
+        '@context' => 'https://schema.org/',
+        '@type'    => 'Product',
+        'name'     => $product->name,
+        'url'      => $productUrl,
+        'offers'   => $schemaOffer,
+    ];
+    if ($product->description) {
+        $schemaProduct['description'] = strip_tags($product->description);
+    }
+    if ($productImage) {
+        $schemaProduct['image'] = $productImage;
+    }
+    if ($product->brand) {
+        $schemaProduct['brand'] = ['@type' => 'Brand', 'name' => $product->brand];
+    }
+    if ($product->sku) {
+        $schemaProduct['sku'] = $product->sku;
+    }
+    if ($product->departments->isNotEmpty()) {
+        $schemaProduct['category'] = $product->departments->first()->name;
+    }
+@endphp
+<script type="application/ld+json">{!! json_encode($schemaProduct, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
+
 @section('content')
     <div class="container mx-auto px-4 py-6">
         <nav class="mb-6 overflow-x-auto">

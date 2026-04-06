@@ -13,6 +13,7 @@
     <link rel="manifest" href="{{ Vite::asset('resources/images/favicon/site.webmanifest') }}" />
 
     <meta name="description" content="@yield('description', 'Compare preços de produtos de lojas virtuais de todo o Brasil e encontre as melhores ofertas.')">
+    @stack('meta')
     @vite('resources/css/app.css')
     @livewireStyles
 </head>

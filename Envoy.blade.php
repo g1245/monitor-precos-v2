@@ -59,6 +59,7 @@
 @task('restart-services', ['on' => ['web']])
     cd /var/www/monitor-precos-v2
 
+    php8.4 artisan scout:sync-index-settings
     php8.4 artisan horizon:terminate
     php8.4 artisan schedule:clear
 @endtask

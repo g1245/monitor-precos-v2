@@ -30,11 +30,11 @@ class ProductObserver
         }
 
         // Initialize highest recorded price tracking based on price_regular
-        if ($product->price_regular !== null) {
-            $product->updateQuietly([
-                'highest_recorded_price' => $product->price_regular,
-            ]);
-        }
+        // if ($product->price_regular !== null) {
+        //     $product->updateQuietly([
+        //         'highest_recorded_price' => $product->price_regular,
+        //     ]);
+        // }
 
         // Record audit log for product creation
         $this->writeAuditLog($product, 'created');

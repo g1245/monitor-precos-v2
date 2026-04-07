@@ -23,20 +23,11 @@ class CentauroProductDto extends ProductDto
      */
     public static function fromApiData(int $storeId, array $product): static
     {
-        $priceData = $product['price'] ?? [];
-
-        $price = (float) (
-            $priceData['base_price']
-            ?? $priceData['search_price']
-            ?? $priceData['display_price']
-            ?? 0
-        );
-
         return new static(
             storeId: $storeId,
             name: $product['product_name'],
             description: $product['description'] ?? null,
-            price: $price,
+            price: $product['price']['base_price'],
             priceRegular: null,
             sku: $product['merchant_product_id'],
             brand: $product['brand_name'] ?? null,
@@ -50,12 +41,10 @@ class CentauroProductDto extends ProductDto
     /**
      * {@inheritdoc}
      *
-     * Centauro requires at least one of `search_price`, `display_price`, or `base_price`.
+     * Centauro requires `base_price`.
      */
     public static function hasValidPrices(array $priceData): bool
     {
-        return !empty($priceData['search_price'])
-            || !empty($priceData['display_price'])
-            || !empty($priceData['base_price']);
+        return !empty($priceData['base_price']);
     }
 }

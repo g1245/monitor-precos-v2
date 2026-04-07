@@ -36,7 +36,9 @@
                     <div class="flex items-center justify-between mb-3">
                         <!-- Logo -->
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-8">
+                            <a href="/" title="Monitor de Preços">
+                                <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-8">
+                            </a>
                         </div>
 
                         <!-- Account Icon -->
@@ -79,7 +81,7 @@
                 <div class="flex items-center justify-between py-3">
                     <!-- Logo -->
                     <div class="flex items-center">
-                        <a href="/">
+                        <a href="/" title="Monitor de Preços">
                             <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Monitor de Preços" class="h-10">
                         </a>
                     </div>

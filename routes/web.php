@@ -85,3 +85,6 @@ Route::get('/central-de-ajuda', [PagesController::class, 'show'])->defaults('slu
 Route::get('/politica-de-privacidade', [PagesController::class, 'show'])->defaults('slug', 'politica-de-privacidade')->name('pages.privacy');
 Route::get('/termos-de-uso', [PagesController::class, 'show'])->defaults('slug', 'termos-de-uso')->name('pages.terms');
 
+// WhatsApp group landing page
+Route::view('/grupo', 'pages.grupo')->name('pages.grupo');
+

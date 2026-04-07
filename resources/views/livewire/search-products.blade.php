@@ -12,20 +12,6 @@
                 @endif
             </div>
         </div>
-
-        {{-- Dica de pesquisa por campo específico --}}
-        <div class="flex flex-wrap items-center gap-2 mb-6 text-xs text-gray-500">
-            <span>Pesquisa por campo:</span>
-            @if($searchField)
-                <span class="bg-primary/10 text-primary font-medium px-2 py-0.5 rounded">
-                    Filtrando por <strong>{{ $searchField }}</strong>
-                </span>
-            @else
-                <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">sku:ABC123</code>
-                <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">name:"tênis nike"</code>
-                <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">brand:samsung</code>
-            @endif
-        </div>
         
         @if($q)
             @if($products->count() > 0)

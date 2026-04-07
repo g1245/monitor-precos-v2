@@ -21,7 +21,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Sync products with biggest price reductions to Department 1 (Top Discounts)';
+    protected $description = 'Sync products with biggest price reductions to Department (Top Discounts)';
 
     /**
      * The department ID for top discounts.
@@ -35,7 +35,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
     {
         $this->info('Starting synchronization of top discounted products...');
 
-        // Get or verify Department 1 exists
+        // Get or verify Department exists
         $department = Department::find(self::TOP_DISCOUNTS_DEPARTMENT_ID);
         
         if (!$department) {
@@ -44,13 +44,13 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
             return Command::FAILURE;
         }
 
-        // Step 1: Detach all products from Department 1
+        // Step 1: Detach all products from Department
         $removedCount = DB::table('departments_products')
             ->where('department_id', self::TOP_DISCOUNTS_DEPARTMENT_ID)
             ->delete();
 
         $this->info('Removing all products from Department...');
-        $this->info("Removed {$removedCount} products from Department 1.");
+        $this->info("Removed {$removedCount} products from Department.");
 
         // Step 2: Calculate price reductions and get top discounted products
         $this->info('Calculating price reductions from price history...');
@@ -65,7 +65,7 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
 
         $this->info("Found {$topDiscountedProducts->count()} products with price reductions.");
 
-        // Step 3: Attach products to Department 1
+        // Step 3: Attach products to Department
         $this->info('Associating products to Department...');
         
         $department->products()->attach(

@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use Livewire\Livewire;
 use App\Models\Product;
+use App\Models\Store;
 use App\Models\Department;
 use App\Observers\ProductObserver;
+use App\Observers\StoreObserver;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Register model observers
         Product::observe(ProductObserver::class);
+        Store::observe(StoreObserver::class);
 
         // Share department menu data with all views
         View::share('departmentMenu', $this->getDepartmentMenuData());

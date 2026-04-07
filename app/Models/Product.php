@@ -33,6 +33,7 @@ class Product extends Model
         'brand',
         'image_url',
         'is_active',
+        'is_store_visible',
         'is_parent',
         'views_count',
         'deep_link',
@@ -53,6 +54,7 @@ class Product extends Model
         'highest_recorded_price' => 'decimal:2',
         'lowest_recorded_price' => 'decimal:2',
         'is_active' => 'boolean',
+        'is_store_visible' => 'boolean',
         'is_parent' => 'integer',
         'views_count' => 'integer',
         'deep_link' => 'string',
@@ -140,13 +142,7 @@ class Product extends Model
      */
     public function scopeFromPublicStore($query)
     {
-        return $query
-            ->leftJoin('stores as public_stores', function ($join) {
-                $join->on('products.store_id', '=', 'public_stores.id')
-                     ->where('public_stores.has_public', true);
-            })
-            ->where('public_stores.id', '!=', null)
-            ->select('products.*');
+        return $query->where('products.is_store_visible', true);
     }
 
     /**
@@ -333,7 +329,7 @@ class Product extends Model
             'brand' => $this->brand,
             'store_id' => (int) $this->store_id,
             'is_parent' => (int) $this->is_parent,
-            'store_has_public' => (bool) $this->store?->has_public,
+            'is_store_visible' => (bool) $this->is_store_visible,
         ];
     }
 }

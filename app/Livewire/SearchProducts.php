@@ -104,10 +104,9 @@ class SearchProducts extends Component
         $limit = $this->page * 30;
         $parsed = $this->parseSearchQuery();
 
-        $query = Product::query()
-            ->search($this->q)
-            ->fromPublicStore()
-            ->parentProducts()
+        $query = Product::search($this->q)
+            ->where('is_store_visible', true)
+            ->where('is_parent', 0)
             ->when($this->minPrice !== null, fn($q) => $q->where('price', '>=', $this->minPrice))
             ->when($this->maxPrice !== null, fn($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->brand !== null && $this->brand !== '', fn($q) => $q->where('brand', $this->brand))

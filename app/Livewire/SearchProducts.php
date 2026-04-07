@@ -104,20 +104,10 @@ class SearchProducts extends Component
         $limit = $this->page * 30;
         $parsed = $this->parseSearchQuery();
 
-        $query = Product::search($this->q)
-            ->where('is_parent', 0)
-            ->where('store_has_public', true);
-
-        // Apply parsed query filters
-        if ($parsed['field'] === 'sku') {
-            $query->where('sku', $parsed['value']);
-        } elseif ($parsed['field'] === 'name') {
-            $query->where('name', $parsed['value']);
-        } elseif ($parsed['field'] === 'brand') {
-            $query->where('brand', $parsed['value']);
-        }
-
-        $query
+        $query = Product::query()
+            ->search($this->q)
+            ->fromPublicStore()
+            ->parentProducts()
             ->when($this->minPrice !== null, fn($q) => $q->where('price', '>=', $this->minPrice))
             ->when($this->maxPrice !== null, fn($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->brand !== null && $this->brand !== '', fn($q) => $q->where('brand', $this->brand))

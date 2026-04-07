@@ -107,7 +107,7 @@ class StoreProducts extends Component
             ->when($this->minPrice !== null, fn ($q) => $q->where('price', '>=', $this->minPrice))
             ->when($this->maxPrice !== null, fn ($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->brand !== null && $this->brand !== '', fn ($q) => $q->where('brand', 'LIKE', "%{$this->brand}%"))
-            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange(2))
+            ->when($this->recentDiscountOnly, fn ($q) => $q->withRecentPriceChange())
             ->when(
                 $this->sortField === 'discount_percentage',
                 fn ($q) => $q->orderByRaw('(discount_percentage) ' . ($this->sortDirection === 'asc' ? 'asc' : 'desc')),

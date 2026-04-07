@@ -32,7 +32,6 @@ class Product extends Model
         'merchant_product_id',
         'brand',
         'image_url',
-        'is_active',
         'is_store_visible',
         'is_parent',
         'views_count',
@@ -53,7 +52,6 @@ class Product extends Model
         'price_regular' => 'decimal:2',
         'highest_recorded_price' => 'decimal:2',
         'lowest_recorded_price' => 'decimal:2',
-        'is_active' => 'boolean',
         'is_store_visible' => 'boolean',
         'is_parent' => 'integer',
         'views_count' => 'integer',
@@ -124,14 +122,6 @@ class Product extends Model
     }
 
     /**
-     * Scope to get only active products.
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    /**
      * Scope to get only products from stores with public visibility.
      *
      * Uses LEFT JOIN with the has_public condition in the ON clause so the
@@ -192,14 +182,6 @@ class Product extends Model
         return $query->whereNotNull('old_price')
             ->whereColumn('old_price', '>', 'price')
             ->where('old_price_at', '>=', now()->subDays($days)->startOfDay());
-    }
-
-    /**
-     * Check if product is active.
-     */
-    public function isActive(): bool
-    {
-        return $this->is_active;
     }
 
     /**

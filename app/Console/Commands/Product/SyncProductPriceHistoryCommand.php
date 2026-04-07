@@ -72,7 +72,6 @@ class SyncProductPriceHistoryCommand extends Command
         $this->info("Searching for product with SKU: {$sku}");
 
         $product = Product::where('sku', $sku)
-            ->active()
             ->first();
 
         if (!$product) {
@@ -138,11 +137,11 @@ class SyncProductPriceHistoryCommand extends Command
 
             $this->info("Syncing price history for products from store: {$store->name} (ID: {$storeId})");
         } else {
-            $this->info("Syncing price history for all active products");
+            $this->info("Syncing price history for all products");
         }
 
         // Build query
-        $query = Product::query()->active();
+        $query = Product::query();
 
         if ($storeId) {
             $query->where('store_id', $storeId);
@@ -151,7 +150,7 @@ class SyncProductPriceHistoryCommand extends Command
         $totalProducts = $query->count();
 
         if ($totalProducts === 0) {
-            $this->warn('No active products found to sync.');
+            $this->warn('No products found to sync.');
             return Command::SUCCESS;
         }
 

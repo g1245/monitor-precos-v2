@@ -47,7 +47,6 @@ class WelcomeProducts extends Component
     private function queryProducts(int $fetchLimit)
     {
         $query = Product::query()
-            ->active()
             ->fromPublicStore()
             ->parentProducts()
             ->with('store');

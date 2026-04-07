@@ -16,7 +16,6 @@ class ProductController extends Controller
         $product = Product::query()
             ->with(['departments', 'attributes'])
             ->where('products.id', $id)
-            ->active()
             ->fromPublicStore()
             ->firstOrFail();
 

@@ -31,7 +31,6 @@ class ProductFactory extends Factory
             'sku' => $this->faker->unique()->regexify('[A-Z]{3}[0-9]{6}'),
             'brand' => $this->faker->company(),
             // 'image_url' => $this->faker->imageUrl(640, 480, 'products', true),
-            'is_active' => $this->faker->boolean(90), // 90% chance of being active
             'is_parent' => 0,
         ];
     }

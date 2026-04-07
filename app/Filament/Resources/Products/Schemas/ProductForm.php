@@ -19,10 +19,6 @@ class ProductForm
                     ->relationship('store', 'name')
                     ->required(),
 
-                Toggle::make('is_active')
-                    ->label('Está ativo?')
-                    ->belowContent('Marque para deixar o produto ativo no sistema e acessível publicamente.')
-                    ->required(),
                 TextInput::make('name')
                     ->columnSpanFull()
                     ->required(),

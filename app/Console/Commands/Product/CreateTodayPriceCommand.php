@@ -18,16 +18,16 @@ class CreateTodayPriceCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create daily price history entries for all active products';
+    protected $description = 'Create daily price history entries for all products';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $products = \App\Models\Product::active()->get();
+        $products = \App\Models\Product::all();
 
-        $this->info('Starting daily price history creation for ' . $products->count() . ' active products.');
+        $this->info('Starting daily price history creation for ' . $products->count() . ' products.');
 
         $createdCount = 0;
 

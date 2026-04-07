@@ -49,8 +49,6 @@ class ProductsTable
                     ->listWithLineBreaks()
                     ->limitList(3)
                     ->expandableLimitedList(),
-                IconColumn::make('is_active')
-                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime(),
             ])

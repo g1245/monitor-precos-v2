@@ -104,7 +104,6 @@ class SyncTopDiscountedProductsToDepartmentCommand extends Command
     private function getTopDiscountedProducts(?int $limit)
     {
         return Product::query()
-            ->active()
             ->fromPublicStore()
             ->parentProducts()
             ->whereColumn('price', '<', 'old_price')

@@ -39,8 +39,8 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <h2 class="text-xl font-semibold text-gray-900">Atalhos</h2>
                     <div class="mt-4 space-y-3">
-                        <a href="{{ route('search.index') }}" class="block rounded-md border border-gray-200 px-4 py-3 text-sm text-gray-700 hover:border-blue-300 hover:bg-blue-50">
-                            Buscar produtos
+                        <a href="{{ route('pages.grupo') }}" class="block rounded-md border border-gray-200 px-4 py-3 text-sm text-gray-700 hover:border-blue-300 hover:bg-blue-50">
+                            Grupo no WhatsApp
                         </a>
                         <a href="{{ route('stores.index') }}" class="block rounded-md border border-gray-200 px-4 py-3 text-sm text-gray-700 hover:border-blue-300 hover:bg-blue-50">
                             Ver lojas

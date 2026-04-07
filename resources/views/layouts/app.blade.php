@@ -233,6 +233,7 @@
                     <ul class="space-y-2 text-sm text-gray-300">
                         <li><a href="{{ route('pages.about') }}" class="hover:text-blue-500 transition-colors">Sobre Nós</a></li>
                         <li><a href="{{ route('pages.how') }}" class="hover:text-blue-500 transition-colors">Como Funciona</a></li>
+                        <li><a href="{{ route('pages.grupo') }}" class="hover:text-blue-500 transition-colors">Grupo no WhatsApp</a></li>
                         <li><a href="{{ route('stores.index') }}" class="hover:text-blue-500 transition-colors">Lojas Parceiras</a></li>
                     </ul>
                 </div>

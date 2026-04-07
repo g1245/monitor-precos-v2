@@ -202,7 +202,6 @@ return [
             'queue' => ['default', 'products', 'browsing-history'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 2,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 128,
@@ -215,7 +214,6 @@ return [
             'queue' => ['scout'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 2,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 64,
@@ -228,7 +226,6 @@ return [
             'queue' => ['imports'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 2,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 64,
@@ -254,6 +251,17 @@ return [
                 'maxProcesses' => 5,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
+            ],
+        ],
+        'local' => [
+            'supervisor-1' => [
+                'maxProcesses' => 5,
+            ],
+            'supervisor-2' => [
+                'maxProcesses' => 5,
+            ],
+            'supervisor-3' => [
+                'maxProcesses' => 5,
             ],
         ],
     ],

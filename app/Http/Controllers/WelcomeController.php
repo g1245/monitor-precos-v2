@@ -9,14 +9,12 @@ class WelcomeController extends Controller
 {
     public function index(Request $request)
     {
-        $highlights = Highlight::latest()->limit(10)->get();
-
         $tab = match ($request->route()->getName()) {
             'welcome.recentes'      => 'recentes',
             'welcome.mais-acessados' => 'mais-acessados',
             default                 => 'destaques',
         };
 
-        return view('welcome.index', compact('highlights', 'tab'));
+        return view('welcome.index', compact('tab'));
     }
 }

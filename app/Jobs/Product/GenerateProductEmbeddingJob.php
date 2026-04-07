@@ -55,6 +55,16 @@ class GenerateProductEmbeddingJob implements ShouldQueue
     }
 
     /**
+     * Get the tags that should be assigned to the job.
+     *
+     * @return array<int, string>
+     */
+    public function tags(): array
+    {
+        return ['embedding', "product:{$this->product->id}"];
+    }
+
+    /**
      * Execute the job.
      *
      * @param EmbeddingService $embeddingService

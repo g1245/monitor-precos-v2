@@ -45,7 +45,6 @@ class CentauroProductDto extends ProductDto
      */
     public static function hasValidPrices(array $priceData): bool
     {
-        return true;
-        // return !empty($priceData['price_min']);
+        return !empty($priceData['price_min']);
     }
 }

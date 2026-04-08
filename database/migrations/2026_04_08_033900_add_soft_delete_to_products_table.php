@@ -28,14 +28,6 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->softDeletes()->after('is_store_visible');
-
-            // Drop stale index that referenced the removed is_active column
-            $table->dropIndex('idx_products_listing');
-
-            $table->index(
-                ['deleted_at', 'is_store_visible', 'is_parent', 'created_at'],
-                'idx_products_active_listing'
-            );
             $table->index('deleted_at', 'idx_products_deleted_at');
         });
     }
@@ -43,11 +35,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropIndex('idx_products_active_listing');
             $table->dropIndex('idx_products_deleted_at');
             $table->dropSoftDeletes();
-
-            $table->index(['is_store_visible', 'is_parent', 'created_at'], 'idx_products_listing');
         });
     }
 };

@@ -8,7 +8,7 @@ use App\Dto\ProductDto;
  * DTO for Centauro store products.
  *
  * Centauro price mapping:
- * - `search_price` → price (actual selling price, fallback to `display_price` or `base_price`)
+ * - `price_min` → price (lowest selling price across variants)
  * - `priceRegular` is always null (historical price tracked via `highest_recorded_price`)
  * - `externalLink` is mapped from `custom_1` (canonical product URL)
  */
@@ -17,9 +17,9 @@ class CentauroProductDto extends ProductDto
     /**
      * {@inheritdoc}
      *
-     * Overrides price mapping to use `search_price` as the selling price.
+     * Overrides price mapping to use `price_min` as the selling price.
      * `priceRegular` is always null; historical price is tracked via `highest_recorded_price`.
-     * `externalLink` is sourced from `custom_1`, which contains the canonical product URL.
+     * Variant-level fields (imageUrl, deepLink, externalLink) are not mapped.
      */
     public static function fromApiData(int $storeId, array $product): static
     {
@@ -27,7 +27,7 @@ class CentauroProductDto extends ProductDto
             storeId: $storeId,
             name: $product['product_name'],
             description: $product['description'] ?? null,
-            price: $product['price']['base_price'],
+            price: $product['price_min'],
             priceRegular: null,
             sku: $product['merchant_product_id'],
             brand: $product['brand_name'] ?? null,
@@ -41,10 +41,10 @@ class CentauroProductDto extends ProductDto
     /**
      * {@inheritdoc}
      *
-     * Centauro requires `base_price`.
+     * Centauro requires `price_min`.
      */
     public static function hasValidPrices(array $priceData): bool
     {
-        return !empty($priceData['base_price']);
+        return !empty($priceData['price_min']);
     }
 }

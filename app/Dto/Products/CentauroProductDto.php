@@ -22,12 +22,12 @@ class CentauroProductDto extends ProductDto
      * Variant-level fields (imageUrl, deepLink, externalLink) are not mapped.
      */
     public static function fromApiData(int $storeId, array $product): static
-    {
+    {        
         return new static(
             storeId: $storeId,
             name: $product['product_name'],
             description: $product['description'] ?? null,
-            price: $product['price_min'],
+            price: $product['price']['price_min'] ?? null,
             priceRegular: null,
             sku: $product['merchant_product_id'],
             brand: $product['brand_name'] ?? null,

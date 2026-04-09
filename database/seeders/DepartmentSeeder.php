@@ -107,6 +107,10 @@ class DepartmentSeeder extends Seeder
             }
         }
 
+        Department::create(
+            ['id' => 154,'name' => 'Destaques', 'parent_id' => null],
+        );
+
         $this->command->info('Departments seeding completed!');
     }
 }

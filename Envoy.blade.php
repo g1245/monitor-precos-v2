@@ -16,26 +16,26 @@
 @endstory
 
 @task('git-update', ['on' => ['web']])
-    cd /var/www/monitor-precos-v2
+    cd /var/www/monitorprecos-webapp
 
     sudo -u web01 git fetch origin main
     sudo -u web01 git reset --hard "origin/main"
 @endtask
 
 @task('set-permissions', ['on' => ['web']])
-    cd /var/www/monitor-precos-v2
+    cd /var/www/monitorprecos-webapp
 
     chown -R web01: .
 @endtask
 
 @task('install-dependencies', ['on' => ['web']])
-    cd /var/www/monitor-precos-v2
+    cd /var/www/monitorprecos-webapp
 
     sudo -u web01 php8.4 /usr/bin/composer install --no-dev -o
 @endtask
 
 @task('build-assets', ['on' => ['web']])
-    cd /var/www/monitor-precos-v2
+    cd /var/www/monitorprecos-webapp
     
     # Carrega o NVM e usa a versão default
     export NVM_DIR="$HOME/.nvm"
@@ -45,19 +45,19 @@
 @endtask
 
 @task('migrate-database', ['on' => ['web']])
-    cd /var/www/monitor-precos-v2
+    cd /var/www/monitorprecos-webapp
 
     php8.4 artisan migrate --force
 @endtask
 
 @task('clear-caches', ['on' => ['web']])
-    cd /var/www/monitor-precos-v2
+    cd /var/www/monitorprecos-webapp
 
     php8.4 artisan optimize:clear
 @endtask
 
 @task('restart-services', ['on' => ['web']])
-    cd /var/www/monitor-precos-v2
+    cd /var/www/monitorprecos-webapp
 
     php8.4 artisan scout:sync-index-settings
     php8.4 artisan horizon:terminate

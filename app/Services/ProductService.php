@@ -71,7 +71,13 @@ class ProductService
         $product = Product::find($productId);
         
         if ($product) {
-            $product->departments()->sync($departmentIds);
+            // Preserve department 154 (price highlight) if already associated
+            $existingIds = $product->departments()->pluck('departments.id')->toArray();
+            if (in_array(154, $existingIds)) {
+                $departmentIds[] = 154;
+            }
+
+            $product->departments()->sync(array_unique($departmentIds));
         }
     }
 }

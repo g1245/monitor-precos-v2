@@ -146,7 +146,7 @@ return [
         'index-settings' => [
             \App\Models\Product::class => [
                 'searchableAttributes' => ['name', 'sku', 'brand'],
-                'filterableAttributes' => ['price', 'price_regular', 'discount_percentage', 'store_id', 'brand', 'is_parent', 'is_store_visible'],
+                'filterableAttributes' => ['price', 'discount_percentage', 'store_id', 'brand', 'is_parent', 'is_store_visible'],
                 'sortableAttributes' => ['price', 'discount_percentage'],
             ],
         ],

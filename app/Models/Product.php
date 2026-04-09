@@ -306,7 +306,6 @@ class Product extends Model
             'id' => (int) $this->id,
             'name' => $this->name,
             'price' => (float) $this->price,
-            'price_regular' => (float) $this->price_regular,
             'discount_percentage' => (int) $this->discount_percentage,
             'sku' => $this->sku,
             'brand' => $this->brand,

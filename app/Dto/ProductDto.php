@@ -67,7 +67,7 @@ class ProductDto
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,
-            'price_regular' => $this->priceRegular,
+            'price_regular' => null,
             'sku' => $this->sku,
             'brand' => $this->brand,
             'image_url' => $this->imageUrl,

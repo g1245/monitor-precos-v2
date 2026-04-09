@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Services\ProductAttributeService;
 use App\Services\ProductDtoResolver;
 use App\Services\ProductService;
+use App\Services\TopDiscountsSyncService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -153,6 +154,9 @@ class ProductSyncService
             // Flush welcome page cache once after the entire sync completes,
             // instead of flushing on every individual product save.
             self::flushWelcomeCache();
+
+            // Re-sync top discounted products to department 154.
+            TopDiscountsSyncService::sync($store->id);
         }
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Jobs\Product\ProcessProductJob;
 use App\Jobs\SendPriceAlertNotificationsJob;
 use App\Models\Product;
 
@@ -16,8 +15,6 @@ class ProductLifecycleService
      */
     public function onCreated(Product $product): void
     {
-        ProcessProductJob::dispatch($product->id);
-
         if ($product->price !== null) {
             $product->updateQuietly([
                 'lowest_recorded_price' => $product->price,
@@ -33,8 +30,6 @@ class ProductLifecycleService
      */
     public function onUpdated(Product $product): void
     {
-        ProcessProductJob::dispatch($product->id);
-
         if ($product->wasChanged('price')) {
             $this->handlePriceChange($product);
         }

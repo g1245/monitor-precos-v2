@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Product;
+use App\Models\ProductChangeLog;
 use App\Services\ProductLifecycleService;
 use Illuminate\Support\Facades\Log;
 
@@ -28,6 +29,31 @@ class ProductObserver
     {
         $this->lifecycle->onUpdated($product);
         $this->writeAuditLog($product, 'updated');
+        $this->recordChangeLog($product);
+    }
+
+    /**
+     * Record a before/after change log entry for the updated product,
+     * saving only the fields that were actually modified (excluding updated_at).
+     */
+    private function recordChangeLog(Product $product): void
+    {
+        $changed = collect($product->getChanges())
+            ->except('updated_at')
+            ->keys();
+
+        if ($changed->isEmpty()) {
+            return;
+        }
+
+        $before = collect($product->getOriginal())->only($changed)->all();
+        $after  = collect($product->getChanges())->only($changed)->all();
+
+        ProductChangeLog::create([
+            'product_id' => $product->id,
+            'before'     => $before,
+            'after'      => $after,
+        ]);
     }
 
     /**

@@ -16,7 +16,7 @@ class ReindexOldPriceCommand extends Command
     protected $signature = 'app:reindex-old-price
                             {--store_id= : Optional store ID to filter products}
                             {--product_id= : Optional product ID to reindex a single product}
-                            {--days=3 : Days window to inspect price history (default: 3)}';
+                            {--days=2 : Days window to inspect price history (default: 3)}';
 
     /**
      * The console command description.

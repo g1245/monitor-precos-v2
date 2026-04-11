@@ -54,12 +54,6 @@ class ReindexRecordedPricesCommand extends Command
             }
         }
 
-        if ($storeId === null && $productId === null) {
-            $this->error('You must provide at least one option: --store_id or --product_id.');
-
-            return Command::FAILURE;
-        }
-
         $productsQuery = Product::query()
             ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->when($productId !== null, fn ($q) => $q->whereKey($productId));
@@ -72,9 +66,11 @@ class ReindexRecordedPricesCommand extends Command
             return Command::SUCCESS;
         }
 
-        $scope = $productId !== null
-            ? "product ID {$productId}"
-            : "store ID {$storeId}";
+        $scope = match (true) {
+            $productId !== null => "product ID {$productId}",
+            $storeId !== null   => "store ID {$storeId}",
+            default             => 'all stores',
+        };
 
         $this->info("Reindexing recorded prices for {$total} product(s) [{$scope}]...");
 

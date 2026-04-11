@@ -21,11 +21,7 @@ class ProductService
      * Uses sku as unique identifier.
      */
     public static function createOrUpdate(ProductDto $dto): Product
-    {
-        if ($dto->priceRegular === null) {
-            $dto->priceRegular = $dto->price;
-        }
-        
+    {        
         return Product::updateOrCreate(
             ['store_id' => $dto->storeId, 'sku' => $dto->sku],
             $dto->toArray()

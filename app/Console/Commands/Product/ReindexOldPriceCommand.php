@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Product;
 
 use App\Models\Product;
+use App\Models\Store;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -14,16 +15,16 @@ class ReindexOldPriceCommand extends Command
      * @var string
      */
     protected $signature = 'app:reindex-old-price
-                            {--store_id= : Optional store ID to filter products}
-                            {--product_id= : Optional product ID to reindex a single product}
-                            {--days=2 : Days window to inspect price history (default: 3)}';
+                            {--store_id= : ID da loja para filtrar produtos (opcional)}
+                            {--product_id= : ID do produto para reindexar individualmente (opcional)}
+                            {--days=2 : Janela de dias para inspecionar o histórico de preços (padrão: 2)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Reindex old_price from products_prices_histories by store_id and/or product_id';
+    protected $description = 'Reindexar old_price dos produtos com base no histórico de preços. Quando nenhum filtro é informado, processa todas as lojas com catálogo ativo.';
 
     /**
      * Execute the console command.
@@ -38,7 +39,7 @@ class ReindexOldPriceCommand extends Command
         $days = (int) $daysOption;
 
         if ($days <= 0) {
-            $this->error('The --days option must be a positive integer.');
+            $this->error('A opção --days deve ser um número inteiro positivo.');
 
             return Command::FAILURE;
         }
@@ -47,7 +48,7 @@ class ReindexOldPriceCommand extends Command
             $storeId = (int) $storeIdOption;
 
             if ($storeId <= 0) {
-                $this->error('The --store_id option must be a positive integer when provided.');
+                $this->error('A opção --store_id deve ser um número inteiro positivo quando informada.');
 
                 return Command::FAILURE;
             }
@@ -57,44 +58,54 @@ class ReindexOldPriceCommand extends Command
             $productId = (int) $productIdOption;
 
             if ($productId <= 0) {
-                $this->error('The --product_id option must be a positive integer when provided.');
+                $this->error('A opção --product_id deve ser um número inteiro positivo quando informada.');
 
                 return Command::FAILURE;
             }
         }
 
-        if ($storeId === null && $productId === null) {
-            $this->error('You must provide at least one option: --store_id or --product_id.');
-
-            return Command::FAILURE;
-        }
-
         $productsQuery = Product::query()
-            ->when($storeId !== null, fn ($query) => $query->where('store_id', $storeId))
-            ->when($productId !== null, fn ($query) => $query->whereKey($productId));
+            ->when($storeId !== null, fn($query) => $query->where('store_id', $storeId))
+            ->when($productId !== null, fn($query) => $query->whereKey($productId))
+            ->when($storeId === null && $productId === null, function ($query): void {
+                $activeStoreIds = Store::where('has_public', true)->pluck('id');
+                $query->whereIn('store_id', $activeStoreIds);
+            });
+
+        $scope = match (true) {
+            $productId !== null => "produto #{$productId}",
+            $storeId !== null   => "loja #{$storeId}",
+            default             => 'todas as lojas com catálogo ativo',
+        };
+
+        $this->line("Escopo: <info>{$scope}</info> | Janela de histórico: <info>{$days} dia(s)</info>");
 
         $totalProducts = (clone $productsQuery)->count();
 
         if ($totalProducts === 0) {
-            $this->warn('No products found for the provided parameters.');
+            $this->warn('Nenhum produto encontrado para os parâmetros informados.');
 
             return Command::SUCCESS;
         }
+
+        $this->line("Total de produtos encontrados: <info>{$totalProducts}</info>");
 
         $resetCount = (clone $productsQuery)
             ->toBase()
             ->update(['old_price' => null]);
 
-        $this->info("Reset old_price for {$resetCount} product(s) before reindex.");
-
-        $this->info("Starting old_price reindex for {$totalProducts} product(s) using last {$days} day(s) history...");
+        $this->line("old_price zerado para <info>{$resetCount}</info> produto(s) antes da reindexação.");
+        $this->line('Iniciando reindexação...');
 
         $processed = 0;
         $updated = 0;
 
+        $bar = $this->output->createProgressBar($totalProducts);
+        $bar->start();
+
         $productsQuery
             ->orderBy('id')
-            ->chunkById(200, function ($products) use (&$processed, &$updated, $days): void {
+            ->chunkById(200, function ($products) use (&$processed, &$updated, $days, $bar): void {
                 foreach ($products as $product) {
                     $processed++;
 
@@ -105,24 +116,32 @@ class ReindexOldPriceCommand extends Command
                         ->orderByDesc('id')
                         ->first(['price', 'created_at']);
 
-                    if ($historyRecord === null) {
-                        continue;
+                    if ($historyRecord !== null) {
+                        $newOldPrice = number_format((float) $historyRecord->price, 4, '.', '');
+
+                        DB::table('products')
+                            ->where('id', $product->id)
+                            ->update([
+                                'old_price'    => $newOldPrice,
+                                'old_price_at' => $historyRecord->created_at,
+                            ]);
+
+                        $updated++;
                     }
 
-                    $newOldPrice = number_format((float) $historyRecord->price, 4, '.', '');
-
-                    DB::table('products')
-                        ->where('id', $product->id)
-                        ->update([
-                            'old_price'    => $newOldPrice,
-                            'old_price_at' => $historyRecord->created_at,
-                        ]);
-
-                    $updated++;
+                    $bar->advance();
                 }
             });
 
-        $this->info("Reindex completed. Processed {$processed} product(s), updated {$updated} old_price value(s) from last {$days} day(s) history.");
+        $bar->finish();
+        $this->newLine();
+
+        $skipped = $processed - $updated;
+
+        $this->info("Reindexação concluída com sucesso.");
+        $this->line("  Processados : <info>{$processed}</info>");
+        $this->line("  Atualizados : <info>{$updated}</info>");
+        $this->line("  Sem histórico relevante: <comment>{$skipped}</comment>");
 
         return Command::SUCCESS;
     }

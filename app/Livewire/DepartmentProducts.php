@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Department;
 use App\Models\Product;
+use App\Models\Store;
 use Livewire\Component;
 
 class DepartmentProducts extends Component
@@ -135,9 +136,12 @@ class DepartmentProducts extends Component
         $this->hasMore = $products->count() > $limit;
         $products = $products->take($limit);
 
+        $stores = Store::where('has_public', true)->orderBy('name')->get(['id', 'name']);
+
         return view('livewire.department-products', [
             'products' => $products,
             'total'    => $total,
+            'stores'   => $stores,
         ]);
     }
 }

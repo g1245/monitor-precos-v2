@@ -26,7 +26,7 @@ class OlympikusProductDto extends ProductDto
     {
         return new static(
             storeId: $storeId,
-            name: $product['product_name'],
+            name: static::normalizeName($product['product_name'] ?? ''),
             description: $product['description'] ?? null,
             price: $product['price']['price_min'] ?? null,
             priceRegular: null,
@@ -37,6 +37,52 @@ class OlympikusProductDto extends ProductDto
             externalLink: $product['aw_deep_link'] ?? null,
             merchantProductId: $product['merchant_product_id'] ?? null,
         );
+    }
+
+    /**
+     * Known color names (Portuguese/English) used as product name suffixes.
+     */
+    private const COLORS = [
+        'preto', 'branco', 'azul', 'vermelho', 'amarelo', 'verde', 'rosa', 'roxo',
+        'marrom', 'cinza', 'laranja', 'bege', 'creme', 'dourado', 'prata', 'vinho',
+        'coral', 'lilas', 'turquesa', 'navy', 'nude', 'caramelo', 'grafite',
+        'off-white', 'offwhite', 'black', 'white', 'red', 'blue', 'grey', 'gray',
+        'silver', 'gold', 'pink', 'purple', 'brown', 'orange', 'green', 'yellow',
+    ];
+
+    /**
+     * Known size values for clothing and footwear.
+     */
+    private const SIZES = [
+        // Brazilian clothing sizes
+        'pp', 'p', 'm', 'g', 'gg', 'xg', 'xgg', 'eg', 'egg',
+        // International
+        'xs', 's', 'l', 'xl', 'xxl', 'xxxl',
+        // Numeric shoe sizes (BR 33–48)
+        '33', '34', '35', '36', '37', '38', '39', '40',
+        '41', '42', '43', '44', '45', '46', '47', '48',
+    ];
+
+    /**
+     * Normalize the product name by stripping trailing words that are known
+     * size or color attributes (e.g. "Tênis Olympikus Soma 34 Preto" → "Tênis Olympikus Soma").
+     */
+    private static function normalizeName(string $name): string
+    {
+        $words = preg_split('/\s+/', trim($name));
+        $attributeTokens = array_merge(self::COLORS, self::SIZES);
+
+        while (count($words) > 1) {
+            $last = mb_strtolower(end($words));
+
+            if (!in_array($last, $attributeTokens, true)) {
+                break;
+            }
+
+            array_pop($words);
+        }
+
+        return implode(' ', $words);
     }
 
     /**

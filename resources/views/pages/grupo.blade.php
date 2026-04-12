@@ -9,7 +9,7 @@
     TODO: Substitua o valor da variável abaixo pelo link real do grupo do WhatsApp.
     Exemplo: https://chat.whatsapp.com/XXXXXXXXXXXXXXXXXXX
 --}}
-@php $whatsappGroupLink = '#'; @endphp
+@php $whatsappGroupLink = 'https://chat.whatsapp.com/Fs0jA2Xbvs0HwJwOQErZtm'; @endphp
 
 {{-- ====================================================
      HERO

@@ -76,7 +76,7 @@
         $schemaProduct['category'] = $product->departments->first()->name;
     }
 @endphp
-<script type="application/ld+json">{!! json_encode($schemaProduct, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+<script type="application/ld+json">{!! json_encode($schemaProduct, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
 @endpush
 
 @section('content')

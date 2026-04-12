@@ -8,7 +8,10 @@ use App\Models\Store;
 use App\Models\Department;
 use App\Observers\ProductObserver;
 use App\Observers\StoreObserver;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
@@ -37,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        // Configure rate limiters
+        $this->configureRateLimiters();
+
         // Register model observers
         Product::observe(ProductObserver::class);
         Store::observe(StoreObserver::class);
@@ -49,6 +55,37 @@ class AppServiceProvider extends ServiceProvider
 
         // Use Tailwind para paginação
         Paginator::defaultView('pagination::tailwind');
+    }
+
+    /**
+     * Configure named rate limiters for sensitive endpoints.
+     */
+    private function configureRateLimiters(): void
+    {
+        // Login: 5 attempts per minute per IP
+        RateLimiter::for('login', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        // Register: 3 new accounts per hour per IP
+        RateLimiter::for('register', function (Request $request) {
+            return Limit::perHour(3)->by($request->ip());
+        });
+
+        // Password recovery: 5 emails per hour per IP
+        RateLimiter::for('password-recovery', function (Request $request) {
+            return Limit::perHour(5)->by($request->ip());
+        });
+
+        // Newsletter: 3 subscriptions per hour per IP
+        RateLimiter::for('newsletter', function (Request $request) {
+            return Limit::perHour(3)->by($request->ip());
+        });
+
+        // Contact message: 5 messages per hour per IP
+        RateLimiter::for('contact-message', function (Request $request) {
+            return Limit::perHour(5)->by($request->ip());
+        });
     }
 
     /**

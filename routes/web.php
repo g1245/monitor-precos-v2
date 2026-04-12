@@ -37,22 +37,26 @@ Route::middleware(['web', 'track.browsing'])->group(function () {
 Route::get('/loja/{id}/logo', [StoreController::class, 'logo'])->name('store.logo');
 
 // Newsletter subscription route
-Route::post('/newsletter/subscribe', [NewsletterLeadController::class, 'store'])->name('newsletter.subscribe');
+Route::post('/newsletter/subscribe', [NewsletterLeadController::class, 'store'])
+    ->middleware('throttle:newsletter')
+    ->name('newsletter.subscribe');
 
 // Contact message route
-Route::post('/contact-message', [ContactMessageController::class, 'store'])->name('contact-message.store');
+Route::post('/contact-message', [ContactMessageController::class, 'store'])
+    ->middleware('throttle:contact-message')
+    ->name('contact-message.store');
 
 // Authentication routes
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
         
         Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-        Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
         
         Route::get('/recovery', [PasswordRecoveryController::class, 'showForgotPassword'])->name('recovery');
-        Route::post('/recovery', [PasswordRecoveryController::class, 'sendResetLink']);
+        Route::post('/recovery', [PasswordRecoveryController::class, 'sendResetLink'])->middleware('throttle:password-recovery');
         
         Route::get('/reset-password/{token}', [PasswordRecoveryController::class, 'showResetPassword'])->name('password.reset');
         Route::post('/reset-password', [PasswordRecoveryController::class, 'resetPassword'])->name('password.update');

@@ -263,7 +263,8 @@
 
             <!-- Bottom Footer -->
             <div class="border-t border-blue-800 mt-8 pt-8 text-center text-sm text-gray-400">
-                <p>&copy; {{ date('Y') }} Monitor de Preços. Todos os direitos reservados. Group 1245 LTDA - 52.171.773/0001-34</p>
+                <p class="mb-2">&copy; {{ date('Y') }} Monitor de Preços. Todos os direitos reservados. Group 1245 LTDA - 52.171.773/0001-34</p>
+                <p>AVISO LEGAL: Somos um site de publicidade gratuito. O uso está condicionado à aceitação de nossa Política de Privacidade e Termos de Uso. Preços e disponibilidade podem variar a qualquer momento sem aviso prévio; consulte sempre a loja antes de comprar. Não utilizamos drop cookie ou cookie stuffing. Nossa receita é gerada por comissões em acordos comerciais com algumas varejistas parceiras.</p>
             </div>
         </div>
     </footer>

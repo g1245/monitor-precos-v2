@@ -140,23 +140,16 @@
         <div class="container mx-auto px-4">
             @if($isMobile)
                 <!-- Mobile Layout -->
-                <div class="py-3 flex items-center space-x-4">
-                    <button id="departmentsBtn" class="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                <div class="py-3">
+                    <button id="departmentsBtn" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 rounded hover:bg-blue-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
-                        <span class="font-medium">Navegue por departamentos</span>
+                        <span class="font-medium">Navegue por aqui</span>
                         <svg id="chevronIcon" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-
-                    <a href="{{ route('stores.index') }}" class="flex items-center space-x-1 text-white hover:text-blue-400 transition-colors whitespace-nowrap">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                        </svg>
-                        <span>Lojas</span>
-                    </a>
                 </div>
             @else
                 <!-- Desktop Layout -->
@@ -182,6 +175,18 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                                 </svg>
                                 <span>Lojas</span>
+                            </a>
+                            <a href="{{ route('pages.how') }}" class="flex items-center space-x-1 hover:text-blue-400 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Como Funciona</span>
+                            </a>
+                            <a href="{{ route('pages.grupo') }}" class="flex items-center space-x-1 hover:text-green-400 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                                </svg>
+                                <span>Grupo WhatsApp</span>
                             </a>
                         </div>
                     </div>

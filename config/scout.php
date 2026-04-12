@@ -88,7 +88,7 @@ return [
     |
     */
 
-    'soft_delete' => false,
+    'soft_delete' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -146,7 +146,7 @@ return [
         'index-settings' => [
             \App\Models\Product::class => [
                 'searchableAttributes' => ['name', 'sku', 'brand'],
-                'filterableAttributes' => ['price', 'discount_percentage', 'store_id', 'brand', 'is_parent', 'is_store_visible'],
+                'filterableAttributes' => ['price', 'discount_percentage', 'store_id', 'brand', 'is_parent', 'is_store_visible', '__soft_deleted'],
                 'sortableAttributes' => ['price', 'discount_percentage'],
             ],
         ],

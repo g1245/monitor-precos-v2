@@ -54,12 +54,15 @@ class ReindexOldPriceJob implements ShouldQueue
 
         (clone $productsQuery)->toBase()->update(['old_price' => null]);
 
+        $processed = 0;
         $updated = 0;
 
         $productsQuery
             ->orderBy('id')
-            ->chunkById(200, function ($products) use (&$updated): void {
+            ->chunkById(200, function ($products) use (&$processed, &$updated): void {
                 foreach ($products as $product) {
+                    $processed++;
+
                     $historyRecord = $product->priceHistories()
                         ->where('created_at', '>=', now()->subDays($this->days))
                         ->where('price', '>', $product->price)
@@ -84,7 +87,9 @@ class ReindexOldPriceJob implements ShouldQueue
 
         Log::info('ReindexOldPriceJob: reindexing completed.', [
             'total_products' => $totalProducts,
+            'processed'      => $processed,
             'updated'        => $updated,
+            'skipped'        => $processed - $updated,
             'days'           => $this->days,
         ]);
     }

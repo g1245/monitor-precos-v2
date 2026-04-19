@@ -35,6 +35,8 @@ class ProductObserver
     /**
      * Record a before/after change log entry for the updated product,
      * saving only the fields that were actually modified (excluding updated_at).
+     * A backtrace is also stored as JSON so it is possible to identify which
+     * process or file triggered the product update.
      */
     private function recordChangeLog(Product $product): void
     {
@@ -49,10 +51,24 @@ class ProductObserver
         $before = collect($product->getOriginal())->only($changed)->all();
         $after  = collect($product->getChanges())->only($changed)->all();
 
+        $basePath  = base_path() . DIRECTORY_SEPARATOR;
+        $backtrace = collect(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20))
+            ->map(fn (array $frame): array => array_filter([
+                'file'     => isset($frame['file'])
+                    ? str_replace($basePath, '', $frame['file'])
+                    : null,
+                'line'     => $frame['line'] ?? null,
+                'class'    => $frame['class'] ?? null,
+                'function' => $frame['function'] ?? null,
+            ]))
+            ->values()
+            ->all();
+
         ProductChangeLog::create([
             'product_id' => $product->id,
             'before'     => $before,
             'after'      => $after,
+            'backtrace'  => $backtrace,
         ]);
     }
 
